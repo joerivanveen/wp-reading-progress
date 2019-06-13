@@ -29,6 +29,7 @@ function ruigehond006_run()
     if (is_admin()) {
         load_plugin_textdomain('ruigehond', null, dirname(plugin_basename(__FILE__)) . '/languages/');
         wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
         wp_enqueue_script('ruigehond006_admin_javascript', plugin_dir_url(__FILE__) . 'admin.0.0.2.js', 'wp-color-picker', false, true);
         add_action('admin_init', 'ruigehond006_settings');
         add_action('admin_menu', 'ruigehond006_menuitem');
@@ -142,7 +143,7 @@ function ruigehond006_settings()
             'Progress bar thickness', // title
             function ($args) {
                 echo '<input type="text" name="ruigehond006[bar_height]" value="' . $args['option']['bar_height'] . '"/>';
-                echo '<div class="ruigehond006 explanation"><em>' . __('Thickness based on screen height is recommended, e.g. <a>.5vh</a>. But you can also use pixels, e.g. <a>6px</a>.', 'ruigehond') . '</em></div>';
+                echo '<div class="ruigehond006 explanation"><em>' .sprintf(__('Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'ruigehond'),'<a>.5vh</a>','<a>6px</a>') . '</em></div>';
             }, // callback
             'ruigehond006', // page id
             'progress_bar_settings', // section id
