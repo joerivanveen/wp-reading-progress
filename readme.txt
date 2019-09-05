@@ -41,7 +41,7 @@ Regards,
 Joeri (ruige hond)
 
 == Installation ==
-1. Install the plugin by clicking 'Install now' below, or by downloading the code an pasting it in your plugins folder
+1. Install the plugin by clicking 'Install now' below, or the 'Download' button, and put the WP-reading-progress folder in your plugins folder
 
 2. By default it only works on single blog posts and uses an orange colour
 
@@ -54,7 +54,9 @@ It uses one option array which is removed upon uninstall, leaving no traces
 2. Example of the reading progress bar on my photography blog
 
 == Changelog ==
-1.0.2: fixed translation, translated to Dutch
+1.0.3: fixed translation, corrected license indication
+
+1.0.2: translated to Dutch
 
 1.0.1: minified javascript and css, fixed issue of bar sometimes momentarily disappearing on mobile device while scrolling
 
