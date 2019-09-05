@@ -54,6 +54,8 @@ It uses one option array which is removed upon uninstall, leaving no traces
 2. Example of the reading progress bar on my photography blog
 
 == Changelog ==
+1.0.2: fixed translation, translated to Dutch
+
 1.0.1: minified javascript and css, fixed issue of bar sometimes momentarily disappearing on mobile device while scrolling
 
 1.0.0: official release
