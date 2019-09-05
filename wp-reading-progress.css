@@ -2,7 +2,9 @@
     position: absolute;
     display: block;
     width: 100%;
-    height: 0; /* set by user */
+    -webkit-transition: height .4s ease-in-out; /* Safari prior 6.1 */
+    transition: height .4s ease-in-out;
+    height: 0; /* set to user value by javascript later */
     background-color: rgba(255, 255, 255, .2);
     z-index: 10000; /* hmmmmm, really? */
 }
@@ -11,7 +13,4 @@
     width: 0; /* initial value */
     height: 100%;
     background-color: transparent; /* set by user */
-    -webkit-transition: width .5s; /* Safari prior 6.1 */
-    transition: width .5s;
 }
-

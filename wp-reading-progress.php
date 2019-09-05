@@ -2,8 +2,8 @@
 /*
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
-Description: Light weight customizable reading progress bar. Great UX on longreads! Find settings under settings -> WP Reading Progress
-Version: 0.0.2
+Description: Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress
+Version: 1.0.1
 Author: Ruige hond
 Author URI: https://ruigehond.nl
 License: GPL2
@@ -11,6 +11,8 @@ License: GPL2
 
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
+
+Define('RUIGEHOND006_VERSION', '1.0.1');
 
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
@@ -30,12 +32,12 @@ function ruigehond006_run()
         load_plugin_textdomain('ruigehond', null, dirname(plugin_basename(__FILE__)) . '/languages/');
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('wp-color-picker');
-        wp_enqueue_script('ruigehond006_admin_javascript', plugin_dir_url(__FILE__) . 'admin.0.0.2.js', 'wp-color-picker', false, true);
+        wp_enqueue_script('ruigehond006_admin_javascript', plugin_dir_url(__FILE__) . 'admin.js', 'wp-color-picker', RUIGEHOND006_VERSION, true);
         add_action('admin_init', 'ruigehond006_settings');
         add_action('admin_menu', 'ruigehond006_menuitem');
     } else {
-        wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.0.0.2.js', 'jQuery');
-        wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.0.0.2.css');
+        wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.js', 'jQuery', RUIGEHOND006_VERSION);
+        wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.css', false, RUIGEHOND006_VERSION);
     }
 }
 
@@ -253,9 +255,9 @@ function ruigehond006_install()
 {
     if (!get_option('ruigehond006')) { // insert default settings:
         add_option('ruigehond006', array(
-            'bar_attach' => 'body',
-            'bar_color' => '#fa0',
-            'bar_height' => '1vh',
+            'bar_attach' => 'top',
+            'bar_color' => '#f1592a',
+            'bar_height' => '.5vh',
         ), null, true);
     } else { // set it to autoload always
         $option = get_option('ruigehond006');
