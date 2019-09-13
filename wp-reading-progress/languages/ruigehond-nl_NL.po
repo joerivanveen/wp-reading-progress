@@ -1,0 +1,71 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP plugin - Ruigehond006\n"
+"POT-Creation-Date: 2019-09-05 15:47+0200\n"
+"PO-Revision-Date: 2019-09-05 17:36+0200\n"
+"Last-Translator: \n"
+"Language-Team: ruige hond\n"
+"Language: nl_NL\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_x;_n\n"
+"X-Poedit-SearchPath-0: wp-reading-progress.php\n"
+
+#: wp-reading-progress.php:5, Description
+msgid "Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress"
+msgstr ""
+"Lichtgewicht aan te passen leesvoortgangsbalk. Betere gebruikerservaring bij longreads! Aanpassen onder Instellingen -> WP "
+"Reading Progress"
+
+#: wp-reading-progress.php:97
+msgid "Set your options"
+msgstr "Instellingen"
+
+#: wp-reading-progress.php:100
+msgid ""
+"This plugin displays a reading progress bar on your single blog post pages, using the blog article to calculate reading progress."
+msgstr ""
+"Deze plugin toont de lees-voortgang op enkele berichtenpagina's, gebruik makend van het blog artikel om de voortgang te berekenen."
+
+#: wp-reading-progress.php:101
+msgid "Optionally you can place it on other pages as well, where it will always use the whole page to calculate reading progress."
+msgstr ""
+"Optioneel kan je de balk ook op andere pagina's plaatsen, waar hij altijd de hele pagina gebruikt om de voortgang te berekenen."
+
+#: wp-reading-progress.php:102
+msgid "Please use valid input or the bar might not display."
+msgstr "Gebruik geldige waardes of de balk wordt mogelijk niet weergegeven."
+
+#: wp-reading-progress.php:110
+msgid "No options found, please deactivate WP Reading Progress and then activate it again."
+msgstr "Geen opties gevonden, deactiveer WP Reading Progress en activeer het opnieuw."
+
+#: wp-reading-progress.php:119
+#, php-format
+msgid "Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu."
+msgstr "Gebruik %s of %s, of elke GELDIGE selector van een vast element waar de balk aan kan worden toegevoegd."
+
+#: wp-reading-progress.php:151
+#, php-format
+msgid "Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s."
+msgstr "Dikte gebaseerd op schermhoogte is aanbevolen, bijv. %s. Maar pixels kan ook, bijv. %s."
+
+#: wp-reading-progress.php:163
+msgid "On single blog post page"
+msgstr "Op enkele berichtenpagina"
+
+#: wp-reading-progress.php:181
+msgid "Show reading progress on these (custom) post types as well"
+msgstr "Toon de voortgangsbalk ook op deze (custom) Post types"
+
+#: wp-reading-progress.php:207
+msgid "And on their archives"
+msgstr "En op hun archieven"
+
+#: wp-reading-progress.php:237
+msgid "Save Settings"
+msgstr "Instellingen opslaan"
