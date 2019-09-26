@@ -19,7 +19,7 @@ Customization:
 
 - choose your color of the reading progress bar
 
-- possibility to use the whole page, not only the article, on single blog posts
+- possibility to use the whole page, not only the article
 
 - select other (custom) post types you wish the bar to appear
 
@@ -32,6 +32,8 @@ Behaviour:
 - When the sticky menu disappears due to a media query (for instance), the progress bar automatically defaults to displaying at the top of the screen
 
 - Background is transparent white, only there for subtle contrast
+
+- If there is no single article identified (some themes don't output the classes correctly) it uses the whole page to calculate progress
 
 This is my 6th Wordpress plugin but my first one freely available to everybody. I hope you enjoy using it as much as I enjoy building it!
 
@@ -54,6 +56,9 @@ It uses one option array which is removed upon uninstall, leaving no traces
 2. Example of the reading progress bar on my photography blog
 
 == Changelog ==
+
+1.1.0: now identifies single post reading area for all post-types, fallback to body when not found in DOM
+
 1.0.3: fixed translation, corrected license indication
 
 1.0.2: translated to Dutch

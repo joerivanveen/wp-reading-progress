@@ -31,8 +31,7 @@ msgstr ""
 
 #: wp-reading-progress.php:94
 msgid ""
-"Optionally you can place it on other pages as well, where it will always use "
-"the whole page to calculate reading progress."
+"Optionally you can place it on other pages as well. When it does not find a single article, it uses the whole page to calculate reading progress."
 msgstr ""
 
 #: wp-reading-progress.php:95
@@ -71,7 +70,7 @@ msgid ""
 msgstr ""
 
 #: wp-reading-progress.php:156
-msgid "On single blog post page"
+msgid "On single post page"
 msgstr ""
 
 #: wp-reading-progress.php:162
