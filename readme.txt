@@ -57,6 +57,8 @@ It uses one option array which is removed upon uninstall, leaving no traces
 
 == Changelog ==
 
+1.2.0: improved behaviour upon resize of the window
+
 1.1.0: now identifies single post reading area for all post-types, fallback to body when not found in DOM
 
 1.0.3: fixed translation, corrected license indication
