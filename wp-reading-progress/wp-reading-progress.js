@@ -11,7 +11,7 @@ function ruigehond006_start() {
     // custom object is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar
     (function ($) {
         var $p = $(ruigehond006_custom.post_identifier);
-        if ($p.length === 0) { // default to body
+        if ($p.length !== 1) { // default to body
             $p = $('body');
         }
         if ($p.length === 1) {
