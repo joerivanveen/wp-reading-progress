@@ -19,6 +19,8 @@ Customization:
 
 - choose your color of the reading progress bar
 
+- have the bar start at 0% even when part of the article is visible
+
 - possibility to use the whole page, not only the article
 
 - select other (custom) post types you wish the bar to appear
@@ -56,6 +58,8 @@ It uses one option array which is removed upon uninstall, leaving no traces
 2. Example of the reading progress bar on my photography blog
 
 == Changelog ==
+
+1.2.1: added option to start bar at 0%, slightly optimized progress function
 
 1.2.0: improved behaviour upon resize of the window
 

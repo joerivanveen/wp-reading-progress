@@ -3,7 +3,7 @@
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress
-Version: 1.2.0
+Version: 1.2.1
 Author: Ruige hond
 Author URI: https://ruigehond.nl
 License: GPLv3
@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-Define('RUIGEHOND006_VERSION', '1.2.0');
+Define('RUIGEHOND006_VERSION', '1.2.1');
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -34,8 +34,8 @@ function ruigehond006_run()
         add_action('admin_menu', 'ruigehond006_menuitem');
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'ruigehond006_settingslink'); // settings link on plugins page
     } else {
-        wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.js', 'jQuery', RUIGEHOND006_VERSION);
-        wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.css', false, RUIGEHOND006_VERSION);
+        wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.js', 'jQuery', RUIGEHOND006_VERSION);
+        wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.css', false, RUIGEHOND006_VERSION);
     }
 }
 
@@ -58,14 +58,14 @@ function ruigehond006_localize()
                     $post_identifier = 'body';
                 }
             } else {
-                if (isset($option['archives']) && $option['archives']) {
+                if (isset($option['archives'])) {
                     $post_identifier = 'body';
                 }
             }
         }
-        if ($post_identifier) {
+        if ($post_identifier !== false) {
             wp_localize_script('ruigehond006_javascript', 'ruigehond006_custom', array_merge(
-                get_option('ruigehond006'), array(
+                $option, array(
                     'post_identifier' => $post_identifier,
                 )
             ));
@@ -151,6 +151,24 @@ function ruigehond006_settings()
                 'class' => 'ruigehond_row',
                 'option' => $option,
             ] // args
+        );
+        add_settings_field(
+            'ruigehond006_mark_it_zero',
+            __('Make bar start at 0%', 'wp-reading-progress'),
+            function ($args) {
+                echo '<label><input type="checkbox" name="ruigehond006[mark_it_zero]" value="Yes"';
+                if (isset($args['option']['mark_it_zero']) && $args['option']['mark_it_zero']) {
+                    echo ' checked="checked"';
+                }
+                echo '/> ' . __('Yes', 'wp-reading-progress') . '</label>';
+            },
+            'ruigehond006',
+            'progress_bar_settings',
+            [
+                'label_for' => '',
+                'class' => 'ruigehond_row',
+                'option' => $option,
+            ]
         );
         add_settings_field(
             'ruigehond006_include_comments',

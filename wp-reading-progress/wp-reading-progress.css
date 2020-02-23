@@ -9,7 +9,7 @@
     z-index: 10000; /* hmmmmm, really? */
 }
 
-.ruigehond006.progress .bar {
+#ruigehond006_bar {
     width: 0; /* initial value */
     height: 100%;
     background-color: transparent; /* set by user */
