@@ -3,7 +3,7 @@
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress
-Version: 1.2.1
+Version: 1.2.2
 Author: Ruige hond
 Author URI: https://ruigehond.nl
 License: GPLv3
@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-Define('RUIGEHOND006_VERSION', '1.2.1');
+Define('RUIGEHOND006_VERSION', '1.2.2');
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -35,7 +35,7 @@ function ruigehond006_run()
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'ruigehond006_settingslink'); // settings link on plugins page
     } else {
         wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.js', 'jQuery', RUIGEHOND006_VERSION);
-        wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.css', false, RUIGEHOND006_VERSION);
+        wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.css', false, RUIGEHOND006_VERSION);
     }
 }
 
@@ -64,7 +64,7 @@ function ruigehond006_localize()
             }
         }
         if ($post_identifier !== false) {
-            wp_localize_script('ruigehond006_javascript', 'ruigehond006_custom', array_merge(
+            wp_localize_script('ruigehond006_javascript', 'ruigehond006_c', array_merge(
                 $option, array(
                     'post_identifier' => $post_identifier,
                 )
@@ -160,7 +160,7 @@ function ruigehond006_settings()
                 if (isset($args['option']['mark_it_zero']) && $args['option']['mark_it_zero']) {
                     echo ' checked="checked"';
                 }
-                echo '/> ' . __('Yes', 'wp-reading-progress') . '</label>';
+                echo '/> ' . __('Yes please', 'wp-reading-progress') . '</label>';
             },
             'ruigehond006',
             'progress_bar_settings',

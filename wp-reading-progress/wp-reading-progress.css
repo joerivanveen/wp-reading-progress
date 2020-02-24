@@ -1,16 +1,1 @@
-.ruigehond006.progress {
-    position: absolute;
-    display: block;
-    width: 100%;
-    -webkit-transition: height .4s ease-in-out; /* Safari prior 6.1 */
-    transition: height .4s ease-in-out;
-    height: 0; /* set to user value by javascript later */
-    background-color: rgba(255, 255, 255, .2);
-    z-index: 10000; /* hmmmmm, really? */
-}
-
-#ruigehond006_bar {
-    width: 0; /* initial value */
-    height: 100%;
-    background-color: transparent; /* set by user */
-}
+.ruigehond006.progress{position:absolute;display:block;width:100%;-webkit-transition:height .4s ease-in-out;transition:height .4s ease-in-out;height:0;background-color:rgba(255,255,255,.2);z-index:10000}#ruigehond006_bar{width:0;height:100%;background-color:transparent}

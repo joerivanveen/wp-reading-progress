@@ -59,6 +59,8 @@ It uses one option array which is removed upon uninstall, leaving no traces
 
 == Changelog ==
 
+1.2.2: increased compatibility with themes regarding looking for single article
+
 1.2.1: added option to start bar at 0%, slightly optimized progress function
 
 1.2.0: improved behaviour upon resize of the window
