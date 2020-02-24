@@ -5,12 +5,12 @@ if (document.readyState !== 'loading') {
         ruigehond006_start();
     });
 }
-var ruigehond006_h = 0; // this just caches the window height
+var ruigehond006_h = 0; // this caches the window height
 var ruigehond006_f = 0; // the correction of height when mark_it_zero (or 0 otherwise)
 
 function ruigehond006_start() {
     if (typeof ruigehond006_c === 'undefined') return;
-    // custom object is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar
+    // custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar
     (function ($) {
         var $p = $(ruigehond006_c.post_identifier),
             p, p_candidates;
@@ -71,12 +71,14 @@ function ruigehond006_check_and_place_bar(p) {
             }
             $('.ruigehond006.progress').css({
                 'position': 'fixed',
-                'top': top
+                'top': top,
+                'left': '0px',
             });
         } else if (ruigehond006_c.bar_attach === 'bottom') {
             $('.ruigehond006.progress').css({
                 'position': 'fixed',
-                'bottom': '0'
+                'bottom': '0',
+                'left': '0px',
             });
         }
     })(jQuery);
