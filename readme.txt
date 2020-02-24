@@ -3,7 +3,7 @@ Contributors: ruigehond
 Tags: reading, progress, progressbar
 Donate link: https://paypal.me/ruigehond
 Requires at least: 4.5
-Tested up to: 5.2.3
+Tested up to: 5.3
 Requires PHP: 5.4
 Stable tag: trunk
 License: GPLv3
