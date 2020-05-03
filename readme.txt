@@ -3,7 +3,7 @@ Contributors: ruigehond
 Tags: reading, progress, progressbar
 Donate link: https://paypal.me/ruigehond
 Requires at least: 4.5
-Tested up to: 5.3
+Tested up to: 5.4
 Requires PHP: 5.4
 Stable tag: trunk
 License: GPLv3
@@ -58,6 +58,8 @@ It uses one option array which is removed upon uninstall, leaving no traces
 2. Example of the reading progress bar on my photography blog
 
 == Changelog ==
+
+1.2.3: fixed bug initializing window height to 0 on page load in some cases
 
 1.2.2: increased compatibility with themes regarding looking for single article
 

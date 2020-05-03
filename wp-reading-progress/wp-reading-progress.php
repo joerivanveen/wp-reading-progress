@@ -3,7 +3,7 @@
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress
-Version: 1.2.2
+Version: 1.2.3
 Author: Ruige hond
 Author URI: https://ruigehond.nl
 License: GPLv3
@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-Define('RUIGEHOND006_VERSION', '1.2.2');
+Define('RUIGEHOND006_VERSION', '1.2.3');
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -101,6 +101,7 @@ function ruigehond006_settings()
     $option = get_option('ruigehond006');
     if (!$option) {
         echo '<div class="notice notice-error is-dismissible"><p>';
+        // #translators: %s is the name of the plugin (wp-reading-progress)
         echo sprintf(__('No options found, please deactivate %s and then activate it again.', 'wp-reading-progress'), 'Each domain a page');
         echo '</p></div>';
     } else {
@@ -110,6 +111,7 @@ function ruigehond006_settings()
             __('Stick the bar to this element', 'wp-reading-progress'), // title
             function ($args) {
                 echo '<input type="text" name="ruigehond006[bar_attach]" value="' . $args['option']['bar_attach'] . '"/>';
+                // #translators: two links are inserted that set the value accordingly, 'top' and 'bottom'
                 echo '<div class="ruigehond006 explanation"><em>' . sprintf(__('Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress'),
                         '<a>top</a>', '<a>bottom</a>') . '</em></div>';
             }, // callback

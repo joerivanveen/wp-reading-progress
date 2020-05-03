@@ -1,3 +1,5 @@
+var ruigehond006_h = 0; // this caches the window height
+var ruigehond006_f = 0; // the correction of height when mark_it_zero (or 0 otherwise)
 if (document.readyState !== 'loading') {
     ruigehond006_start();
 } else {
@@ -5,9 +7,6 @@ if (document.readyState !== 'loading') {
         ruigehond006_start();
     });
 }
-var ruigehond006_h = 0; // this caches the window height
-var ruigehond006_f = 0; // the correction of height when mark_it_zero (or 0 otherwise)
-
 function ruigehond006_start() {
     if (typeof ruigehond006_c === 'undefined') return;
     // custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar
