@@ -23,7 +23,7 @@ Customization:
 
 - possibility to use the whole page, not only the article
 
-- select other (custom) post types you wish the bar to appear
+- select post types you wish the bar to appear, or even individual posts
 
 - activate reading progress for archive pages (I would leave that unchecked)
 
@@ -35,7 +35,7 @@ Behaviour:
 
 - Background is transparent white, only there for subtle contrast
 
-- If there is no single article identified (some themes don't output the classes correctly) it uses the whole page to calculate progress
+- If there is no single article identified (by class names or id) it uses the whole page to calculate progress
 
 This is my 6th Wordpress plugin but my first one freely available to everybody. I hope you enjoy using it as much as I enjoy building it!
 
@@ -51,11 +51,12 @@ Joeri (ruige hond)
 
 3. Go to settings->WP Reading Progress to customize it
 
-It uses one option array which is removed upon uninstall, leaving no traces
+Upon uninstall WP Reading Progress removes its own options and post_meta data (if any) leaving no traces.
 
 == Screenshots ==
-1. WP Reading Progress settings page
-2. Example of the reading progress bar on my photography blog
+1. Example of the reading progress bar on my photography blog
+2. WP Reading Progress settings page
+3. Activate the bar for an individual post (if the post type is not enabled)
 
 == Changelog ==
 
