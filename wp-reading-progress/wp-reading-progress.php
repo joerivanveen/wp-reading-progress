@@ -50,7 +50,7 @@ function ruigehond006_run()
         add_action('add_meta_boxes', 'ruigehond006_meta_box_add'); // in the box the user can activate the bar for a single post
         add_action('save_post', 'ruigehond006_meta_box_save');
     } else {
-        wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.js', 'jQuery', RUIGEHOND006_VERSION);
+        wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.js', 'jQuery', RUIGEHOND006_VERSION);
         wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.css', false, RUIGEHOND006_VERSION);
     }
 }
@@ -62,40 +62,17 @@ function ruigehond006_localize()
         // check if we're using the progress bar here
         $option = get_option('ruigehond006');
         $post_id = get_the_ID();
-        /*if (isset($option['post_types'])) {
-            if (in_array(get_post_type($post_id), $option['post_types'])) {
-                if (is_singular()) {
-                    if (!isset($option['include_comments'])) {
-                        $post_identifier = '.' . implode(get_post_class($post_id), '.');
-                    } else {
-                        $post_identifier = 'body';
-                    }
-                } elseif (isset($option['archives'])) {
-                        $post_identifier = 'body';
-                }
-            }
-        }
-        if (null === $post_identifier and 'yes' === get_post_meta($post_id, '_ruigehond006_show', true)) {
-            // TODO duplicate code warning
-            if (is_singular()) {
-                if (!isset($option['include_comments'])) {
-                    $post_identifier = '.' . implode(get_post_class($post_id), '.');
-                } else {
-                    $post_identifier = 'body';
-                }
-            }
-        }*/
         if (is_singular()) {
             if ((isset($option['post_types']) and in_array(get_post_type($post_id), $option['post_types']))
                 or 'yes' === get_post_meta($post_id, '_ruigehond006_show', true)) {
                 if (isset($option['include_comments'])) {
                     $post_identifier = 'body';
                 } else {
-                    $post_identifier = '.' . implode(get_post_class($post_id), '.');
+                    $post_identifier = '.' . implode(get_post_class(), '.');
                 }
             }
         } elseif (isset($option['archives'])
-            and isset($option['post_types']) and in_array(get_post_type($post_id), $option['post_types'])) {
+            and isset($option['post_types']) and in_array(get_post_type(), $option['post_types'])) {
             $post_identifier = 'body';
         }
         if (null !== $post_identifier) {

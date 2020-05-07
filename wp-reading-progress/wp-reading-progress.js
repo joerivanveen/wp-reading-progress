@@ -15,6 +15,7 @@ function ruigehond006_start() {
         var $p = $(ruigehond006_c.post_identifier),
             p, p_candidates;
         if ($p.length !== 1) { // when not found, try to get the current post by id
+            console.log('getting by ID!');
             $p = $('#post-' + ruigehond006_c.post_id);
         }
         if ($p.length === 1) {
