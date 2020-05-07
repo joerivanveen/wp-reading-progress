@@ -3,7 +3,7 @@
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress
-Version: 1.2.3
+Version: 1.2.4
 Author: Ruige hond
 Author URI: https://ruigehond.nl
 License: GPLv3
@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-Define('RUIGEHOND006_VERSION', '1.2.3');
+Define('RUIGEHOND006_VERSION', '1.2.4');
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -33,8 +33,10 @@ function ruigehond006_run()
         add_action('admin_init', 'ruigehond006_settings');
         add_action('admin_menu', 'ruigehond006_menuitem');
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'ruigehond006_settingslink'); // settings link on plugins page
+        add_action('add_meta_boxes', 'ruigehond006_meta_box_add'); // in the box the user can activate the bar for a single post
+        add_action('save_post', 'ruigehond006_meta_box_save');
     } else {
-        wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.js', 'jQuery', RUIGEHOND006_VERSION);
+        wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.js', 'jQuery', RUIGEHOND006_VERSION);
         wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.css', false, RUIGEHOND006_VERSION);
     }
 }
@@ -42,39 +44,118 @@ function ruigehond006_run()
 function ruigehond006_localize()
 {
     if (!is_admin()) {
-        $post_identifier = false;
+        // temporarily add 'post' post_type only when updating from before 1.2.4
+        // TODO remove this code when everyone is beyond 1.2.4
+        if (false === get_option('ruigehond006_upgraded_1.2.4')) {
+            $option = get_option('ruigehond006');
+            if (isset($option['post_types'])) {
+                $option['post_types'][] = 'post';
+            } else {
+                $option['post_types'] = array('post');
+            }
+            update_option('ruigehond006', $option);
+            unset($option);
+            add_option('ruigehond006_upgraded_1.2.4', 'yes', '', 'yes');
+        }// end upgrade 1.2.4
+        $post_identifier = null;
         // check if we're using the progress bar here
         $option = get_option('ruigehond006');
-        $post_type = get_post_type();
-        $post_types = array('post');
-        if (isset($option['post_types'])) {
-            $post_types = array_merge($option['post_types'], $post_types);
-        }
-        if (in_array($post_type, $post_types)) {
-            if (is_singular()) {
-                if (!isset($option['include_comments'])) {
-                    $post_identifier = '.' . implode(get_post_class(), '.');
-                } else {
-                    $post_identifier = 'body';
-                }
-            } else {
-                if (isset($option['archives'])) {
-                    $post_identifier = 'body';
+        $post_id = get_the_ID();
+        /*if (isset($option['post_types'])) {
+            if (in_array(get_post_type($post_id), $option['post_types'])) {
+                if (is_singular()) {
+                    if (!isset($option['include_comments'])) {
+                        $post_identifier = '.' . implode(get_post_class($post_id), '.');
+                    } else {
+                        $post_identifier = 'body';
+                    }
+                } elseif (isset($option['archives'])) {
+                        $post_identifier = 'body';
                 }
             }
         }
-        if ($post_identifier !== false) {
+        if (null === $post_identifier and 'yes' === get_post_meta($post_id, '_ruigehond006_show', true)) {
+            // TODO duplicate code warning
+            if (is_singular()) {
+                if (!isset($option['include_comments'])) {
+                    $post_identifier = '.' . implode(get_post_class($post_id), '.');
+                } else {
+                    $post_identifier = 'body';
+                }
+            }
+        }*/
+        if (is_singular()) {
+            if ((isset($option['post_types']) and in_array(get_post_type($post_id), $option['post_types']))
+                or 'yes' === get_post_meta($post_id, '_ruigehond006_show', true)) {
+                if (isset($option['include_comments'])) {
+                    $post_identifier = 'body';
+                } else {
+                    $post_identifier = '.' . implode(get_post_class($post_id), '.');
+                }
+            }
+        } elseif (isset($option['archives'])
+            and isset($option['post_types']) and in_array(get_post_type($post_id), $option['post_types'])) {
+            $post_identifier = 'body';
+        }
+        if (null !== $post_identifier) {
             wp_localize_script('ruigehond006_javascript', 'ruigehond006_c', array_merge(
                 $option, array(
                     'post_identifier' => $post_identifier,
+                    'post_id' => $post_id,
                 )
             ));
         }
     }
 }
 
+// meta box exposes setting to display reading progress for an individual post
+// https://developer.wordpress.org/reference/functions/add_meta_box/
+function ruigehond006_meta_box_add($post_type = null)
+{
+    if (!$post_id = get_the_ID()) {
+        return;
+    }
+    $option = get_option('ruigehond006');
+    if (isset($option['post_types']) and in_array($post_type, $option['post_types'])) {
+        return; // you can't set this if the bar is displayed by default on this post type
+    }
+    add_meta_box( // WP function.
+        'ruigehond006', // Unique ID
+        'WP Reading Progress', // Box title
+        'ruigehond006_meta_box', // Content callback, must be of type callable
+        $post_type, // Post type
+        'normal',
+        'low',
+        array('option' => $option)
+    );
+}
+
+function ruigehond006_meta_box($post, $obj)
+{
+    $option = $obj['args']['option']; // not used at this moment
+    wp_nonce_field('ruigehond006_save', 'ruigehond006_nonce');
+    echo '<input type="checkbox" id="ruigehond006_checkbox" name="ruigehond006_show"';
+    if ('yes' === get_post_meta($post->ID, '_ruigehond006_show', true)) echo ' checked="checked"';
+    echo '/> <label for="ruigehond006_checkbox">';
+    echo __('display reading progress bar', 'wp-reading-progress');
+    echo '</label>';
+}
+
+function ruigehond006_meta_box_save($post_id)
+{
+    if (!isset($_POST['ruigehond006_nonce']) || !wp_verify_nonce($_POST['ruigehond006_nonce'], 'ruigehond006_save'))
+        return;
+    if (!current_user_can('edit_post', $post_id))
+        return;
+    if (isset($_POST['ruigehond006_show'])) {
+        add_post_meta($post_id, '_ruigehond006_show', 'yes', true);
+    } else {
+        delete_post_meta($post_id, '_ruigehond006_show');
+    }
+}
+
 /**
- * manage settings
+ * manage global settings
  */
 function ruigehond006_settings()
 {
@@ -102,7 +183,7 @@ function ruigehond006_settings()
     if (!$option) {
         echo '<div class="notice notice-error is-dismissible"><p>';
         // #translators: %s is the name of the plugin (wp-reading-progress)
-        echo sprintf(__('No options found, please deactivate %s and then activate it again.', 'wp-reading-progress'), 'Each domain a page');
+        echo sprintf(__('No options found, please deactivate %s and then activate it again.', 'wp-reading-progress'), 'WP Reading Progress');
         echo '</p></div>';
     } else {
         add_settings_field(
@@ -192,20 +273,19 @@ function ruigehond006_settings()
         );
         add_settings_field(
             'ruigehond006_post_types',
-            __('Show reading progress on these (custom) post types as well', 'wp-reading-progress'),
+            // #TRANSLATORS: this is followed by a list of the available post_types
+            __('Show reading progress on', 'wp-reading-progress'),
             function ($args) {
                 $post_types = [];
                 if (isset($args['option']['post_types'])) {
                     $post_types = $args['option']['post_types'];
                 }
-                foreach (get_post_types(Array('public' => true)) as $post_type) {
-                    if ($post_type !== 'post') {
-                        echo '<label><input type="checkbox" name="ruigehond006[post_types][]" value="' . $post_type . '"';
-                        if (in_array($post_type, $post_types)) {
-                            echo ' checked="checked"';
-                        }
-                        echo '/> ' . $post_type . '</label><br/>';
+                foreach (get_post_types(array('public' => true)) as $post_type) {
+                    echo '<label><input type="checkbox" name="ruigehond006[post_types][]" value="' . $post_type . '"';
+                    if (in_array($post_type, $post_types)) {
+                        echo ' checked="checked"';
                     }
+                    echo '/> ' . $post_type . '</label><br/>';
                 }
             },
             'ruigehond006',
@@ -252,7 +332,8 @@ function ruigehond006_settingspage()
     echo '</form></div>';
 }
 
-function ruigehond006_settingslink($links) {
+function ruigehond006_settingslink($links)
+{
     $url = get_admin_url() . 'options-general.php?page=wp-reading-progress';
     $settings_link = '<a href="' . $url . '">' . __('Settings', 'wp-reading-progress') . '</a>';
     array_unshift($links, $settings_link);
@@ -281,6 +362,7 @@ function ruigehond006_install()
             'bar_attach' => 'top',
             'bar_color' => '#f1592a',
             'bar_height' => '.5vh',
+            'post_types' => array('post'),
         ), null, true);
     }
 }
@@ -294,4 +376,5 @@ function ruigehond006_uninstall()
 {
     // remove settings
     delete_option('ruigehond006');
+    delete_option('ruigehond006_upgraded_1.2.4');
 }

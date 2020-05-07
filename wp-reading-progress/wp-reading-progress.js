@@ -7,22 +7,30 @@ if (document.readyState !== 'loading') {
         ruigehond006_start();
     });
 }
+
 function ruigehond006_start() {
     if (typeof ruigehond006_c === 'undefined') return;
     // custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar
     (function ($) {
         var $p = $(ruigehond006_c.post_identifier),
             p, p_candidates;
+        if ($p.length !== 1) { // when not found, try to get the current post by id
+            $p = $('#post-' + ruigehond006_c.post_id);
+        }
         if ($p.length === 1) {
             p = $p[0];
-            // check if it has the internal content in a standard class (to exclude widgets and comments etc.)
-            if ((p_candidates = $(p).find('.entry-content')).length === 1) {
+        } else {
+            p = document.body;
+        }
+        if (!ruigehond006_c.include_comments) {// check if it has the internal content in a standard class
+            if ((p_candidates = p.querySelectorAll('.entry-content')).length === 1) {
                 p = p_candidates[0];
-            } else if ((p_candidates = $(p).find('.post-content')).length === 1) {
+            } else if ((p_candidates = p.querySelectorAll('.post-content')).length === 1) {
+                p = p_candidates[0];
+            } else if ((p_candidates = p.querySelectorAll('.main-content')).length === 1) {
                 p = p_candidates[0];
             }
-        } else { // TODO try some other stuff or make it a setting?
-            p = document.body;
+            console.log(p);
         }
         ruigehond006_check_and_place_bar(p);
         $(window).on('load scroll', function () {

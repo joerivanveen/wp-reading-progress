@@ -59,6 +59,8 @@ It uses one option array which is removed upon uninstall, leaving no traces
 
 == Changelog ==
 
+1.2.4: added regular post type to settings, added fallback find post by id when not found by class names, added option to display on specific posts only
+
 1.2.3: fixed bug initializing window height to 0 on page load in some cases
 
 1.2.2: increased compatibility with themes regarding looking for single article
