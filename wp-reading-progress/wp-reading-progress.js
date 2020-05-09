@@ -31,7 +31,6 @@ function ruigehond006_start() {
             } else if ((p_candidates = p.querySelectorAll('.main-content')).length === 1) {
                 p = p_candidates[0];
             }
-            console.log(p);
         }
         ruigehond006_check_and_place_bar(p);
         $(window).on('load scroll', function () {
