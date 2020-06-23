@@ -60,6 +60,10 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
+1.3.0:
+
+1.2.5: improved fallback for mobile, added rtl support (html tag must contain dir="rtl")
+
 1.2.4: added regular post type to settings, added fallback find post by id when not found by class names, added option to display on specific posts only
 
 1.2.3: fixed bug initializing window height to 0 on page load in some cases
@@ -78,12 +82,4 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 1.0.1: minified javascript and css, fixed issue of bar sometimes momentarily disappearing on mobile device while scrolling
 
-1.0.0: official release
-
-0.0.4 ~ 0.0.6: fixed bugs in safari: progress bar would lag or not be visible on older iPads
-
-0.0.3: improved initializing cross browser
-
-0.0.2: smoother initializing, added customizing of location, color and post types / archive
-
-0.0.1: reading progress bar works on single blog post, no customizing is possible
+1.0.0: release

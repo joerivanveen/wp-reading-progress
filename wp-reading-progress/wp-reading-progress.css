@@ -1,1 +1,18 @@
-.ruigehond006.progress{position:absolute;display:block;width:100%;-webkit-transition:height .4s ease-in-out;transition:height .4s ease-in-out;height:0;background-color:rgba(255,255,255,.2);z-index:10000}#ruigehond006_bar{width:0;height:100%;background-color:transparent}
+#ruigehond006_wrap {
+    position: absolute;
+    display: block;
+    width: 100%;
+    -webkit-transition: height .4s;
+    transition: height .4s;
+    height: 0;
+    background-color: rgba(255, 255, 255, .2);
+    z-index: 10000; /* omg really? */
+}
+html[dir=rtl] #ruigehond006_wrap {
+    text-align: right;
+}
+#ruigehond006_bar {
+    width: 0;
+    height: 100%;
+    background-color: transparent;
+}
