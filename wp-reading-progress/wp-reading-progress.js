@@ -1,15 +1,8 @@
 var ruigehond006_h = 0, // this caches the window height
     ruigehond006_f = 0, // the correction of height when mark_it_zero (or 0 otherwise)
-    ruigehond006_a = null, // the element the reading bar is attached to (with fallback to top)
+    ruigehond006_a = null, // the element the reading bar is positioned under (with fallback to top)
     ruigehond006_t = 0, // the top value (set to below the admin bar when necessary)
-    ruigehond006_timer; // holding the timeout for the position function
-if (document.readyState !== 'loading') {
-    ruigehond006_start();
-} else {
-    document.addEventListener("DOMContentLoaded", function () {
-        ruigehond006_start();
-    });
-}
+ruigehond006_i; // interval checking for position, when necessary
 
 function ruigehond006_start() {
     if (typeof ruigehond006_c === 'undefined') return;
@@ -53,22 +46,16 @@ function ruigehond006_progress(p) {
     ruigehond006_position();
 }
 
-function ruigehond006_position() {
-    var wrap_style = document.getElementById('ruigehond006_wrap').style, rect;
-    clearTimeout(ruigehond006_timer);
+function ruigehond006_position(nicely) {
+    if (nicely) {/* TODO run animation that makes it reappear at the new spot */}
     if (ruigehond006_a) { // position below the element
-        rect = ruigehond006_a.getBoundingClientRect();
-        if (rect.bottom < ruigehond006_t) {
-            wrap_style.top = ruigehond006_t; // switch to top if the element is out of reach
-        } else {
-            wrap_style.top = rect.bottom.toString() + 'px';
-            wrap_style.left = rect.left.toString() + 'px';
-            wrap_style.width = rect.width.toString() + 'px';
-        }
+        var bottom = ruigehond006_a.getBoundingClientRect().bottom;
+        document.getElementById('ruigehond006_wrap').style.top
+            = Math.max(bottom, ruigehond006_t).toString() + 'px';
     } else if (ruigehond006_c.bar_attach === 'top') {
-        document.getElementById('ruigehond006_wrap').style.top = ruigehond006_t.toString() + 'px';
+        document.getElementById('ruigehond006_wrap').style.top
+            = ruigehond006_t.toString() + 'px';
     }
-    ruigehond006_timer = setTimeout(ruigehond006_position, 475);
 }
 
 function ruigehond006_check_and_place_bar(p) {
@@ -86,24 +73,27 @@ function ruigehond006_check_and_place_bar(p) {
             $('#ruigehond006_bar').css({'background-color': ruigehond006_c.bar_color});
             setTimeout(function () {
                 $('#ruigehond006_wrap').css({'height': ruigehond006_c.bar_height});
-            }, 500);
+            }, 10);
         }
-        // the checking of the attach-to element is moved to the progress function because scrolling can influence that
-        if (ruigehond006_c.bar_attach === 'bottom') {
-            $('#ruigehond006_wrap').css({
-                'position': 'fixed',
-                'bottom': '0',
-                'left': '0',
-            });
-        } else {
-            $('#ruigehond006_wrap').css({
-                'position': 'fixed',
-                'left': '0',
-            });
-        }
+        $('#ruigehond006_wrap').css({
+            'position': 'fixed',
+            'bottom': '0', // will be set to top when appropriate by position function
+            'left': '0',
+        });
         if ($adminbar.length > 0 && $adminbar.css('position') === 'fixed') {
             ruigehond006_t = $adminbar.outerHeight(); // default is '0'
         }
+        if (ruigehond006_a) { // TODO make it a setting? or just do it?
+            ruigehond006_i = window.setInterval(function() { ruigehond006_position(true) }, 100);
+        }
         ruigehond006_progress(p);
     })(jQuery);
+}
+// only after everything is locked and loaded we’re initialising the progress bar
+if (document.readyState === "complete") {
+    setTimeout(ruigehond006_start, 500);
+} else {
+    window.addEventListener('load', function (event) {
+        setTimeout(ruigehond006_start, 500);
+    });
 }
