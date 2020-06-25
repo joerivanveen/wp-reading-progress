@@ -21,8 +21,6 @@ Customization:
 
 - have the bar start at 0% even when part of the article is visible
 
-- possibility to use the whole page, not only the article
-
 - select post types you wish the bar to appear, or even individual posts
 
 - activate reading progress for archive pages (I would leave that unchecked)
@@ -39,7 +37,12 @@ Behaviour:
 
 This is my 6th Wordpress plugin but my first one freely available to everybody. I hope you enjoy using it as much as I enjoy building it!
 
-Feel free to fork it on Github as well, if you want to play with the code
+IMPORTANT NOTES:
+
+- css classes 'ruigehond006' and 'progress' are scheduled for removal in a next version, if you target the bar in css use '#ruigehond006_wrap'.
+
+- option 'use whole page to calculate reading progress' is scheduled for removal in a next version, unless someone really, really wants to use it (contact me).
+
 
 Regards,
 Joeri (ruige hond)
@@ -60,7 +63,7 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
-1.3.0:
+1.3.0: added position function in javascript to apply to more scenarios
 
 1.2.5: improved fallback for mobile, added rtl support (html tag must contain dir="rtl")
 

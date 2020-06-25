@@ -1,12 +1,13 @@
 #ruigehond006_wrap {
-    position: absolute;
+    position: fixed;
+    left: 0;
     display: block;
     width: 100%;
     -webkit-transition: height .4s;
     transition: height .4s;
     height: 0;
     background-color: rgba(255, 255, 255, .2);
-    z-index: 10000; /* omg really? */
+    /* z-index: 10000; /* omg really? <- seems not needed anymore... */
 }
 html[dir=rtl] #ruigehond006_wrap {
     text-align: right;
@@ -15,4 +16,11 @@ html[dir=rtl] #ruigehond006_wrap {
     width: 0;
     height: 100%;
     background-color: transparent;
+}
+#ruigehond006_wrap.initialize {
+    animation: ruigehond006 .4s normal forwards ease-in-out;
+}
+@keyframes ruigehond006 {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
