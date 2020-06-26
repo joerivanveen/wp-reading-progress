@@ -3,8 +3,9 @@ var ruigehond006_h = 0, /* this caches the window height */
     ruigehond006_a = null, /* the element the reading bar is positioned under (with fallback to top) */
     ruigehond006_t = 0, /* the top value (set to below the admin bar when necessary) */
     ruigehond006_i; /* interval that checks the position */
-// TODO positioning not with whole pixels, not specific enough
-// TODO the positionNicely is sometimes done while regular scrolling very slowly, the bar dissappThe poears then which is bad
+
+// TODO positioning not with whole pixels, not specific enough, use fractions
+// TODO sometimes when switching hard it doesn't do the 'nicely', especially when scrolled down
 function ruigehond006_start() {
     if (typeof ruigehond006_c === 'undefined') return;
     /* custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar */
@@ -39,42 +40,49 @@ function ruigehond006_start() {
 
 function ruigehond006_progress(p) {
     /* loc.height in pixels = total amount that can be read */
-    var top, loc = p.getBoundingClientRect(),
+    var obj, loc = p.getBoundingClientRect(),
         loc_height = loc.height - ruigehond006_f,
         reading_left = Math.max(Math.min(loc.bottom - ruigehond006_h, loc_height), 0), /* in pixels */
         reading_done = 100 * (loc_height - reading_left) / loc_height; /* in percent */
     document.getElementById('ruigehond006_bar').style.width = reading_done + '%';
-    if ((top = ruigehond006_position()) > -1) document.getElementById('ruigehond006_wrap').style.top = top.toString() + 'px';
+    if (null !== (obj = ruigehond006_position())) {
+        obj.wrap.style.top = obj.top.toString() + 'px';
+    }
 }
 
 function ruigehond006_position() {
-    var bottom, top, wrap = document.getElementById('ruigehond006_wrap');
-    if (ruigehond006_c.bar_attach === 'bottom') return -1;
-    clearInterval(ruigehond006_i);
-    if (ruigehond006_a && (bottom = ruigehond006_a.getBoundingClientRect().bottom)) {
-        top = parseInt(Math.max(bottom, ruigehond006_t));
-    } else if (ruigehond006_c.bar_attach === 'top') {
+    var rect, width, left, top, wrap = document.getElementById('ruigehond006_wrap');
+    if (ruigehond006_c.bar_attach === 'bottom') return null;
+    //if (ruigehond006_i) clearInterval(ruigehond006_i);
+    if (ruigehond006_a && (rect = ruigehond006_a.getBoundingClientRect())) {
+        top = parseInt(Math.max(rect.bottom, ruigehond006_t));
+        /* adjust width and left on the fly as these can change for whatever reason */
+        if ((width = rect.width) !== parseInt(wrap.style.width)) wrap.style.width = width.toString() + 'px';
+        if ((left = rect.left) !== parseInt(wrap.style.left)) wrap.style.left = left.toString() + 'px';
+    } else {// if (ruigehond006_c.bar_attach === 'top') {
         top = ruigehond006_t;
     }
-    ruigehond006_i = window.setInterval(ruigehond006_positionNicely, 100);
-    if (top !== parseInt(wrap.style.top)) {return top;}
-    return -1; /* no work necessary */
+    //ruigehond006_i = window.setInterval(ruigehond006_positionNicely, 250);
+    if (top !== parseInt(wrap.style.top)) return {top: top, wrap: wrap};
+    return null; /* no work necessary */
 }
 
 function ruigehond006_positionNicely() {
-    var wrap, top;
-    if ((top = ruigehond006_position()) > -1) {
-        console.warn(top);
-        wrap = document.getElementById('ruigehond006_wrap');
-        wrap.style.opacity = '0';
-        wrap.style.top = top.toString() + 'px';
+    console.log('opa doet t weer');
+    var obj, wrap;
+    if (null !== (obj = ruigehond006_position())) {
+        clearInterval(ruigehond006_i);
+        ruigehond006_i = 0;
+        wrap = obj.wrap;
+        wrap.style.height = '0';
         setTimeout(function () {
-            wrap.classList.add('initialize');
-            setTimeout(function() {
-                wrap.style.opacity = '1';
-                wrap.classList.remove('initialize');
-            }, 400);
-        }, 400);
+            wrap.style.top = (obj = ruigehond006_position() || obj).top.toString() + 'px'; /* refresh object */
+            setTimeout(function () {
+                wrap.style.height = ruigehond006_c.bar_height;
+                console.log(ruigehond006_i);
+                if (!ruigehond006_i) ruigehond006_i = window.setInterval(ruigehond006_positionNicely, 250);
+            }, 450);
+        }, 450);
     }
 }
 
@@ -96,15 +104,13 @@ function ruigehond006_check_and_place_bar(p) {
                     'bottom': '0',
                 });
             }
-            if (ruigehond006_a) { /* TODO make it a setting? or just do it? */
-                ruigehond006_i = window.setInterval(ruigehond006_positionNicely, 100);
-            }
+            if (ruigehond006_a) ruigehond006_i = window.setInterval(ruigehond006_positionNicely, 250);
         }
         if ($adminbar.length > 0 && $adminbar.css('position') === 'fixed') {
             ruigehond006_t = parseInt($adminbar.outerHeight()); /* default is '0' */
         }
         ruigehond006_progress(p);
-        setTimeout(function() {
+        setTimeout(function () {
             $('#ruigehond006_wrap').css({
                 'height': ruigehond006_c.bar_height,
             });
