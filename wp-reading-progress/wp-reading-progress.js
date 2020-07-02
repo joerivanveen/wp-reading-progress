@@ -3,7 +3,7 @@ var ruigehond006_h = 0, /* this caches the window height */
     ruigehond006_a = null, /* the element the reading bar is positioned under (with fallback to top) */
     ruigehond006_t = 0; /* the top value (set to below the admin bar when necessary) */
 
-function ruigehond006_start() {
+function ruigehond006_Start() {
     if (typeof ruigehond006_c === 'undefined') return;
     /* custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar */
     (function ($) {
@@ -28,14 +28,14 @@ function ruigehond006_start() {
         }
         ruigehond006_Initialize(p);
         $(window).on('load scroll', function () {
-            ruigehond006_progress(p); /* @since 1.3.0 also manages position in DOM */
+            ruigehond006_Progress(p); /* @since 1.3.0 also manages position in DOM */
         }).on('resize', function() {
             ruigehond006_Initialize(p);
         });
     })(jQuery);
 }
 
-function ruigehond006_progress(p) {
+function ruigehond006_Progress(p) {
     /* loc.height in pixels = total amount that can be read */
     var obj, loc = p.getBoundingClientRect(),
         loc_height = loc.height - ruigehond006_f,
@@ -61,17 +61,16 @@ function ruigehond006_Initialize(p) {
             document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
             wrap = document.getElementById('ruigehond006_wrap');
             wrap.style.height = ruigehond006_c.bar_height; // TODO initialize smoothly again
-            wrap.setAttribute('data-ruigehond010', 'fixed');
             if (ruigehond006_c.bar_attach === 'bottom') {
                 wrap.style.bottom = '0';
             }
         }
-        ruigehond006_progress(p);
+        ruigehond006_Progress(p);
     })(jQuery);
 }
 
 function ruigehond006_BarInDom() {
-    var rect, top, marge, wrap;
+    var rect, top, new_margin, old_margin, wrap;
     if (ruigehond006_c.bar_attach === 'bottom') return;
     wrap = document.getElementById('ruigehond006_wrap');
     if ((ruigehond006_a = document.querySelector(ruigehond006_c.bar_attach))) {
@@ -80,6 +79,7 @@ function ruigehond006_BarInDom() {
         if (top < ruigehond006_t) { // stick to top
             if (wrap.getAttribute('data-ruigehond010') !== 'fixed') {
                 wrap.style.position = 'fixed';
+                wrap.style.marginTop = '0';
                 wrap.style.top = ruigehond006_t.toString() + 'px';
                 wrap.setAttribute('data-ruigehond010', 'fixed');
                 document.body.insertAdjacentElement('beforeend', wrap);
@@ -87,12 +87,15 @@ function ruigehond006_BarInDom() {
         } else { // attach to the element
             if (wrap.getAttribute('data-ruigehond010') !== 'sticky') {
                 wrap.style.position = 'absolute';
+                wrap.style.top = 'inherit';
                 wrap.setAttribute('data-ruigehond010', 'sticky');
-                ruigehond006_a.insertAdjacentElement('afterend', wrap);
-                // TODO make sure it's always snug against the element
-                console.log(wrap.getBoundingClientRect().top + ' / ' + top);
-                //marge = top - wrap.getBoundingClientRect().top;
-                //wrap.style.marginTop = marge.toString() + 'px';
+                ruigehond006_a.insertAdjacentElement('beforeend', wrap); // always attach as a child to ensure smooth operation
+            }
+            /* make sure it's always snug against the element */
+            new_margin = (old_margin = (parseInt(wrap.style.marginTop) || 0)) + top - wrap.getBoundingClientRect().top;
+            if (new_margin !== old_margin) {
+                wrap.style.marginTop = new_margin.toString() + 'px';
+                console.log('set margin to ' + new_margin.toString());
             }
         }
     } else { // bar_attach must be top
@@ -104,9 +107,9 @@ function ruigehond006_BarInDom() {
 
 /* only after everything is locked and loaded we’re initialising the progress bar */
 if (document.readyState === "complete") {
-    setTimeout(ruigehond006_start, 450);
+    setTimeout(ruigehond006_Start, 450);
 } else {
     window.addEventListener('load', function (event) {
-        setTimeout(ruigehond006_start, 450);
+        setTimeout(ruigehond006_Start, 450);
     });
 }

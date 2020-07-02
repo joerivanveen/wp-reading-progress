@@ -3,6 +3,7 @@
     left: 0;
     display: block;
     width: 100%;
+    margin: 0; /* this is important for positioning */
     -webkit-transition: height .4s;
     transition: height .4s;
     height: 0;
