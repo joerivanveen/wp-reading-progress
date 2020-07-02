@@ -17,10 +17,3 @@ html[dir=rtl] #ruigehond006_wrap {
     height: 100%;
     background-color: transparent;
 }
-#ruigehond006_wrap.initialize {
-    animation: ruigehond006 .4s normal forwards ease-in-out;
-}
-@keyframes ruigehond006 {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-}
