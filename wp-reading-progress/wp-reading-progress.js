@@ -3,14 +3,13 @@ var ruigehond006_h = 0, /* this caches the window height */
     ruigehond006_a = null, /* the element the reading bar is positioned under (with fallback to top) */
     ruigehond006_t = 0; /* the top value (set to below the admin bar when necessary) */
 
-// TODO positioning not with whole pixels, not specific enough, use fractions
 function ruigehond006_start() {
     if (typeof ruigehond006_c === 'undefined') return;
     /* custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar */
     (function ($) {
         var $p = $(ruigehond006_c.post_identifier),
             p, p_candidates;
-        if ($p.length !== 1) { /* when not found, try to get the current post by id */
+        if ($p.length !== 1) { /* when not found conclusively, try to get the current post by id */
             $p = $('#post-' + ruigehond006_c.post_id);
         }
         if ($p.length === 1) {
@@ -62,6 +61,7 @@ function ruigehond006_Initialize(p) {
             document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
             wrap = document.getElementById('ruigehond006_wrap');
             wrap.style.height = ruigehond006_c.bar_height; // TODO initialize smoothly again
+            wrap.setAttribute('data-ruigehond010', 'fixed');
             if (ruigehond006_c.bar_attach === 'bottom') {
                 wrap.style.bottom = '0';
             }
@@ -78,15 +78,22 @@ function ruigehond006_BarInDom() {
         rect = ruigehond006_a.getBoundingClientRect();
         top = rect.bottom;
         if (top < ruigehond006_t) { // stick to top
-            wrap.style.position = 'fixed';
-            wrap.style.top = ruigehond006_t.toString() + 'px';
-            document.body.insertAdjacentElement('beforeend', wrap);
+            if (wrap.getAttribute('data-ruigehond010') !== 'fixed') {
+                wrap.style.position = 'fixed';
+                wrap.style.top = ruigehond006_t.toString() + 'px';
+                wrap.setAttribute('data-ruigehond010', 'fixed');
+                document.body.insertAdjacentElement('beforeend', wrap);
+            }
         } else { // attach to the element
-            wrap.style.position = 'absolute';
-            ruigehond006_a.insertAdjacentElement('afterend', wrap);
-            // TODO make sure it's always snug against the element
-            //marge = top - wrap.getBoundingClientRect().top;
-            //wrap.style.marginTop = marge.toString() + 'px';
+            if (wrap.getAttribute('data-ruigehond010') !== 'sticky') {
+                wrap.style.position = 'absolute';
+                wrap.setAttribute('data-ruigehond010', 'sticky');
+                ruigehond006_a.insertAdjacentElement('afterend', wrap);
+                // TODO make sure it's always snug against the element
+                console.log(wrap.getBoundingClientRect().top + ' / ' + top);
+                //marge = top - wrap.getBoundingClientRect().top;
+                //wrap.style.marginTop = marge.toString() + 'px';
+            }
         }
     } else { // bar_attach must be top
         document.body.insertAdjacentElement('beforeend', wrap);
@@ -97,9 +104,9 @@ function ruigehond006_BarInDom() {
 
 /* only after everything is locked and loaded we’re initialising the progress bar */
 if (document.readyState === "complete") {
-    setTimeout(ruigehond006_start, 350);
+    setTimeout(ruigehond006_start, 450);
 } else {
     window.addEventListener('load', function (event) {
-        setTimeout(ruigehond006_start, 350);
+        setTimeout(ruigehond006_start, 450);
     });
 }
