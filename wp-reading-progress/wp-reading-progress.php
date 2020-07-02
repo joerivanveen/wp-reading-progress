@@ -171,18 +171,17 @@ function ruigehond006_settings()
         // use $args' label_for to populate the id inside the callback
         __('Stick the bar to this element', 'wp-reading-progress'), // title
         function ($args) {
-            echo '<input type="text" name="ruigehond006[bar_attach]" value="' . $args['option']['bar_attach'] . '"/>';
+            echo '<input type="text" name="ruigehond006[bar_attach]" value="';
+            echo $args['option']['bar_attach'];
+            echo '"/><div class="ruigehond006 explanation"><em>';
             // #translators: two links are inserted that set the value accordingly, 'top' and 'bottom'
-            echo '<div class="ruigehond006 explanation"><em>' . sprintf(__('Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress'),
-                    '<a>top</a>', '<a>bottom</a>') . '</em></div>';
+            echo sprintf(__('Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress'),
+                    '<a>top</a>', '<a>bottom</a>');
+            echo '</em></div>';
         }, // callback
         'ruigehond006', // page id
         'progress_bar_settings', // section id
-        [
-            'label_for' => '',
-            'class' => 'ruigehond_row',
-            'option' => $option,
-        ] // args
+        ['option' => $option] // args
     );
     add_settings_field(
         'ruigehond006_bar_color', // As of WP 4.6 this value is used only internally
@@ -193,11 +192,7 @@ function ruigehond006_settings()
         }, // callback
         'ruigehond006', // page id
         'progress_bar_settings', // section id
-        [
-            'label_for' => '',
-            'class' => 'ruigehond_row',
-            'option' => $option,
-        ] // args
+        ['option' => $option] // args
     );
     add_settings_field(
         'ruigehond006_bar_height', // As of WP 4.6 this value is used only internally
@@ -209,11 +204,7 @@ function ruigehond006_settings()
         }, // callback
         'ruigehond006', // page id
         'progress_bar_settings', // section id
-        [
-            'label_for' => '',
-            'class' => 'ruigehond_row',
-            'option' => $option,
-        ] // args
+        ['option' => $option] // args
     );
     add_settings_field(
         'ruigehond006_mark_it_zero',
@@ -227,11 +218,7 @@ function ruigehond006_settings()
         },
         'ruigehond006',
         'progress_bar_settings',
-        [
-            'label_for' => '',
-            'class' => 'ruigehond_row',
-            'option' => $option,
-        ]
+        ['option' => $option] // args
     );
     add_settings_field(
         'ruigehond006_include_comments',
@@ -241,15 +228,13 @@ function ruigehond006_settings()
             if (isset($args['option']['include_comments']) && $args['option']['include_comments']) {
                 echo ' checked="checked"';
             }
-            echo '/> ' . __('use whole page to calculate reading progress', 'wp-reading-progress') . '</label>';
+            echo '/> ' . __('use whole page to calculate reading progress', 'wp-reading-progress');
+            //echo '<br/><em style="background-color:#ffc;">This option may be removed in a future release if nobody uses it, let me know if you want to keep it</em>';
+            echo '</label>';
         },
         'ruigehond006',
         'progress_bar_settings',
-        [
-            'label_for' => '',
-            'class' => 'ruigehond_row',
-            'option' => $option,
-        ]
+        ['option' => $option] // args
     );
     add_settings_field(
         'ruigehond006_post_types',
@@ -270,11 +255,7 @@ function ruigehond006_settings()
         },
         'ruigehond006',
         'progress_bar_settings',
-        [
-            'label_for' => '',
-            'class' => 'ruigehond_row',
-            'option' => $option,
-        ]
+        ['option' => $option] // args
     );
     add_settings_field(
         'ruigehond006_archives',
@@ -288,11 +269,7 @@ function ruigehond006_settings()
         },
         'ruigehond006',
         'progress_bar_settings',
-        [
-            'label_for' => '',
-            'class' => 'ruigehond_row',
-            'option' => $option,
-        ]
+        ['option' => $option] // args
     );
 }
 

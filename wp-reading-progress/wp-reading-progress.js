@@ -29,25 +29,15 @@ function ruigehond006_Start() {
         ruigehond006_Initialize(p);
         $(window).on('load scroll', function () {
             ruigehond006_Progress(p); /* @since 1.3.0 also manages position in DOM */
-        }).on('resize', function() {
+        }).on('resize', function () { // TODO debounce https://www.paulirish.com/2009/throttled-smartresize-jquery-event-handler/
             ruigehond006_Initialize(p);
         });
     })(jQuery);
 }
 
-function ruigehond006_Progress(p) {
-    /* loc.height in pixels = total amount that can be read */
-    var obj, loc = p.getBoundingClientRect(),
-        loc_height = loc.height - ruigehond006_f,
-        reading_left = Math.max(Math.min(loc.bottom - ruigehond006_h, loc_height), 0), /* in pixels */
-        reading_done = 100 * (loc_height - reading_left) / loc_height; /* in percent */
-    document.getElementById('ruigehond006_bar').style.width = reading_done + '%';
-    ruigehond006_BarInDom();
-}
-
 function ruigehond006_Initialize(p) {
     (function ($) {
-        var wrap, $adminbar = $('#wpadminbar');
+        var $adminbar = $('#wpadminbar');
         ruigehond006_h = $(window).height();
         if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
             ruigehond006_f = Math.max(ruigehond006_h - $(p).offset().top, 0); /* math.max for when article is off screen */
@@ -59,57 +49,68 @@ function ruigehond006_Initialize(p) {
             document.body.insertAdjacentHTML('beforeend', /* todo remove the css class names */
                 '<div id="ruigehond006_wrap" class="ruigehond006 progress"><div id="ruigehond006_bar" role="progressbar"></div></div>');
             document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
-            wrap = document.getElementById('ruigehond006_wrap');
-            wrap.style.height = ruigehond006_c.bar_height; // TODO initialize smoothly again
             if (ruigehond006_c.bar_attach === 'bottom') {
-                wrap.style.bottom = '0';
+                document.getElementById('ruigehond006_wrap').style.bottom = '0';
             }
         }
-        ruigehond006_Progress(p);
+        setTimeout(function () {
+            ruigehond006_Progress(p);
+            if (!document.getElementById('ruigehond006_wrap').style.height) {
+                setTimeout(function() {
+                    document.getElementById('ruigehond006_wrap').style.height = ruigehond006_c.bar_height;
+                }, 50);
+            }
+        }, 250); // TODO this is not cool, but you have to wait for repainting to position the bar
     })(jQuery);
 }
 
+function ruigehond006_Progress(p) {
+    var loc = p.getBoundingClientRect(), /* loc.height in pixels = total amount that can be read */
+        loc_height = loc.height - ruigehond006_f,
+        reading_left = Math.max(Math.min(loc.bottom - ruigehond006_h, loc_height), 0), /* in pixels */
+        reading_done = 100 * (loc_height - reading_left) / loc_height; /* in percent */
+    document.getElementById('ruigehond006_bar').style.width = reading_done + '%';
+    ruigehond006_BarInDom();
+}
+
 function ruigehond006_BarInDom() {
-    var rect, top, new_margin, old_margin, wrap;
+    var top, new_margin, old_margin, wrap;
     if (ruigehond006_c.bar_attach === 'bottom') return;
     wrap = document.getElementById('ruigehond006_wrap');
     if ((ruigehond006_a = document.querySelector(ruigehond006_c.bar_attach))) {
-        rect = ruigehond006_a.getBoundingClientRect();
-        top = rect.bottom;
-        if (top < ruigehond006_t) { // stick to top
-            if (wrap.getAttribute('data-ruigehond010') !== 'fixed') {
-                wrap.style.position = 'fixed';
-                wrap.style.marginTop = '0';
-                wrap.style.top = ruigehond006_t.toString() + 'px';
-                wrap.setAttribute('data-ruigehond010', 'fixed');
-                document.body.insertAdjacentElement('beforeend', wrap);
-            }
-        } else { // attach to the element
+        top = ruigehond006_a.getBoundingClientRect().bottom;
+        if (top < ruigehond006_t) { /* stick to top */
+            ruigehond006_BarToTop(wrap);
+        } else { /* attach to the element */
             if (wrap.getAttribute('data-ruigehond010') !== 'sticky') {
+                wrap.setAttribute('data-ruigehond010', 'sticky');
                 wrap.style.position = 'absolute';
                 wrap.style.top = 'inherit';
-                wrap.setAttribute('data-ruigehond010', 'sticky');
-                ruigehond006_a.insertAdjacentElement('beforeend', wrap); // always attach as a child to ensure smooth operation
+                ruigehond006_a.insertAdjacentElement('beforeend', wrap); /* always attach as a child to ensure smooth operation */
             }
-            /* make sure it's always snug against the element */
-            new_margin = (old_margin = (parseInt(wrap.style.marginTop) || 0)) + top - wrap.getBoundingClientRect().top;
-            if (new_margin !== old_margin) {
-                wrap.style.marginTop = new_margin.toString() + 'px';
-                console.log('set margin to ' + new_margin.toString());
-            }
+            /* make sure it’s always snug against the element using top margin */
+            new_margin = (old_margin = (parseFloat(wrap.style.marginTop) || 0)) + top - wrap.getBoundingClientRect().top;
+            if (new_margin !== old_margin) wrap.style.marginTop = new_margin.toString() + 'px';
         }
-    } else { // bar_attach must be top
-        document.body.insertAdjacentElement('beforeend', wrap);
-        wrap.style.position = 'fixed';
-        wrap.style.top = ruigehond006_t.toString() + 'px';
+    } else { /* bar_attach must be top */
+        ruigehond006_BarToTop(wrap);
     }
 }
 
+function ruigehond006_BarToTop(wrap) {
+    if (wrap.getAttribute('data-ruigehond010') === 'fixed') return;
+    wrap.setAttribute('data-ruigehond010', 'fixed');
+    wrap.style.position = 'fixed';
+    wrap.style.top = ruigehond006_t.toString() + 'px';
+    wrap.style.marginTop = '0';
+    document.body.insertAdjacentElement('beforeend', wrap);
+}
+
 /* only after everything is locked and loaded we’re initialising the progress bar */
-if (document.readyState === "complete") {
-    setTimeout(ruigehond006_Start, 450);
+if (document.readyState === 'complete') {
+    setTimeout(ruigehond006_Start, 350);
 } else {
     window.addEventListener('load', function (event) {
-        setTimeout(ruigehond006_Start, 450);
+        setTimeout(ruigehond006_Start, 350);
     });
 }

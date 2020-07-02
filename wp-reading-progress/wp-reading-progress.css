@@ -1,14 +1,14 @@
 #ruigehond006_wrap {
     position: fixed;
-    left: 0;
     display: block;
+    left: 0;
     width: 100%;
     margin: 0; /* this is important for positioning */
-    -webkit-transition: height .4s;
-    transition: height .4s;
     height: 0;
     background-color: rgba(255, 255, 255, .2);
     z-index: 10000; /* omg really? <- needed for Edge... */
+    -webkit-transition: height .4s;
+    transition: height .4s;
 }
 html[dir=rtl] #ruigehond006_wrap {
     text-align: right;

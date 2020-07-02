@@ -63,7 +63,7 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
-1.3.0: added position function in javascript to apply to more scenarios
+1.3.0: now positions itself snugly to element using top-margin or fixed automatically to top when element is not in viewport or gone
 
 1.2.5: improved fallback for mobile, added rtl support (html tag must contain dir="rtl")
 
