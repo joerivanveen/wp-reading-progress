@@ -47,17 +47,18 @@ function ruigehond006_Initialize(p) {
         }
         if (!document.getElementById('ruigehond006_bar')) {
             document.body.insertAdjacentHTML('beforeend', /* todo remove the css class names */
-                '<div id="ruigehond006_wrap" class="ruigehond006 progress"><div id="ruigehond006_bar" role="progressbar"></div></div>');
+                '<div id="ruigehond006_wrap"><div id="ruigehond006_inner" class="ruigehond006 progress"><div id="ruigehond006_bar" role="progressbar"></div></div></div>');
             document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
             if (ruigehond006_c.bar_attach === 'bottom') {
                 document.getElementById('ruigehond006_wrap').style.bottom = '0';
+                document.getElementById('ruigehond006_inner').style.bottom = '0';
             }
         }
         setTimeout(function () {
             ruigehond006_Progress(p);
-            if (!document.getElementById('ruigehond006_wrap').style.height) {
+            if (!document.getElementById('ruigehond006_inner').style.height) {
                 setTimeout(function() {
-                    document.getElementById('ruigehond006_wrap').style.height = ruigehond006_c.bar_height;
+                    document.getElementById('ruigehond006_inner').style.height = ruigehond006_c.bar_height;
                 }, 50);
             }
         }, 250); // TODO this is not cool, but you have to wait for repainting to position the bar
@@ -69,28 +70,33 @@ function ruigehond006_Progress(p) {
         loc_height = loc.height - ruigehond006_f,
         reading_left = Math.max(Math.min(loc.bottom - ruigehond006_h, loc_height), 0), /* in pixels */
         reading_done = 100 * (loc_height - reading_left) / loc_height; /* in percent */
-    document.getElementById('ruigehond006_bar').style.width = reading_done + '%';
-    ruigehond006_BarInDom();
+    requestAnimationFrame(function() {
+        document.getElementById('ruigehond006_bar').style.width = reading_done + '%';
+        ruigehond006_BarInDom();
+    });
 }
 
 function ruigehond006_BarInDom() {
-    var top, new_margin, old_margin, wrap;
+    var top, new_margin, old_margin, wrap, inner;
     if (ruigehond006_c.bar_attach === 'bottom') return;
     wrap = document.getElementById('ruigehond006_wrap');
     if ((ruigehond006_a = document.querySelector(ruigehond006_c.bar_attach))) {
         top = ruigehond006_a.getBoundingClientRect().bottom;
-        if (top < ruigehond006_t) { /* stick to top */
+        if (top <= ruigehond006_t) { /* stick to top */
             ruigehond006_BarToTop(wrap);
         } else { /* attach to the element */
             if (wrap.getAttribute('data-ruigehond010') !== 'sticky') {
                 wrap.setAttribute('data-ruigehond010', 'sticky');
-                wrap.style.position = 'absolute';
-                wrap.style.top = 'inherit';
+                // TODO make it a setting: absolute or relative
+                //wrap.style.position = 'absolute';
+                //wrap.style.top = 'inherit';
+                wrap.style.position = 'relative';
                 ruigehond006_a.insertAdjacentElement('beforeend', wrap); /* always attach as a child to ensure smooth operation */
             }
             /* make sure it’s always snug against the element using top margin */
-            new_margin = (old_margin = (parseFloat(wrap.style.marginTop) || 0)) + top - wrap.getBoundingClientRect().top;
-            if (new_margin !== old_margin) wrap.style.marginTop = new_margin.toString() + 'px';
+            inner = document.getElementById('ruigehond006_inner');
+            new_margin = (old_margin = (parseFloat(inner.style.marginTop) || 0)) + top - inner.getBoundingClientRect().top;
+            if (new_margin !== old_margin) inner.style.marginTop = new_margin.toString() + 'px';
         }
     } else { /* bar_attach must be top */
         ruigehond006_BarToTop(wrap);
@@ -102,7 +108,7 @@ function ruigehond006_BarToTop(wrap) {
     wrap.setAttribute('data-ruigehond010', 'fixed');
     wrap.style.position = 'fixed';
     wrap.style.top = ruigehond006_t.toString() + 'px';
-    wrap.style.marginTop = '0';
+    document.getElementById('ruigehond006_inner').style.marginTop = '0';
     document.body.insertAdjacentElement('beforeend', wrap);
 }
 
