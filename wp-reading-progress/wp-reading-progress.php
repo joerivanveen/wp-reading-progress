@@ -176,11 +176,27 @@ function ruigehond006_settings()
             echo '"/><div class="ruigehond006 explanation"><em>';
             // #translators: two links are inserted that set the value accordingly, 'top' and 'bottom'
             echo sprintf(__('Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress'),
-                    '<a>top</a>', '<a>bottom</a>');
+                '<a>top</a>', '<a>bottom</a>');
             echo '</em></div>';
         }, // callback
         'ruigehond006', // page id
         'progress_bar_settings', // section id
+        ['option' => $option] // args
+    );
+    add_settings_field(
+        'ruigehond006_stick_relative',
+        __('How to stick', 'wp-reading-progress'),
+        function ($args) {
+            echo '<label><input type="checkbox" name="ruigehond006[stick_relative]"';
+            if (isset($args['option']['stick_relative']) && $args['option']['stick_relative']) {
+                echo ' checked="checked"';
+            }
+            echo '/> ' . __('If the bar is too wide, try relative positioning by checking the box, or attach it to another element.', 'wp-reading-progress');
+            //echo '<br/><em style="background-color:#ffc;">This option may be removed in a future release if nobody uses it, let me know if you want to keep it</em>';
+            echo '</label>';
+        },
+        'ruigehond006',
+        'progress_bar_settings',
         ['option' => $option] // args
     );
     add_settings_field(
@@ -252,6 +268,9 @@ function ruigehond006_settings()
                 }
                 echo '/> ' . $post_type . '</label><br/>';
             }
+            echo '<div class="ruigehond006 explanation"><em>';
+            echo __('For unchecked post types you can enable the reading progress bar per post on the post edit page.', 'wp-reading-progress');
+            echo '</em></div>';
         },
         'ruigehond006',
         'progress_bar_settings',

@@ -87,10 +87,12 @@ function ruigehond006_BarInDom() {
         } else { /* attach to the element */
             if (wrap.getAttribute('data-ruigehond010') !== 'sticky') {
                 wrap.setAttribute('data-ruigehond010', 'sticky');
-                // TODO make it a setting: absolute or relative
-                //wrap.style.position = 'absolute';
-                //wrap.style.top = 'inherit';
-                wrap.style.position = 'relative';
+                if (typeof ruigehond006_c.stick_relative !== 'undefined') {
+                    wrap.style.position = 'relative';
+                } else {
+                    wrap.style.position = 'absolute';
+                    wrap.style.top = 'inherit';
+                }
                 ruigehond006_a.insertAdjacentElement('beforeend', wrap); /* always attach as a child to ensure smooth operation */
             }
             /* make sure it’s always snug against the element using top margin */
