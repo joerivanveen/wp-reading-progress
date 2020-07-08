@@ -15,15 +15,15 @@ The reading progress bar is a great user experience on longreads. Especially if 
 
 Customization:
 
-- location top of screen, bottom of screen or below a sticky menu
+- Location top of screen, bottom of screen or below a sticky menu
 
-- choose your color of the reading progress bar
+- Choose your color of the reading progress bar
 
-- have the bar start at 0% even when part of the article is visible
+- Have the bar start at 0% even when part of the article is visible
 
-- select post types you wish the bar to appear, or even individual posts
+- Select post types you wish the bar to appear, or even individual posts
 
-- activate reading progress for archive pages (I would leave that unchecked)
+- Activate reading progress for archive pages (I would leave that unchecked)
 
 Behaviour:
 
@@ -37,11 +37,11 @@ Behaviour:
 
 This is my 6th Wordpress plugin but my first one freely available to everybody. I hope you enjoy using it as much as I enjoy building it!
 
-IMPORTANT NOTES:
+=== IMPORTANT NOTES: ===
 
-- css classes 'ruigehond006' and 'progress' are scheduled for removal in a next version, if you target the bar in css use '#ruigehond006_wrap'.
+- css classes 'ruigehond006' and 'progress' are scheduled for removal in a next version, if you target the bar in css use '#ruigehond006_inner'.
 
-- option 'use whole page to calculate reading progress' is scheduled for removal in a next version, unless someone really, really wants to use it (contact me).
+- Option 'use whole page to calculate reading progress' is scheduled for removal in a next version, unless someone really, really wants to use it (contact me).
 
 
 Regards,
