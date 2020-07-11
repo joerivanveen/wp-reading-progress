@@ -17,23 +17,21 @@ Customization:
 
 - Location top of screen, bottom of screen or below a sticky menu
 
-- Choose your color of the reading progress bar
+- Choose color of the reading progress bar
 
 - Have the bar start at 0% even when part of the article is visible
 
-- Select post types you wish the bar to appear, or even individual posts
-
-- Activate reading progress for archive pages (I would leave that unchecked)
+- Select post types you wish the bar to appear, or individual posts
 
 Behaviour:
 
 - The reading progress bar has smooth initializing since part of the text may already be visible, after that a lightweight update-function ensures quick response while scrolling
 
-- When the sticky menu disappears due to a media query (for instance), the progress bar automatically defaults to displaying at the top of the screen
-
-- Background is transparent white, only there for subtle contrast
+- When the sticky menu disappears during resizing or scrolling the progress bar automatically defaults to displaying at the top of the screen
 
 - If there is no single article identified (by class names or id) it uses the whole page to calculate progress
+
+- Attachment to a sticky element can be either absolute (default) or relative (use the checkbox in settings)
 
 This is my 6th Wordpress plugin but my first one freely available to everybody. I hope you enjoy using it as much as I enjoy building it!
 
@@ -59,7 +57,7 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 == Screenshots ==
 1. Example of the reading progress bar on my photography blog
 2. WP Reading Progress settings page
-3. Activate the bar for an individual post (if the post type is not enabled)
+3. Activate the bar for an individual post (if that post type is not enabled)
 
 == Changelog ==
 
