@@ -3,7 +3,7 @@ Contributors: ruigehond
 Tags: reading, progress, progressbar
 Donate link: https://paypal.me/ruigehond
 Requires at least: 4.5
-Tested up to: 5.4
+Tested up to: 5.5
 Requires PHP: 5.4
 Stable tag: trunk
 License: GPLv3
@@ -86,3 +86,9 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 1.0.1: minified javascript and css, fixed issue of bar sometimes momentarily disappearing on mobile device while scrolling
 
 1.0.0: release
+
+== Upgrade Notice ==
+
+= 1.3.2 =
+
+The way the bar sticks to another element is greatly improved, if you use it with a sticky element please check whether it still behaves as you expect, or stick it to a better element from now on.

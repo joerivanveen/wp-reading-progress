@@ -1,8 +1,8 @@
 var ruigehond006_h = 0, /* this caches the window height */
     ruigehond006_f = 0, /* the correction of height when mark_it_zero (or 0 otherwise) */
     ruigehond006_a = null, /* the element the reading bar is positioned under (with fallback to top) */
-    ruigehond006_t = 0; /* the top value (set to below the admin bar when necessary) */
-var ruigehond006_s = null; /* keeps track of whether the bar is sticky (true) or not (false) */
+    ruigehond006_t = 0, /* the top value (set to below the admin bar when necessary) */
+    ruigehond006_s = null; /* keeps track of whether the bar is sticky (true) or not (false) */
 
 function ruigehond006_Start() {
     if (typeof ruigehond006_c === 'undefined') return;
@@ -43,9 +43,7 @@ function ruigehond006_Initialize(p) {
         if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
             ruigehond006_f = Math.max(ruigehond006_h - $(p).offset().top, 0); // math.max for when article is off screen
         }
-        if ($adminbar.length > 0 && $adminbar.css('position') === 'fixed') {
-            ruigehond006_t = parseInt($adminbar.outerHeight()); // default is '0'
-        }
+        ruigehond006_t = ($adminbar.length > 0 && $adminbar.css('position') === 'fixed')?parseInt($adminbar.outerHeight()):0;
         if (!document.getElementById('ruigehond006_bar')) {
             document.body.insertAdjacentHTML('beforeend', // todo remove the css class names
                 '<div id="ruigehond006_wrap"><div id="ruigehond006_inner" class="ruigehond006 progress"><div id="ruigehond006_bar" role="progressbar"></div></div></div>');
@@ -73,18 +71,20 @@ function ruigehond006_Progress(p) {
         reading_done = 100 * (loc_height - reading_left) / loc_height; // in percent
     requestAnimationFrame(function () {
         document.getElementById('ruigehond006_bar').style.width = reading_done + '%';
+        if (ruigehond006_c.bar_attach !== 'bottom') ruigehond006_BarInDom();
     });
-    ruigehond006_BarInDom();
 }
 
 function ruigehond006_BarInDom() {
-    // TODO on older ipads the getBoundingClientRect() gets migrated all the way outside the viewport while scrolling with touch
-    // TODO even though the element is clearly in view, maybe not do BarInDom while touching the screen?
-    var top, new_margin, old_margin, wrap, inner;
-    if (ruigehond006_c.bar_attach === 'bottom') return;
-    wrap = document.getElementById('ruigehond006_wrap');
+    // TODO on older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
+    // TODO viewport while scrolling with touch, so don’t use it
+    var top, new_margin, old_margin,
+        wrap = document.getElementById('ruigehond006_wrap'),
+        inner = document.getElementById('ruigehond006_inner');
+    //if (ruigehond006_c.bar_attach === 'bottom') return; // this function should not be called in that case at all to avoid overhead
     if ((ruigehond006_a = document.querySelector(ruigehond006_c.bar_attach))) {
-        top = ruigehond006_a.getBoundingClientRect().bottom;
+        //top = ruigehond006_a.getBoundingClientRect().bottom;
+        top = ruigehond006_a.offsetHeight + ruigehond006_boundingClientTop(ruigehond006_a);
         if (top <= ruigehond006_t) { // stick to top
             ruigehond006_BarToTop(wrap);
         } else { // attach to the element
@@ -101,19 +101,35 @@ function ruigehond006_BarInDom() {
                     console.log('attach bar to the element');
                 }
                 // make sure it’s always snug against the element using top margin
-                inner = document.getElementById('ruigehond006_inner');
-                new_margin = (old_margin = (parseFloat(inner.style.marginTop) || 0)) + top - inner.getBoundingClientRect().top;
-                if (new_margin !== old_margin) inner.style.marginTop = new_margin.toString() + 'px';
+                top = ruigehond006_a.offsetHeight + ruigehond006_boundingClientTop(ruigehond006_a);
+                new_margin = (old_margin = (parseFloat(inner.style.marginTop) || 0)) + top - ruigehond006_boundingClientTop(inner);
+                if (new_margin !== old_margin) {
+                    inner.style.marginTop = new_margin.toString() + 'px';
+                    //console.warn('set margin from ' + old_margin + ' to ' + new_margin);
+                }
+                //console.warn(top + ' vs ' + ruigehond006_boundingClientTop(inner) + ' vs ' + inner.getBoundingClientRect().top);
             });
         }
     } else { // bar_attach must be top
         ruigehond006_BarToTop(wrap);
     }
 }
+function ruigehond006_boundingClientTop(el) {
+    var elementTop = 0, scrollTop = window.scrollY;
+    // don't use offsetParent, many browsers return 'null' if the position is 'fixed' (and also if you're at the top...), rendering the functionality useless
+    while (el.parentNode) {
+        elementTop += el.offsetTop;
+        if (scrollTop > 0 && window.getComputedStyle(el).getPropertyValue('position').toLowerCase() === 'fixed') {
+            scrollTop = 0;
+        }
+        el = el.parentNode;
+    }
+    return elementTop - scrollTop;
+}
 
 function ruigehond006_BarToTop(wrap) {
     if (false === ruigehond006_s) return;
-    ruigehond006_s = false;
+    ruigehond006_s = false; // no longer sticky
     requestAnimationFrame(function () {
         wrap.style.position = 'fixed';
         wrap.style.top = ruigehond006_t.toString() + 'px';
