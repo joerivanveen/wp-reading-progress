@@ -27,6 +27,7 @@ function ruigehond006_Start() {
                 p = p_candidates[0];
             }
         }
+        if (ruigehond006_c.ert > 0) p.ruigehond006_ert = ruigehond006_c.ert;
         ruigehond006_Initialize(p);
         $(window).on('load scroll', function () {
             ruigehond006_Progress(p); // @since 1.3.0 also manages position in DOM
@@ -46,7 +47,7 @@ function ruigehond006_Initialize(p) {
         ruigehond006_t = ($adminbar.length > 0 && $adminbar.css('position') === 'fixed') ? parseInt($adminbar.outerHeight()) : 0;
         if (!document.getElementById('ruigehond006_bar')) {
             document.body.insertAdjacentHTML('beforeend', // todo remove the css class names
-                '<div id="ruigehond006_wrap"><div id="ruigehond006_inner" class="ruigehond006 progress"><div id="ruigehond006_bar" role="progressbar"></div></div></div>');
+                '<div id="ruigehond006_wrap"><div id="ruigehond006_inner"><div id="ruigehond006_bar" role="progressbar"></div>'+ruigehond006_c.ert+'</div></div>');
             document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
             if (ruigehond006_c.bar_attach === 'bottom') {
                 document.getElementById('ruigehond006_wrap').style.bottom = '0';
@@ -97,7 +98,7 @@ function ruigehond006_BarInDom() {
                         wrap.style.top = 'inherit';
                     }
                     ruigehond006_a.insertAdjacentElement('beforeend', wrap); // always attach as a child to ensure smooth operation
-                    console.log('attach bar to the element');
+                    //console.log('attach bar to the element');
                 }
                 // make sure it’s always snug against the element using top margin
                 // inside requestAnimationFrame properties of the element might be different than before

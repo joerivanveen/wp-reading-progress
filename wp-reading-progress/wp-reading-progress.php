@@ -50,8 +50,8 @@ function ruigehond006_run()
         add_action('add_meta_boxes', 'ruigehond006_meta_box_add'); // in the box the user can activate the bar for a single post
         add_action('save_post', 'ruigehond006_meta_box_save');
     } else {
-        wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.js', 'jQuery', RUIGEHOND006_VERSION);
-        wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.css', false, RUIGEHOND006_VERSION);
+        wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.js', 'jQuery', RUIGEHOND006_VERSION);
+        wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.css', false, RUIGEHOND006_VERSION);
     }
 }
 
@@ -76,10 +76,20 @@ function ruigehond006_localize()
             $post_identifier = 'body';
         }
         if (null !== $post_identifier) {
+            /* @since 1.4.0 estimated reading time */
+            $ert_speed = (isset($option['ert_speed'])?$option['ert_speed']:0);
+            if (false === is_numeric($ert_speed)) $ert_speed = 0;
+            if ($ert_speed > 0) {
+                $content = get_post_field('post_content', $post_id);
+                $reading_time = str_word_count(strip_tags($content)) / $ert_speed;
+            } else {
+                $reading_time = 0;
+            }
             wp_localize_script('ruigehond006_javascript', 'ruigehond006_c', array_merge(
                 $option, array(
                     'post_identifier' => $post_identifier,
                     'post_id' => $post_id,
+                    'ert' => $reading_time,
                 )
             ));
         }
@@ -217,6 +227,19 @@ function ruigehond006_settings()
         function ($args) {
             echo '<input type="text" name="ruigehond006[bar_height]" value="' . $args['option']['bar_height'] . '"/>';
             echo '<div class="ruigehond006 explanation"><em>' . sprintf(__('Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress'), '<a>.5vh</a>', '<a>6px</a>') . '</em></div>';
+        }, // callback
+        'ruigehond006', // page id
+        'progress_bar_settings', // section id
+        ['option' => $option] // args
+    );
+    add_settings_field(
+        'ruigehond006_ert_speed', // As of WP 4.6 this value is used only internally
+        // use $args' label_for to populate the id inside the callback
+        __('Reading speed', 'wp-reading-progress'), // title
+        function ($args) {
+            $value = isset($args['option']['ert_speed'])?$args['option']['ert_speed']:'';
+            echo '<input type="text" name="ruigehond006[ert_speed]" value="' . $value . '"/>';
+            echo '<div class="ruigehond006 explanation"><em>' . __('Average reading speed in words per minute, integers only. Used to estimate reading time. Leave empty for no ERT. Usual is something between 200 and 300.', 'wp-reading-progress') . '</em></div>';
         }, // callback
         'ruigehond006', // page id
         'progress_bar_settings', // section id
