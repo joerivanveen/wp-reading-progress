@@ -47,8 +47,8 @@ function ruigehond006_Initialize(p) {
         ruigehond006_t = ($adminbar.length > 0 && $adminbar.css('position') === 'fixed') ? parseInt($adminbar.outerHeight()) : 0;
         if (!document.getElementById('ruigehond006_bar')) {
             document.body.insertAdjacentHTML('beforeend', // todo remove the css class names
-                '<div id="ruigehond006_wrap"><div id="ruigehond006_inner"><div id="ruigehond006_bar" role="progressbar"></div>'+ruigehond006_c.ert+'</div></div>');
-            document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
+                '<div id="ruigehond006_wrap"><div id="ruigehond006_inner"><div id="ruigehond006_bar" role="progressbar"></div></div></div>');
+            //document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
             if (ruigehond006_c.bar_attach === 'bottom') {
                 document.getElementById('ruigehond006_wrap').style.bottom = '0';
                 document.getElementById('ruigehond006_inner').style.bottom = '0';
