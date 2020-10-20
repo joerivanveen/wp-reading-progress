@@ -61,6 +61,8 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
+1.3.2: bugfix getBoundingClientRect does not work on iOS 8 and 9 (at least), now using custom function for it
+
 1.3.1: some optimizations regarding the on scroll function
 
 1.3.0: now positions itself snugly to element using top-margin or fixed automatically to top when element is not in viewport or gone
