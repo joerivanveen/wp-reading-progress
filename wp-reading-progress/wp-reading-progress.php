@@ -2,7 +2,7 @@
 /*
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
-Description: Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress
+Description: Light weight customizable reading progress bar with optional estimated reading time indication. Great UX on longreads!
 Version: 1.4.0
 Author: Ruige hond
 Author URI: https://ruigehond.nl

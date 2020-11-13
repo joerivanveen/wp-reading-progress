@@ -61,7 +61,9 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
-1.3.3: fix implode glue position notice
+1.3.4: removed jQuery dependency
+
+1.3.3: fixed implode deprecated notice
 
 1.3.2: fix getBoundingClientRect does not work on iOS 8 and 9 (at least), now using custom function for it
 
@@ -73,7 +75,7 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 1.2.4: added regular post type to settings, added fallback find post by id when not found by class names, added option to display on specific posts only
 
-1.2.3: fix initializing window height to 0 on page load in some cases
+1.2.3: fixed bug initializing window height to 0 on page load in some cases
 
 1.2.2: increased compatibility with themes regarding looking for single article
 
