@@ -3,7 +3,7 @@
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress
-Version: 1.3.2
+Version: 1.4.0
 Author: Ruige hond
 Author URI: https://ruigehond.nl
 License: GPLv3
@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-Define('RUIGEHOND006_VERSION', '1.3.2');
+Define('RUIGEHOND006_VERSION', '1.4.0');
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -54,15 +54,22 @@ function ruigehond006_run()
         //wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.css', false, RUIGEHOND006_VERSION);
     }
 }
+
 function ruigehond006_stylesheet()
 {
-    echo '<style type="text/css">#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;'.
-        'width:100%;margin:0;overflow:visible;}'.
-        '#ruigehond006_inner{position:absolute;height:0;width:inherit;background-color:rgba(255,255,255,.2);'.
-        '-webkit-transition:height .4s;transition:height .4s;}'.
-        'html[dir=rtl] #ruigehond006_wrap{text-align:right;}'.
-        '#ruigehond006_bar{width:0;height:100%;background-color:'.RUIGEHOND006_COLOR.';}</style>';
+    echo '<style type="text/css">#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;';
+    echo 'width:100%;margin:0;overflow:visible;}';
+    echo '#ruigehond006_inner{position:absolute;height:0;width:inherit;background-color:rgba(255,255,255,.2);';
+    echo '-webkit-transition:height .4s;transition:height .4s;}';
+    echo 'html[dir=rtl] #ruigehond006_wrap{text-align:right;}';
+    echo '#ruigehond006_bar{width:0;height:100%;background-color:';
+    echo RUIGEHOND006_COLOR;
+    echo ';}';
+    echo '[class*="dark-mode"] #ruigehond006_bar,[class*="night-mode"] #ruigehond006_bar{background-color:';
+    echo RUIGEHOND006_COLOR_DARK;
+    echo ';}#ruigehond006_ert{position:fixed;bottom:40px;left:40px;z-index:100001;background:white;width:60px;height:20px;}</style>';
 }
+
 function ruigehond006_localize()
 {
     if (!is_admin()) {
@@ -76,7 +83,7 @@ function ruigehond006_localize()
                 if (isset($option['include_comments'])) {
                     $post_identifier = 'body';
                 } else {
-                    $post_identifier = '.' . implode(get_post_class('', $post_id), '.');
+                    $post_identifier = '.' . implode('.', get_post_class('', $post_id));
                 }
             }
         } elseif (isset($option['archives'])
@@ -85,7 +92,7 @@ function ruigehond006_localize()
         }
         if (null !== $post_identifier) {
             /* @since 1.4.0 estimated reading time */
-            $ert_speed = (isset($option['ert_speed'])?$option['ert_speed']:0);
+            $ert_speed = (isset($option['ert_speed']) ? $option['ert_speed'] : 0);
             if (false === is_numeric($ert_speed)) $ert_speed = 0;
             if ($ert_speed > 0) {
                 $content = get_post_field('post_content', $post_id);
@@ -102,6 +109,7 @@ function ruigehond006_localize()
             ));
         }
         Define('RUIGEHOND006_COLOR', $option['bar_color']);
+        Define('RUIGEHOND006_COLOR_DARK', $option['bar_color_dark_mode']);
         add_action('wp_head', 'ruigehond006_stylesheet');
     }
 }
@@ -186,104 +194,61 @@ function ruigehond006_settings()
         ruigehond006_add_defaults();
         $option = get_option('ruigehond006');
     }
-    add_settings_field(
-        'ruigehond006_bar_attach', // As of WP 4.6 this value is used only internally
-        // use $args' label_for to populate the id inside the callback
+    ruigehond006_add_settings_field(
+        'bar_attach',
+        'text',
         __('Stick the bar to this element', 'wp-reading-progress'), // title
-        function ($args) {
-            echo '<input type="text" name="ruigehond006[bar_attach]" value="';
-            echo $args['option']['bar_attach'];
-            echo '"/><div class="ruigehond006 explanation"><em>';
-            // #translators: two links are inserted that set the value accordingly, 'top' and 'bottom'
-            echo sprintf(__('Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress'),
-                '<a>top</a>', '<a>bottom</a>');
-            echo '</em></div>';
-        }, // callback
-        'ruigehond006', // page id
-        'progress_bar_settings', // section id
-        ['option' => $option] // args
+        $option,
+        sprintf(__('Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress'),
+            '<a>top</a>', '<a>bottom</a>')
     );
-    add_settings_field(
-        'ruigehond006_stick_relative',
+    ruigehond006_add_settings_field(
+        'stick_relative',
+        'checkbox',
         __('How to stick', 'wp-reading-progress'),
-        function ($args) {
-            echo '<label><input type="checkbox" name="ruigehond006[stick_relative]"';
-            if (isset($args['option']['stick_relative']) && $args['option']['stick_relative']) {
-                echo ' checked="checked"';
-            }
-            echo '/> ' . __('If the bar is too wide, try relative positioning by checking this box, or attach it to another element.', 'wp-reading-progress');
-            //echo '<br/><em style="background-color:#ffc;">This option may be removed in a future release if nobody uses it, let me know if you want to keep it</em>';
-            echo '</label>';
-        },
-        'ruigehond006',
-        'progress_bar_settings',
-        ['option' => $option] // args
+        $option,
+        __('If the bar is too wide, try relative positioning by checking this box, or attach it to another element.', 'wp-reading-progress')
     );
-    add_settings_field(
-        'ruigehond006_bar_color', // As of WP 4.6 this value is used only internally
-        // use $args' label_for to populate the id inside the callback
+    ruigehond006_add_settings_field(
+        'bar_color',
+        'color',
         __('Color of the progress bar', 'wp-reading-progress'), // title
-        function ($args) {
-            echo '<input type="text" name="ruigehond006[bar_color]" value="' . $args['option']['bar_color'] . '"/>';
-        }, // callback
-        'ruigehond006', // page id
-        'progress_bar_settings', // section id
-        ['option' => $option] // args
+        $option
     );
-    add_settings_field(
-        'ruigehond006_bar_height', // As of WP 4.6 this value is used only internally
-        // use $args' label_for to populate the id inside the callback
+    ruigehond006_add_settings_field(
+        'bar_color_dark_mode',
+        'color',
+        __('Color when in dark mode', 'wp-reading-progress'), // title
+        $option,
+        sprintf(__('Depends on a certain class added to the body or html container, including one of the following strings: %s', 'wp-reading-progress'), '*dark-mode*, *night-mode*')
+    );
+    ruigehond006_add_settings_field(
+        'bar_height',
+        'text',
         __('Progress bar thickness', 'wp-reading-progress'), // title
-        function ($args) {
-            echo '<input type="text" name="ruigehond006[bar_height]" value="' . $args['option']['bar_height'] . '"/>';
-            echo '<div class="ruigehond006 explanation"><em>' . sprintf(__('Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress'), '<a>.5vh</a>', '<a>6px</a>') . '</em></div>';
-        }, // callback
-        'ruigehond006', // page id
-        'progress_bar_settings', // section id
-        ['option' => $option] // args
+        $option,
+        sprintf(__('Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress'), '<a>.5vh</a>', '<a>6px</a>')
     );
-    add_settings_field(
-        'ruigehond006_ert_speed', // As of WP 4.6 this value is used only internally
-        // use $args' label_for to populate the id inside the callback
+    ruigehond006_add_settings_field(
+        'ert_speed',
+        'numeric',
         __('Reading speed', 'wp-reading-progress'), // title
-        function ($args) {
-            $value = isset($args['option']['ert_speed'])?$args['option']['ert_speed']:'';
-            echo '<input type="text" name="ruigehond006[ert_speed]" value="' . $value . '"/>';
-            echo '<div class="ruigehond006 explanation"><em>' . __('Average reading speed in words per minute, integers only. Used to estimate reading time. Leave empty for no ERT. Usual is something between 200 and 300.', 'wp-reading-progress') . '</em></div>';
-        }, // callback
-        'ruigehond006', // page id
-        'progress_bar_settings', // section id
-        ['option' => $option] // args
+        $option,
+        __('Average reading speed in words per minute, integers only. Used to estimate reading time. Leave empty for no ERT. Usual is something between 200 and 300.', 'wp-reading-progress')
     );
-    add_settings_field(
-        'ruigehond006_mark_it_zero',
+    ruigehond006_add_settings_field(
+        'mark_it_zero',
+        'checkbox',
         __('Make bar start at 0%', 'wp-reading-progress'),
-        function ($args) {
-            echo '<label><input type="checkbox" name="ruigehond006[mark_it_zero]" value="Yes"';
-            if (isset($args['option']['mark_it_zero']) && $args['option']['mark_it_zero']) {
-                echo ' checked="checked"';
-            }
-            echo '/> ' . __('Yes please', 'wp-reading-progress') . '</label>';
-        },
-        'ruigehond006',
-        'progress_bar_settings',
-        ['option' => $option] // args
+        $option,
+        __('Yes please', 'wp-reading-progress')
     );
-    add_settings_field(
-        'ruigehond006_include_comments',
+    ruigehond006_add_settings_field(
+        'include_comments',
+        'checkbox',
         __('On single post page', 'wp-reading-progress'),
-        function ($args) {
-            echo '<label><input type="checkbox" name="ruigehond006[include_comments]"';
-            if (isset($args['option']['include_comments']) && $args['option']['include_comments']) {
-                echo ' checked="checked"';
-            }
-            echo '/> ' . __('use whole page to calculate reading progress', 'wp-reading-progress');
-            //echo '<br/><em style="background-color:#ffc;">This option may be removed in a future release if nobody uses it, let me know if you want to keep it</em>';
-            echo '</label>';
-        },
-        'ruigehond006',
-        'progress_bar_settings',
-        ['option' => $option] // args
+        $option,
+        __('use whole page to calculate reading progress', 'wp-reading-progress')
     );
     add_settings_field(
         'ruigehond006_post_types',
@@ -309,19 +274,61 @@ function ruigehond006_settings()
         'progress_bar_settings',
         ['option' => $option] // args
     );
-    add_settings_field(
-        'ruigehond006_archives',
+    ruigehond006_add_settings_field(
+        'archives',
+        'checkbox',
         __('And on their archives', 'wp-reading-progress'),
+        $option
+    );
+}
+
+function ruigehond006_add_settings_field($name, $type, $title, $option, $explanation = null)
+{
+    add_settings_field(
+        'ruigehond006_' . $name,
+        $title,
         function ($args) {
-            echo '<input type="checkbox" name="ruigehond006[archives]"';
-            if (isset($args['option']['archives']) && $args['option']['archives']) {
-                echo ' checked="checked"';
+            switch ($args['type']) {
+                case 'checkbox':
+                    echo '<label><input type="checkbox" name="ruigehond006[';
+                    echo $args['name'];
+                    echo ']"';
+                    if (isset($args['value']) and $args['value']) {
+                        echo ' checked="checked"';
+                    }
+                    echo '/> ';
+                    echo $args['explanation'];
+                    echo '</label>';
+                    return;
+                case 'color':
+                    echo '<input type="text" class="ruigehond006_colorpicker" name="ruigehond006[';
+                    echo $args['name'];
+                    echo ']" value="';
+                    echo $args['value'];
+                    echo '"/>';
+                    break;
+               default: // regular input
+                    $value = isset($args['value']) ? $args['value'] : '';
+                    echo '<input type="text" name="ruigehond006[';
+                    echo $args['name'];
+                    echo ']" value="';
+                    echo $value;
+                    echo '"/>';
             }
-            echo '/>';
+            if (isset($args['explanation'])) {
+                echo '<div class="ruigehond006 explanation"><em>';
+                echo $args['explanation'];
+                echo '</em></div>';
+            }
         },
         'ruigehond006',
         'progress_bar_settings',
-        ['option' => $option] // args
+        array(
+            'name' => $name,
+            'type' => $type,
+            'value' => isset($option[$name]) ? $option[$name] : null,
+            'explanation' => $explanation,
+        ) // args
     );
 }
 
@@ -330,7 +337,9 @@ function ruigehond006_settingspage()
     if (!current_user_can('manage_options')) {
         return;
     }
-    echo '<div class="wrap"><h1>' . esc_html(get_admin_page_title()) . '</h1><form action="options.php" method="post">';
+    echo '<div class="wrap"><h1>';
+    echo esc_html(get_admin_page_title());
+    echo '</h1><form action="options.php" method="post">';
     // output security fields for the registered setting
     settings_fields('ruigehond006');
     // output setting sections and their fields

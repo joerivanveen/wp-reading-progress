@@ -46,9 +46,9 @@ function ruigehond006_Initialize(p) {
         }
         ruigehond006_t = ($adminbar.length > 0 && $adminbar.css('position') === 'fixed') ? parseInt($adminbar.outerHeight()) : 0;
         if (!document.getElementById('ruigehond006_bar')) {
-            document.body.insertAdjacentHTML('beforeend', // todo remove the css class names
+            document.body.insertAdjacentHTML('beforeend',
                 '<div id="ruigehond006_wrap"><div id="ruigehond006_inner"><div id="ruigehond006_bar" role="progressbar"></div></div></div>');
-            //document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
+            //document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color; // in css now
             if (ruigehond006_c.bar_attach === 'bottom') {
                 document.getElementById('ruigehond006_wrap').style.bottom = '0';
                 document.getElementById('ruigehond006_inner').style.bottom = '0';
@@ -61,6 +61,10 @@ function ruigehond006_Initialize(p) {
                     document.getElementById('ruigehond006_inner').style.height = ruigehond006_c.bar_height;
                 });
             }, 350); // TODO this is not cool, but you have to wait for reflow to position the bar
+        }
+        // ert
+        if (ruigehond006_c.ert && !document.getElementById('ruigehond006_ert')) {
+            document.body.insertAdjacentHTML('beforeend', '<div id="ruigehond006_ert">'+ruigehond006_c.ert+'</div>');
         }
     })(jQuery);
 }

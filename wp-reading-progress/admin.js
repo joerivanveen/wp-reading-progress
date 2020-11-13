@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
     try {
-        $("[name='ruigehond006[bar_color]']").wpColorPicker();
+        $(".ruigehond006_colorpicker").wpColorPicker();
     } catch(e) {
         console.error(e);
     }
