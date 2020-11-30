@@ -7,62 +7,57 @@ var ruigehond006_h = 0, /* this caches the window height */
 function ruigehond006_Start() {
     if (typeof ruigehond006_c === 'undefined') return;
     /* custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar */
-    (function ($) {
-        var $p = $(ruigehond006_c.post_identifier),
-            p, p_candidates;
-        if ($p.length !== 1) { /* when not found conclusively, try to get the current post by id */
-            $p = $('#post-' + ruigehond006_c.post_id);
+    var $p = document.querySelectorAll(ruigehond006_c.post_identifier),
+        p, p_candidates;
+    /* when not found conclusively, try to get the current post by id, or default to the whole body */
+    p = ($p.length === 1) ? $p[0] : document.getElementById('post-' + ruigehond006_c.post_id) || document.body;
+    if (!ruigehond006_c.include_comments) { /* now check if it has the internal content in a standard class */
+        if ((p_candidates = p.querySelectorAll('.entry-content')).length === 1) {
+            p = p_candidates[0];
+        } else if ((p_candidates = p.querySelectorAll('.post-content')).length === 1) {
+            p = p_candidates[0];
+        } else if ((p_candidates = p.querySelectorAll('.main-content')).length === 1) {
+            p = p_candidates[0];
         }
-        if ($p.length === 1) {
-            p = $p[0];
-        } else {
-            p = document.body;
-        }
-        if (!ruigehond006_c.include_comments) { /* now check if it has the internal content in a standard class */
-            if ((p_candidates = p.querySelectorAll('.entry-content')).length === 1) {
-                p = p_candidates[0];
-            } else if ((p_candidates = p.querySelectorAll('.post-content')).length === 1) {
-                p = p_candidates[0];
-            } else if ((p_candidates = p.querySelectorAll('.main-content')).length === 1) {
-                p = p_candidates[0];
-            }
-        }
-        if (ruigehond006_c.ert > 0) p.ruigehond006_ert = ruigehond006_c.ert;
+    }
+    ruigehond006_Initialize(p);
+    /* event listeners */
+    window.addEventListener('load', function () {
+        ruigehond006_Progress(p);
+    });
+    window.addEventListener('scroll', function () {
+        ruigehond006_Progress(p);
+    });
+    window.addEventListener('resize', function () {
         ruigehond006_Initialize(p);
-        $(window).on('load scroll', function () {
-            ruigehond006_Progress(p); // @since 1.3.0 also manages position in DOM
-        }).on('resize', function () { // TODO debounce https://www.paulirish.com/2009/throttled-smartresize-jquery-event-handler/
-            ruigehond006_Initialize(p);
-        });
-    })(jQuery);
+    });// TODO debounce https://www.paulirish.com/2009/throttled-smartresize-jquery-event-handler/
 }
 
 function ruigehond006_Initialize(p) {
-    (function ($) {
-        var $adminbar = $('#wpadminbar');
-        ruigehond006_h = $(window).height();
-        if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
-            ruigehond006_f = Math.max(ruigehond006_h - $(p).offset().top, 0); // Math.max for when article is off screen
+    var $adminbar = document.getElementById('wpadminbar');
+    ruigehond006_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
+        ruigehond006_f = Math.max(ruigehond006_h - (ruigehond006_boundingClientTop(p) + window.pageYOffset), 0); // math.max for when article is off screen
+    }
+    ruigehond006_t = ($adminbar !== null && window.getComputedStyle($adminbar).getPropertyValue('position') === 'fixed')
+        ? $adminbar.getBoundingClientRect().height : 0;
+    if (!document.getElementById('ruigehond006_bar')) {
+        document.body.insertAdjacentHTML('beforeend', // todo remove the css class names
+            '<div id="ruigehond006_wrap"><div id="ruigehond006_inner" class="ruigehond006 progress"><div id="ruigehond006_bar" role="progressbar"></div></div></div>');
+        document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
+        if (ruigehond006_c.bar_attach === 'bottom') {
+            document.getElementById('ruigehond006_wrap').style.bottom = '0';
+            document.getElementById('ruigehond006_inner').style.bottom = '0';
         }
-        ruigehond006_t = ($adminbar.length > 0 && $adminbar.css('position') === 'fixed') ? parseInt($adminbar.outerHeight()) : 0;
-        if (!document.getElementById('ruigehond006_bar')) {
-            document.body.insertAdjacentHTML('beforeend', // todo remove the css class names
-                '<div id="ruigehond006_wrap"><div id="ruigehond006_inner"><div id="ruigehond006_bar" role="progressbar"></div></div></div>');
-            //document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
-            if (ruigehond006_c.bar_attach === 'bottom') {
-                document.getElementById('ruigehond006_wrap').style.bottom = '0';
-                document.getElementById('ruigehond006_inner').style.bottom = '0';
-            }
-        }
+    }
+    setTimeout(function () {
         ruigehond006_Progress(p);
         if (!document.getElementById('ruigehond006_inner').style.height) {
-            setTimeout(function () {
-                requestAnimationFrame(function () {
-                    document.getElementById('ruigehond006_inner').style.height = ruigehond006_c.bar_height;
-                });
-            }, 350); // TODO this is not cool, but you have to wait for reflow to position the bar
+            requestAnimationFrame(function () {
+                document.getElementById('ruigehond006_inner').style.height = ruigehond006_c.bar_height;
+            });
         }
-    })(jQuery);
+    }, 350); // TODO this is not cool, but you have to wait for reflow to position the bar
 }
 
 function ruigehond006_Progress(p) {
@@ -117,7 +112,7 @@ function ruigehond006_BarInDom() {
 }
 
 function ruigehond006_boundingClientTop(el) {
-    var elementTop = 0, scrollTop = window.scrollY;
+    var elementTop = 0, scrollTop = window.pageYOffset;
     // don't use offsetParent, many browsers return 'null' if the position is 'fixed' (and also if you're at the top...),
     // rendering the functionality useless
     while (el.parentNode) {
