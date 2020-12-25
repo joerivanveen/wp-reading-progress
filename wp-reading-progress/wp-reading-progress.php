@@ -109,7 +109,7 @@ function ruigehond006_localize()
             ));
         }
         Define('RUIGEHOND006_COLOR', $option['bar_color']);
-        Define('RUIGEHOND006_COLOR_DARK', $option['bar_color_dark_mode']);
+        Define('RUIGEHOND006_COLOR_DARK', isset($option['bar_color_dark_mode']) ? $option['bar_color_dark_mode'] : $option['bar_color']);
         add_action('wp_head', 'ruigehond006_stylesheet');
     }
 }
@@ -299,6 +299,7 @@ function ruigehond006_add_settings_field($name, $type, $title, $option, $explana
                     echo '/> ';
                     echo $args['explanation'];
                     echo '</label>';
+
                     return;
                 case 'color':
                     echo '<input type="text" class="ruigehond006_colorpicker" name="ruigehond006[';
@@ -307,7 +308,7 @@ function ruigehond006_add_settings_field($name, $type, $title, $option, $explana
                     echo $args['value'];
                     echo '"/>';
                     break;
-               default: // regular input
+                default: // regular input
                     $value = isset($args['value']) ? $args['value'] : '';
                     echo '<input type="text" name="ruigehond006[';
                     echo $args['name'];

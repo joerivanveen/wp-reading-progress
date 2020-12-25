@@ -53,13 +53,13 @@ function ruigehond006_Initialize(p) {
     setTimeout(function () {
         ruigehond006_Progress(p);
         if (!document.getElementById('ruigehond006_inner').style.height) {
-                requestAnimationFrame(function () {
-                    document.getElementById('ruigehond006_inner').style.height = ruigehond006_c.bar_height;
-                });
+            requestAnimationFrame(function () {
+                document.getElementById('ruigehond006_inner').style.height = ruigehond006_c.bar_height;
+            });
         }
         // ert
         if (ruigehond006_c.ert && !document.getElementById('ruigehond006_ert')) {
-            document.body.insertAdjacentHTML('beforeend', '<div id="ruigehond006_ert">'+ruigehond006_c.ert+'</div>');
+            document.body.insertAdjacentHTML('beforeend', '<div id="ruigehond006_ert">' + ruigehond006_c.ert + '</div>');
         }
     }, 350); // TODO this is not cool, but you have to wait for reflow to position the bar
 }
@@ -73,16 +73,19 @@ function ruigehond006_Progress(p) {
         document.getElementById('ruigehond006_bar').style.width = reading_done + '%';
         if (ruigehond006_c.bar_attach !== 'bottom') ruigehond006_BarInDom();
     });
+    if ((loc = document.getElementById('ruigehond006_ert'))) {
+        loc.innerHTML = ruigehond006_c.ert * reading_done / 100.0;
+    }
 }
 
 function ruigehond006_BarInDom() {
-    // On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
-    // viewport while scrolling with touch, so don’t use it
     var top, new_margin, old_margin,
         wrap = document.getElementById('ruigehond006_wrap'),
         inner = document.getElementById('ruigehond006_inner');
+    // On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
+    // viewport while scrolling with touch, so don’t use it
     //if (ruigehond006_c.bar_attach === 'bottom') return; // this function should not be called in that case at all to avoid overhead
-    if ((ruigehond006_a = document.querySelector(ruigehond006_c.bar_attach))) { // it can disappear so you need to check every time
+    if ((ruigehond006_a = document.querySelector(ruigehond006_c.bar_attach))) { // it may disappear so you need to check every time
         top = ruigehond006_a.offsetHeight + ruigehond006_boundingClientTop(ruigehond006_a);
         if (top <= ruigehond006_t) { // stick to top
             if (false !== ruigehond006_s) ruigehond006_BarToTop(wrap, inner);
@@ -101,12 +104,12 @@ function ruigehond006_BarInDom() {
                 }
                 // make sure it’s always snug against the element using top margin
                 // inside requestAnimationFrame properties of the element might be different than before
-                top = ruigehond006_a.offsetHeight + ruigehond006_boundingClientTop(ruigehond006_a);
+                /*top = ruigehond006_a.offsetHeight + ruigehond006_boundingClientTop(ruigehond006_a);
                 new_margin = (old_margin = (parseFloat(inner.style.marginTop) || 0)) + top - ruigehond006_boundingClientTop(inner);
                 if (new_margin !== old_margin) {
                     inner.style.marginTop = new_margin.toString() + 'px';
                     //console.warn('set margin from ' + old_margin + ' to ' + new_margin);
-                }
+                }*/
                 //console.warn(top + ' vs ' + ruigehond006_boundingClientTop(inner) + ' vs ' + inner.getBoundingClientRect().top);
             });
         }
@@ -116,16 +119,28 @@ function ruigehond006_BarInDom() {
 }
 
 function ruigehond006_boundingClientTop(el) {
-    var elementTop = 0, scrollTop = window.pageYOffset;
+    var elementTop = 0, position = '', offsetCache = null, parentNode, scrollTop = window.pageYOffset;
+    //return el.getBoundingClientRect().top; // doesn’t work on old iOsses...
     // don't use offsetParent, many browsers return 'null' if the position is 'fixed' (and also if you're at the top...),
     // rendering the functionality useless
-    while (el.parentNode) {
-        elementTop += el.offsetTop;
-        if (scrollTop > 0 && window.getComputedStyle(el).getPropertyValue('position').toLowerCase() === 'fixed') {
-            scrollTop = 0;
+    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+    // ‘[...] is the number of pixels from the top of the closest relatively positioned parent element’
+    console.warn(el);
+    while ((parentNode = el.parentNode)) { // only calculate towards relative parent, skip any absolute or fixed parent
+        if (window.getComputedStyle(el).getPropertyValue('position').toLowerCase() === 'fixed') {
+            elementTop += parseInt(window.getComputedStyle(el).getPropertyValue('top'));
+            console.log('fixed... ' + elementTop)
+            return elementTop;
         }
-        el = el.parentNode;
+        if (null === offsetCache) offsetCache = el.offsetTop; // remember the reported offsetTop towards the closest relative parent
+        if (!parentNode.style /* #document object does not have style... */
+            || (position = window.getComputedStyle(parentNode).getPropertyValue('position').toLowerCase()) === 'relative') {
+            elementTop += offsetCache; // use the originally reported offsetTop
+            offsetCache = null; // start the next round
+        }
+        el = parentNode;
     }
+    console.log(elementTop + ' - ' + scrollTop);
     return elementTop - scrollTop;
 }
 
