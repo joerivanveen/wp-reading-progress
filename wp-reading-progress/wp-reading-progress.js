@@ -82,8 +82,6 @@ function ruigehond006_BarInDom() {
     var top, new_margin, old_margin,
         wrap = document.getElementById('ruigehond006_wrap'),
         inner = document.getElementById('ruigehond006_inner');
-    // On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
-    // viewport while scrolling with touch, so don’t use it
     //if (ruigehond006_c.bar_attach === 'bottom') return; // this function should not be called in that case at all to avoid overhead
     if ((ruigehond006_a = document.querySelector(ruigehond006_c.bar_attach))) { // it may disappear so you need to check every time
         top = ruigehond006_a.offsetHeight + ruigehond006_boundingClientTop(ruigehond006_a);
@@ -118,46 +116,20 @@ function ruigehond006_BarInDom() {
     }
 }
 
-function ruigehond006_boundingClientTop1(el) { /* new */
-    var elementTop = 0, position = '', offsetCache = null, parentNode, scrollTop = window.pageYOffset;
-    //return el.getBoundingClientRect().top; // doesn’t work on old iOsses...
-    // don't use offsetParent, many browsers return 'null' if the position is 'fixed' (and also if you're at the top...),
-    // rendering the functionality useless
-    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
-    // ‘[...] is the number of pixels from the top of the closest relatively positioned parent element’
-    console.warn(el);
-    while ((parentNode = el.parentNode)) { // only calculate towards relative parent, skip any absolute or fixed parent
-        if (window.getComputedStyle(el).getPropertyValue('position').toLowerCase() === 'fixed') {
-            elementTop += parseInt(window.getComputedStyle(el).getPropertyValue('top'));
-            console.log('fixed... ' + elementTop)
+function ruigehond006_boundingClientTop(el) {
+    var elementTop = 0, scrollTop = window.pageYOffset;
+    // On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
+    // viewport while scrolling with touch, so don’t use it
+    // offsetParent: many browsers return 'null' if the position is 'fixed' (and also if you're at the top...), but some don’t
+    while (el) {
+        elementTop += el.offsetTop;
+        if (scrollTop > 0
+            && ('fixed' === (el.style.position.toLowerCase()
+                || window.getComputedStyle(el).getPropertyValue('position').toLowerCase()))) {
             return elementTop;
         }
-        if (null === offsetCache) offsetCache = el.offsetTop; // remember the reported offsetTop towards the closest relative parent
-        if (!parentNode.style /* #document object does not have style... */
-            || (position = window.getComputedStyle(parentNode).getPropertyValue('position').toLowerCase()) === 'relative') {
-            elementTop += offsetCache; // use the originally reported offsetTop
-            offsetCache = null; // start the next round
-        }
-        el = parentNode;
+        el = el.offsetParent; // this is either null (ending while) or an error / nonsense, also ending the while I think
     }
-    console.log(elementTop + ' - ' + scrollTop);
-    return elementTop - scrollTop;
-}
-
-function ruigehond006_boundingClientTop(el) { /* the original */
-    var elementTop = 0, scrollTop = window.pageYOffset;
-    // don't use offsetParent, many browsers return 'null' if the position is 'fixed' (and also if you're at the top...),
-    // rendering the functionality useless
-    while (el.offsetParent) {
-        elementTop += el.offsetTop;
-        el = el.offsetParent;
-    }
-    if (scrollTop > 0
-        && ('fixed' === el.style.position.toLowerCase()
-            || window.getComputedStyle(el).getPropertyValue('position').toLowerCase())) {
-        scrollTop = 0;
-    }
-    console.warn(elementTop + ' ' + scrollTop);
     return elementTop - scrollTop;
 }
 
@@ -165,8 +137,9 @@ function ruigehond006_BarToTop(wrap, inner) {
     //if (false === ruigehond006_s) return; // this function should not be called at all then to avoid overhead
     ruigehond006_s = false; // no longer sticky
     requestAnimationFrame(function () {
-        wrap.style.position = 'fixed';
-        wrap.style.top = ruigehond006_t.toString() + 'px';
+        var wrap_style = wrap.style;
+        wrap_style.position = 'fixed';
+        wrap_style.top = ruigehond006_t.toString() + 'px';
         inner.style.marginTop = '0';
         document.body.insertAdjacentElement('beforeend', wrap);
     });
@@ -176,7 +149,7 @@ function ruigehond006_BarToTop(wrap, inner) {
 if (document.readyState === 'complete') {
     setTimeout(ruigehond006_Start, 350);
 } else {
-    window.addEventListener('load', function (event) {
+    window.addEventListener('load', function () {
         setTimeout(ruigehond006_Start, 350);
     });
 }
