@@ -104,12 +104,12 @@ function ruigehond006_BarInDom() {
                 }
                 // make sure it’s always snug against the element using top margin
                 // inside requestAnimationFrame properties of the element might be different than before
-                /*top = ruigehond006_a.offsetHeight + ruigehond006_boundingClientTop(ruigehond006_a);
+                top = ruigehond006_a.offsetHeight + ruigehond006_boundingClientTop(ruigehond006_a);
                 new_margin = (old_margin = (parseFloat(inner.style.marginTop) || 0)) + top - ruigehond006_boundingClientTop(inner);
                 if (new_margin !== old_margin) {
                     inner.style.marginTop = new_margin.toString() + 'px';
                     //console.warn('set margin from ' + old_margin + ' to ' + new_margin);
-                }*/
+                }
                 //console.warn(top + ' vs ' + ruigehond006_boundingClientTop(inner) + ' vs ' + inner.getBoundingClientRect().top);
             });
         }
@@ -118,7 +118,7 @@ function ruigehond006_BarInDom() {
     }
 }
 
-function ruigehond006_boundingClientTop(el) {
+function ruigehond006_boundingClientTop1(el) { /* new */
     var elementTop = 0, position = '', offsetCache = null, parentNode, scrollTop = window.pageYOffset;
     //return el.getBoundingClientRect().top; // doesn’t work on old iOsses...
     // don't use offsetParent, many browsers return 'null' if the position is 'fixed' (and also if you're at the top...),
@@ -141,6 +141,23 @@ function ruigehond006_boundingClientTop(el) {
         el = parentNode;
     }
     console.log(elementTop + ' - ' + scrollTop);
+    return elementTop - scrollTop;
+}
+
+function ruigehond006_boundingClientTop(el) { /* the original */
+    var elementTop = 0, scrollTop = window.pageYOffset;
+    // don't use offsetParent, many browsers return 'null' if the position is 'fixed' (and also if you're at the top...),
+    // rendering the functionality useless
+    while (el.offsetParent) {
+        elementTop += el.offsetTop;
+        el = el.offsetParent;
+    }
+    if (scrollTop > 0
+        && ('fixed' === el.style.position.toLowerCase()
+            || window.getComputedStyle(el).getPropertyValue('position').toLowerCase())) {
+        scrollTop = 0;
+    }
+    console.warn(elementTop + ' ' + scrollTop);
     return elementTop - scrollTop;
 }
 
