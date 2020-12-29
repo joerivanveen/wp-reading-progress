@@ -60,7 +60,7 @@ function ruigehond006_stylesheet()
     echo '<style type="text/css">#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;';
     echo 'width:100%;margin:0;overflow:visible;}';
     echo '#ruigehond006_inner{position:absolute;height:0;width:inherit;background-color:rgba(255,255,255,.2);';
-    echo '-webkit-transition:height .4s;transition:height .4s;}';
+    echo '-webkit-transition:height .42s;transition:height .42s;}';
     echo 'html[dir=rtl] #ruigehond006_wrap{text-align:right;}';
     echo '#ruigehond006_bar{width:0;height:100%;background-color:';
     echo RUIGEHOND006_COLOR;
@@ -104,7 +104,7 @@ function ruigehond006_localize()
                 $option, array(
                     'post_identifier' => $post_identifier,
                     'post_id' => $post_id,
-                    'ert' => $reading_time,
+                    //'ert' => $reading_time,
                 )
             ));
         }

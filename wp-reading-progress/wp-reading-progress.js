@@ -29,39 +29,44 @@ function ruigehond006_Start() {
         ruigehond006_Progress(p);
     });
     window.addEventListener('resize', function () {
-        ruigehond006_Initialize(p);
-    });// TODO debounce https://www.paulirish.com/2009/throttled-smartresize-jquery-event-handler/
+        clearTimeout(window.ruigehond006_tt);
+        window.ruigehond006_tt = setTimeout(function() {
+            ruigehond006_Initialize(p);
+        }, 300); // debounce / throttle resize event
+    });
 }
 
 function ruigehond006_Initialize(p) {
-    var $adminbar = document.getElementById('wpadminbar');
+    var adminbar = document.getElementById('wpadminbar');
     ruigehond006_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
     if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
         ruigehond006_f = Math.max(ruigehond006_h - (ruigehond006_boundingClientTop(p) + window.pageYOffset), 0); // math.max for when article is off screen
     }
-    ruigehond006_t = ($adminbar !== null && window.getComputedStyle($adminbar).getPropertyValue('position') === 'fixed')
-        ? $adminbar.getBoundingClientRect().height : 0;
+    ruigehond006_t = (adminbar !== null && window.getComputedStyle(adminbar).getPropertyValue('position') === 'fixed')
+        ? adminbar.getBoundingClientRect().height : 0;
     if (!document.getElementById('ruigehond006_bar')) {
         document.body.insertAdjacentHTML('beforeend', // todo remove the css class names
             '<div id="ruigehond006_wrap"><div id="ruigehond006_inner" class="ruigehond006 progress"><div id="ruigehond006_bar" role="progressbar"></div></div></div>');
-        document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
+        //document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color; // now in css
         if (ruigehond006_c.bar_attach === 'bottom') {
             document.getElementById('ruigehond006_wrap').style.bottom = '0';
             document.getElementById('ruigehond006_inner').style.bottom = '0';
         }
     }
+    ruigehond006_Progress(p);
     setTimeout(function () {
-        ruigehond006_Progress(p);
-        if (!document.getElementById('ruigehond006_inner').style.height) {
+        var inner_element = document.getElementById('ruigehond006_inner');
+        ruigehond006_Progress(p); // this may also have changed after reflow
+        if (!inner_element.style.height) {
             requestAnimationFrame(function () {
-                document.getElementById('ruigehond006_inner').style.height = ruigehond006_c.bar_height;
+                inner_element.style.height = ruigehond006_c.bar_height;
             });
         }
         // ert
         if (ruigehond006_c.ert && !document.getElementById('ruigehond006_ert')) {
             document.body.insertAdjacentHTML('beforeend', '<div id="ruigehond006_ert">' + ruigehond006_c.ert + '</div>');
         }
-    }, 350); // TODO this is not cool, but you have to wait for reflow to position the bar
+    }, 500); // TODO this is not cool, but after resizing you have to wait for things (reflow??) to position the bar
 }
 
 function ruigehond006_Progress(p) {
