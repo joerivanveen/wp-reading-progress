@@ -39,9 +39,6 @@ This is my 6th Wordpress plugin but my first one freely available to everybody. 
 
 - css classes 'ruigehond006' and 'progress' are scheduled for removal in a next version, if you target the bar in css use '#ruigehond006_inner'.
 
-- Option 'use whole page to calculate reading progress' is scheduled for removal in a next version, unless someone really, really wants to use it (contact me).
-
-
 Regards,
 Joeri (ruige hond)
 
@@ -60,6 +57,8 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 3. Activate the bar for an individual post (if that post type is not enabled)
 
 == Changelog ==
+
+1.3.5: improved get top position custom function to include edge cases, debounced resize event, added dark-mode color
 
 1.3.4: removed jQuery dependency
 
