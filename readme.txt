@@ -58,7 +58,11 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
-1.3.3: improved get top position custom function to include many edge cases, debounced resize event
+1.3.5: improved get top position custom function to include edge cases, debounced resize event
+
+1.3.4: removed jQuery dependency
+
+1.3.3: fixed implode deprecated notice
 
 1.3.2: fix getBoundingClientRect does not work on iOS 8 and 9 (at least), now using custom function for it
 

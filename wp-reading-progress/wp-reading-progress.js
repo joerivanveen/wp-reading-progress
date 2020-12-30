@@ -53,6 +53,7 @@ function ruigehond006_Initialize(p) {
             document.getElementById('ruigehond006_inner').style.bottom = '0';
         }
     }
+    ruigehond006_Progress(p);
     setTimeout(function () {
         ruigehond006_Progress(p);
         if (!document.getElementById('ruigehond006_inner').style.height) {
@@ -60,7 +61,7 @@ function ruigehond006_Initialize(p) {
                 document.getElementById('ruigehond006_inner').style.height = ruigehond006_c.bar_height;
             });
         }
-    }, 350); // TODO this is not cool, but you have to wait for reflow to position the bar
+    }, 502); // TODO this is not cool, but you have to wait for reflow to position the bar
 }
 
 function ruigehond006_Progress(p) {
