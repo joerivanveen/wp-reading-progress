@@ -39,9 +39,6 @@ This is my 6th Wordpress plugin but my first one freely available to everybody. 
 
 - css classes 'ruigehond006' and 'progress' are scheduled for removal in a next version, if you target the bar in css use '#ruigehond006_inner'.
 
-- Option 'use whole page to calculate reading progress' is scheduled for removal in a next version, unless someone really, really wants to use it (contact me).
-
-
 Regards,
 Joeri (ruige hond)
 
@@ -61,7 +58,9 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
-1.3.2: bugfix getBoundingClientRect does not work on iOS 8 and 9 (at least), now using custom function for it
+1.3.3: improved get top position custom function to include many edge cases, debounced resize event
+
+1.3.2: fix getBoundingClientRect does not work on iOS 8 and 9 (at least), now using custom function for it
 
 1.3.1: some optimizations regarding the on scroll function
 

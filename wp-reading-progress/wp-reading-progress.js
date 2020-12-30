@@ -29,8 +29,11 @@ function ruigehond006_Start() {
         ruigehond006_Progress(p);
     });
     window.addEventListener('resize', function () {
-        ruigehond006_Initialize(p);
-    });// TODO debounce https://www.paulirish.com/2009/throttled-smartresize-jquery-event-handler/
+        clearTimeout(window.ruigehond006_tt);
+        window.ruigehond006_tt = setTimeout(function() {
+            ruigehond006_Initialize(p);
+        }, 372); // debounce / throttle resize event
+    });
 }
 
 function ruigehond006_Initialize(p) {
@@ -111,16 +114,21 @@ function ruigehond006_BarInDom() {
     }
 }
 
+/**
+ *  On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
+ *  viewport inconsistently while scrolling with touch, so we roll our own function
+ */
 function ruigehond006_boundingClientTop(el) {
     var elementTop = 0, scrollTop = window.pageYOffset;
-    // don't use offsetParent, many browsers return 'null' if the position is 'fixed' (and also if you're at the top...),
-    // rendering the functionality useless
-    while (el.parentNode) {
+    // offsetParent: null for body, and in some browsers null for a fixed element, but than we have returned already
+    while (el) {
         elementTop += el.offsetTop;
-        if (scrollTop > 0 && window.getComputedStyle(el).getPropertyValue('position').toLowerCase() === 'fixed') {
-            scrollTop = 0;
+        if (scrollTop > 0
+            && ('fixed' === (el.style.position.toLowerCase()
+                || window.getComputedStyle(el).getPropertyValue('position').toLowerCase()))) {
+            return elementTop;
         }
-        el = el.parentNode;
+        el = el.offsetParent; // this is either null for body, or maybe a fixed element, but we returned early then
     }
     return elementTop - scrollTop;
 }
