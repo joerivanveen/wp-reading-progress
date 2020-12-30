@@ -22,9 +22,9 @@ function ruigehond006_Start() {
     }
     ruigehond006_Initialize(p);
     /* event listeners */
-    window.addEventListener('load', function () {
+    /*window.addEventListener('load', function () {
         ruigehond006_Progress(p);
-    });
+    });*/
     window.addEventListener('scroll', function () {
         ruigehond006_Progress(p);
     });
@@ -32,7 +32,7 @@ function ruigehond006_Start() {
         clearTimeout(window.ruigehond006_tt);
         window.ruigehond006_tt = setTimeout(function() {
             ruigehond006_Initialize(p);
-        }, 300); // debounce / throttle resize event
+        }, 372); // debounce / throttle resize event
     });
 }
 
@@ -66,12 +66,13 @@ function ruigehond006_Initialize(p) {
         if (ruigehond006_c.ert && !document.getElementById('ruigehond006_ert')) {
             document.body.insertAdjacentHTML('beforeend', '<div id="ruigehond006_ert">' + ruigehond006_c.ert + '</div>');
         }
-    }, 500); // TODO this is not cool, but after resizing you have to wait for things (reflow??) to position the bar
+    }, 502); // TODO this is not cool, but after resizing you have to wait for things (reflow??) to position the bar
 }
 
 function ruigehond006_Progress(p) {
-    var loc = p.getBoundingClientRect(), // loc.height in pixels = total amount that can be read/
-        loc_height = loc.height - ruigehond006_f,
+    var loc = p.getBoundingClientRect(), // boundingClientRect is best for getting dimensions as it takes into account
+        // transforms, but not for position as it’s screwed up in iOS8 and 9.
+        loc_height = loc.height - ruigehond006_f, // loc.height in pixels = total amount that can be read
         reading_left = Math.max(Math.min(loc.bottom - ruigehond006_h, loc_height), 0), // in pixels
         reading_done = 100 * (loc_height - reading_left) / loc_height; // in percent
     requestAnimationFrame(function () {
@@ -121,11 +122,13 @@ function ruigehond006_BarInDom() {
     }
 }
 
+/**
+ *  On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
+ *  viewport inconsistently while scrolling with touch, so we roll our own function
+ */
 function ruigehond006_boundingClientTop(el) {
     var elementTop = 0, scrollTop = window.pageYOffset;
-    // On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
-    // viewport while scrolling with touch, so don’t use it
-    // offsetParent: many browsers return 'null' if the position is 'fixed' (and also if you're at the top...), but some don’t
+    // offsetParent: null for body, and in some browsers null for a fixed element, but than we have returned already
     while (el) {
         elementTop += el.offsetTop;
         if (scrollTop > 0
@@ -133,14 +136,14 @@ function ruigehond006_boundingClientTop(el) {
                 || window.getComputedStyle(el).getPropertyValue('position').toLowerCase()))) {
             return elementTop;
         }
-        el = el.offsetParent; // this is either null (ending while) or an error / nonsense, also ending the while I think
+        el = el.offsetParent; // this is either null for body, or maybe a fixed element, but we returned early then
     }
     return elementTop - scrollTop;
 }
 
 function ruigehond006_BarToTop(wrap, inner) {
     //if (false === ruigehond006_s) return; // this function should not be called at all then to avoid overhead
-    ruigehond006_s = false; // no longer sticky
+    ruigehond006_s = false; // it’s no longer sticky
     requestAnimationFrame(function () {
         var wrap_style = wrap.style;
         wrap_style.position = 'fixed';
