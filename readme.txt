@@ -1,10 +1,10 @@
 === WP Reading Progress ===
 Contributors: ruigehond
 Tags: reading, progress, progressbar
-Donate link: https://paypal.me/ruigehond
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hallo@ruigehond.nl&lc=US&item_name=WP+Reading+Progress+plugin&no_note=0&cn=&currency_code=USD&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted
 Requires at least: 4.5
-Tested up to: 5.5
-Requires PHP: 5.4
+Tested up to: 5.6
+Requires PHP: 5.5
 Stable tag: trunk
 License: GPLv3
 
