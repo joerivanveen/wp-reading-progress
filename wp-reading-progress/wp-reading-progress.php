@@ -110,7 +110,7 @@ function ruigehond006_localize()
         }
         Define('RUIGEHOND006_COLOR', $option['bar_color']);
         Define('RUIGEHOND006_COLOR_DARK', isset($option['bar_color_dark_mode']) ? $option['bar_color_dark_mode'] : $option['bar_color']);
-        add_action('wp_head', 'ruigehond006_stylesheet');
+        if (!isset($option['no_css'])) add_action('wp_head', 'ruigehond006_stylesheet');
     }
 }
 
@@ -278,6 +278,12 @@ function ruigehond006_settings()
         'archives',
         'checkbox',
         __('And on their archives', 'wp-reading-progress'),
+        $option
+    );
+    ruigehond006_add_settings_field(
+        'no_css',
+        'checkbox',
+        __('necessary css for the reading bar is included elsewhere', 'wp-reading-progress'),
         $option
     );
 }
