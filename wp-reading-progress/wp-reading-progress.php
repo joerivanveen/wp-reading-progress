@@ -3,7 +3,7 @@
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar with optional estimated reading time indication. Great UX on longreads!
-Version: 1.3.5
+Version: 1.4.0
 Author: Ruige hond
 Author URI: https://ruigehond.nl
 License: GPLv3
@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-Define('RUIGEHOND006_VERSION', '1.3.5');
+Define('RUIGEHOND006_VERSION', '1.4.0');
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -51,7 +51,6 @@ function ruigehond006_run()
         add_action('save_post', 'ruigehond006_meta_box_save');
     } else {
         wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.js', 'jQuery', RUIGEHOND006_VERSION);
-        //wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.css', false, RUIGEHOND006_VERSION);
     }
 }
 
@@ -283,8 +282,9 @@ function ruigehond006_settings()
     ruigehond006_add_settings_field(
         'no_css',
         'checkbox',
-        __('necessary css for the reading bar is included elsewhere', 'wp-reading-progress'),
-        $option
+        'No css',
+        $option,
+        __('necessary css for the reading bar is included elsewhere', 'wp-reading-progress')
     );
 }
 
