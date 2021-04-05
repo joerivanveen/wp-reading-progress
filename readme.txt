@@ -58,6 +58,8 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
+1.3.6: moved css to head to avoid render blocking, added option ‘no css’ if you want to handle it yourself
+
 1.3.5: improved get top position custom function to include edge cases, debounced resize event
 
 1.3.4: removed jQuery dependency
