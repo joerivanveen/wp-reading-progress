@@ -51,7 +51,6 @@ function ruigehond006_run()
         add_action('save_post', 'ruigehond006_meta_box_save');
     } else {
         wp_enqueue_script('ruigehond006_javascript', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.js', false, RUIGEHOND006_VERSION);
-        wp_enqueue_style('ruigehond006_stylesheet', plugin_dir_url(__FILE__) . 'wp-reading-progress.min.css', false, RUIGEHOND006_VERSION);
     }
 }
 
@@ -63,7 +62,7 @@ function ruigehond006_localize()
         $option = get_option('ruigehond006');
         $post_id = get_the_ID();
         if (is_singular()) {
-            if ((isset($option['post_types']) and in_array(get_post_type($post_id), $option['post_types']))
+            if ((isset($option['post_types']) && in_array(get_post_type($post_id), $option['post_types']))
                 or 'yes' === get_post_meta($post_id, '_ruigehond006_show', true)) {
                 if (isset($option['include_comments'])) {
                     $post_identifier = 'body';
@@ -71,8 +70,7 @@ function ruigehond006_localize()
                     $post_identifier = '.' . implode('.', get_post_class('', $post_id));
                 }
             }
-        } elseif (isset($option['archives'])
-            and isset($option['post_types']) and in_array(get_post_type(), $option['post_types'])) {
+        } elseif (isset($option['archives']) && isset($option['post_types']) && in_array(get_post_type(), $option['post_types'])) {
             $post_identifier = 'body';
         }
         if (null !== $post_identifier) {
@@ -83,9 +81,13 @@ function ruigehond006_localize()
                 )
             ));
         }
+        if (!isset($option['no_css'])) add_action('wp_head', 'ruigehond006_stylesheet');
     }
 }
-
+function ruigehond006_stylesheet()
+{
+    echo '<style type="text/css">#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;width:100%;margin:0;overflow:visible}#ruigehond006_inner{position:absolute;height:0;width:inherit;background-color:rgba(255,255,255,.2);-webkit-transition:height .4s;transition:height .4s}html[dir=rtl] #ruigehond006_wrap{text-align:right}#ruigehond006_bar{width:0;height:100%;background-color:transparent}</style>';
+}
 // meta box exposes setting to display reading progress for an individual post
 // https://developer.wordpress.org/reference/functions/add_meta_box/
 function ruigehond006_meta_box_add($post_type = null)
@@ -244,7 +246,8 @@ function ruigehond006_settings()
             if (isset($args['option']['include_comments']) && $args['option']['include_comments']) {
                 echo ' checked="checked"';
             }
-            echo '/> ' . __('use whole page to calculate reading progress', 'wp-reading-progress');
+            echo '/> ';
+            echo __('use whole page to calculate reading progress', 'wp-reading-progress');
             //echo '<br/><em style="background-color:#ffc;">This option may be removed in a future release if nobody uses it, let me know if you want to keep it</em>';
             echo '</label>';
         },
@@ -285,6 +288,22 @@ function ruigehond006_settings()
                 echo ' checked="checked"';
             }
             echo '/>';
+        },
+        'ruigehond006',
+        'progress_bar_settings',
+        ['option' => $option] // args
+    );
+    add_settings_field(
+        'ruigehond006_no_css',
+        __('No css', 'wp-reading-progress'),
+        function ($args) {
+            echo '<label><input type="checkbox" name="ruigehond006[no_css]"';
+            if (isset($args['option']['no_css'])) {
+                echo ' checked="checked"';
+            }
+            echo '/> ';
+            echo __('necessary css for the reading bar is included elsewhere', 'wp-reading-progress');
+            echo '</label>';
         },
         'ruigehond006',
         'progress_bar_settings',
