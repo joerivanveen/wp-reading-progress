@@ -37,7 +37,7 @@ function ruigehond006_Start() {
 }
 
 function ruigehond006_Initialize(p) {
-    var $adminbar = document.getElementById('wpadminbar');
+    var $adminbar = document.getElementById('wpadminbar'), el;
     ruigehond006_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
     if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
         ruigehond006_f = Math.max(ruigehond006_h - (ruigehond006_boundingClientTop(p) + window.pageYOffset), 0); // math.max for when article is off screen
@@ -46,8 +46,10 @@ function ruigehond006_Initialize(p) {
         ? $adminbar.getBoundingClientRect().height : 0;
     if (!document.getElementById('ruigehond006_bar')) {
         document.body.insertAdjacentHTML('beforeend', // todo remove the css class names
-            '<div id="ruigehond006_wrap"><div id="ruigehond006_inner" class="ruigehond006 progress"><div id="ruigehond006_bar" role="progressbar"></div></div></div>');
-        document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color;
+            '<div id="ruigehond006_wrap"><div id="ruigehond006_inner" class="ruigehond006 progress"><div id="ruigehond006_bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="-1"></div></div></div>');
+        el = document.getElementById('ruigehond006_bar');
+        el.style.backgroundColor = ruigehond006_c.bar_color;
+        if (ruigehond006_c.hasOwnProperty('aria_label')) el.setAttribute('aria-label', ruigehond006_c.aria_label);
         if (ruigehond006_c.bar_attach === 'bottom') {
             document.getElementById('ruigehond006_wrap').style.bottom = '0';
             document.getElementById('ruigehond006_inner').style.bottom = '0';
@@ -70,7 +72,9 @@ function ruigehond006_Progress(p) {
         reading_left = Math.max(Math.min(loc.bottom - ruigehond006_h, loc_height), 0), // in pixels
         reading_done = 100 * (loc_height - reading_left) / loc_height; // in percent
     requestAnimationFrame(function () {
-        document.getElementById('ruigehond006_bar').style.width = reading_done + '%';
+        var el = document.getElementById('ruigehond006_bar');
+        el.style.width = reading_done + '%';
+        el.setAttribute('aria-valuenow', parseInt(reading_done));
         if (ruigehond006_c.bar_attach !== 'bottom') ruigehond006_BarInDom();
     });
 }

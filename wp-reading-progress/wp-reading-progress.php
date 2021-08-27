@@ -3,7 +3,7 @@
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress
-Version: 1.3.6
+Version: 1.3.7
 Author: Ruige hond
 Author URI: https://ruigehond.nl
 License: GPLv3
@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-Define('RUIGEHOND006_VERSION', '1.3.6');
+Define('RUIGEHOND006_VERSION', '1.3.7');
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -219,6 +219,18 @@ function ruigehond006_settings()
         function ($args) {
             echo '<input type="text" name="ruigehond006[bar_height]" value="' . $args['option']['bar_height'] . '"/>';
             echo '<div class="ruigehond006 explanation"><em>' . sprintf(__('Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress'), '<a>.5vh</a>', '<a>6px</a>') . '</em></div>';
+        }, // callback
+        'ruigehond006', // page id
+        'progress_bar_settings', // section id
+        ['option' => $option] // args
+    );
+    add_settings_field(
+        'ruigehond006_aria_label', // As of WP 4.6 this value is used only internally
+        // use $args' label_for to populate the id inside the callback
+        __('Aria label', 'wp-reading-progress'), // title
+        function ($args) {
+            echo '<input type="text" class="regular-text" name="ruigehond006[aria_label]" value="' . (isset($args['option']['aria_label'])?$args['option']['aria_label']:'') . '"/>';
+            echo '<div class="ruigehond006 explanation"><em>Explain the purpose of this reading bar to screenreaders</em></div>';
         }, // callback
         'ruigehond006', // page id
         'progress_bar_settings', // section id

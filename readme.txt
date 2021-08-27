@@ -3,7 +3,7 @@ Contributors: ruigehond
 Tags: reading, progress, progressbar
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hallo@ruigehond.nl&lc=US&item_name=WP+reading+progress+plugin&no_note=0&cn=&currency_code=EUR&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted
 Requires at least: 4.9
-Tested up to: 5.7
+Tested up to: 5.8
 Requires PHP: 5.4
 Stable tag: trunk
 License: GPLv3
@@ -57,6 +57,8 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 3. Activate the bar for an individual post (if that post type is not enabled)
 
 == Changelog ==
+
+1.3.7: added aria-role and aria-value updating for screenreaders
 
 1.3.6: moved css to head to avoid render blocking, added option ‘no css’ if you want to handle it yourself
 
