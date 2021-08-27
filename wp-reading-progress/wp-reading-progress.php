@@ -174,7 +174,7 @@ function ruigehond006_settings()
         __('Stick the bar to this element', 'wp-reading-progress'), // title
         function ($args) {
             echo '<input type="text" name="ruigehond006[bar_attach]" value="';
-            echo $args['option']['bar_attach'];
+            echo htmlentities($args['option']['bar_attach']);
             echo '"/><div class="ruigehond006 explanation"><em>';
             // #translators: two links are inserted that set the value accordingly, 'top' and 'bottom'
             echo sprintf(__('Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress'),
@@ -217,7 +217,7 @@ function ruigehond006_settings()
         // use $args' label_for to populate the id inside the callback
         __('Progress bar thickness', 'wp-reading-progress'), // title
         function ($args) {
-            echo '<input type="text" name="ruigehond006[bar_height]" value="' . $args['option']['bar_height'] . '"/>';
+            echo '<input type="text" name="ruigehond006[bar_height]" value="' . htmlentities($args['option']['bar_height']) . '"/>';
             echo '<div class="ruigehond006 explanation"><em>' . sprintf(__('Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress'), '<a>.5vh</a>', '<a>6px</a>') . '</em></div>';
         }, // callback
         'ruigehond006', // page id
@@ -229,7 +229,7 @@ function ruigehond006_settings()
         // use $args' label_for to populate the id inside the callback
         __('Aria label', 'wp-reading-progress'), // title
         function ($args) {
-            echo '<input type="text" class="regular-text" name="ruigehond006[aria_label]" value="' . (isset($args['option']['aria_label'])?$args['option']['aria_label']:'') . '"/>';
+            echo '<input type="text" class="regular-text" name="ruigehond006[aria_label]" value="' . (isset($args['option']['aria_label'])?htmlentities($args['option']['aria_label']):'') . '"/>';
             echo '<div class="ruigehond006 explanation"><em>Explain the purpose of this reading bar to screenreaders</em></div>';
         }, // callback
         'ruigehond006', // page id
