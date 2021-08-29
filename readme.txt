@@ -58,6 +58,8 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
+1.3.7: added aria-role and aria-value updating for screenreaders
+
 1.3.6: moved css to head to avoid render-blocking, added option to remove css altogether if you handle it yourself
 
 1.3.5: improved get top position custom function to include edge cases, debounced resize event, added dark-mode color

@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-Define('RUIGEHOND006_VERSION', '1.4.0');
+const RUIGEHOND006_VERSION = '1.4.0';
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -56,7 +56,7 @@ function ruigehond006_run()
 
 function ruigehond006_stylesheet()
 {
-    echo '<style type="text/css">#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;';
+    echo '<style>#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;';
     echo 'width:100%;margin:0;overflow:visible;}';
     echo '#ruigehond006_inner{position:absolute;height:0;width:inherit;background-color:rgba(255,255,255,.2);';
     echo '-webkit-transition:height .42s;transition:height .42s;}';
@@ -103,7 +103,7 @@ function ruigehond006_localize()
                 $option, array(
                     'post_identifier' => $post_identifier,
                     'post_id' => $post_id,
-                    //'ert' => $reading_time,
+                    'ert' => $reading_time,
                 )
             ));
         }
@@ -223,14 +223,21 @@ function ruigehond006_settings()
     );
     ruigehond006_add_settings_field(
         'bar_height',
-        'text',
+        'text-short',
         __('Progress bar thickness', 'wp-reading-progress'), // title
         $option,
         sprintf(__('Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress'), '<a>.5vh</a>', '<a>6px</a>')
     );
     ruigehond006_add_settings_field(
+        'aria_label',
+        'text',
+        __('Aria label', 'wp-reading-progress'), // title
+        $option,
+        __('Explain the purpose of this reading bar to screenreaders', 'wp-reading-progress')
+    );
+    ruigehond006_add_settings_field(
         'ert_speed',
-        'numeric',
+        'text-short',
         __('Reading speed', 'wp-reading-progress'), // title
         $option,
         __('Average reading speed in words per minute, integers only. Used to estimate reading time. Leave empty for no ERT. Usual is something between 200 and 300.', 'wp-reading-progress')
@@ -319,7 +326,8 @@ function ruigehond006_add_settings_field($name, $type, $title, $option, $explana
                     echo '<input type="text" name="ruigehond006[';
                     echo $args['name'];
                     echo ']" value="';
-                    echo $value;
+                    echo htmlentities($value);
+                    if ('text-short' !== $args['type']) echo '" class="regular-text';
                     echo '"/>';
             }
             if (isset($args['explanation'])) {

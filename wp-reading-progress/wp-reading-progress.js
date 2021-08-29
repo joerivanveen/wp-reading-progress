@@ -45,9 +45,9 @@ function ruigehond006_Initialize(p) {
     ruigehond006_t = (adminbar !== null && window.getComputedStyle(adminbar).getPropertyValue('position') === 'fixed')
         ? adminbar.getBoundingClientRect().height : 0;
     if (!document.getElementById('ruigehond006_bar')) {
-        document.body.insertAdjacentHTML('beforeend', // todo remove the css class names
-            '<div id="ruigehond006_wrap"><div id="ruigehond006_inner" class="ruigehond006 progress"><div id="ruigehond006_bar" role="progressbar"></div></div></div>');
-        //document.getElementById('ruigehond006_bar').style.backgroundColor = ruigehond006_c.bar_color; // now in css
+        document.body.insertAdjacentHTML('beforeend',
+            '<div id="ruigehond006_wrap"><div id="ruigehond006_inner"><div id="ruigehond006_bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="-1"></div></div></div>');
+        if (ruigehond006_c.aria_label) document.getElementById('ruigehond006_bar').setAttribute('aria-label', ruigehond006_c.aria_label);
         if (ruigehond006_c.bar_attach === 'bottom') {
             document.getElementById('ruigehond006_wrap').style.bottom = '0';
             document.getElementById('ruigehond006_inner').style.bottom = '0';
@@ -76,7 +76,9 @@ function ruigehond006_Progress(p) {
         reading_left = Math.max(Math.min(loc.bottom - ruigehond006_h, loc_height), 0), // in pixels
         reading_done = 100 * (loc_height - reading_left) / loc_height; // in percent
     requestAnimationFrame(function () {
-        document.getElementById('ruigehond006_bar').style.width = reading_done + '%';
+        var el = document.getElementById('ruigehond006_bar');
+        el.style.width = reading_done + '%';
+        el.setAttribute('aria-valuenow', parseInt(reading_done.toString()).toString());
         if (ruigehond006_c.bar_attach !== 'bottom') ruigehond006_BarInDom();
     });
     if ((loc = document.getElementById('ruigehond006_ert'))) {
@@ -128,7 +130,6 @@ function ruigehond006_BarInDom() {
  */
 function ruigehond006_boundingClientTop(el) {
     var elementTop = 0, scrollTop = window.pageYOffset;
-    // offsetParent: null for body, and in some browsers null for a fixed element, but than we have returned already
     while (el) {
         elementTop += el.offsetTop;
         if (scrollTop > 0
@@ -136,7 +137,7 @@ function ruigehond006_boundingClientTop(el) {
                 || window.getComputedStyle(el).getPropertyValue('position').toLowerCase()))) {
             return elementTop;
         }
-        el = el.offsetParent; // this is either null for body, or maybe a fixed element, but we returned early then
+        el = el.offsetParent; // this is either null for body, or in some browsers a fixed element, but we returned early then
     }
     return elementTop - scrollTop;
 }
