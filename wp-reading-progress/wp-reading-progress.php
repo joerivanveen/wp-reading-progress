@@ -3,7 +3,7 @@
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress
-Version: 1.3.7
+Version: 1.3.8
 Author: Ruige hond
 Author URI: https://ruigehond.nl
 License: GPLv3
@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-Define('RUIGEHOND006_VERSION', '1.3.7');
+Define('RUIGEHOND006_VERSION', '1.3.8');
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -86,13 +86,13 @@ function ruigehond006_localize()
 }
 function ruigehond006_stylesheet()
 {
-    echo '<style type="text/css">#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;width:100%;margin:0;overflow:visible}#ruigehond006_inner{position:absolute;height:0;width:inherit;background-color:rgba(255,255,255,.2);-webkit-transition:height .4s;transition:height .4s}html[dir=rtl] #ruigehond006_wrap{text-align:right}#ruigehond006_bar{width:0;height:100%;background-color:transparent}</style>';
+    echo '<style>#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;width:100%;margin:0;overflow:visible}#ruigehond006_inner{position:absolute;height:0;width:inherit;background-color:rgba(255,255,255,.2);-webkit-transition:height .4s;transition:height .4s}html[dir=rtl] #ruigehond006_wrap{text-align:right}#ruigehond006_bar{width:0;height:100%;background-color:transparent}</style>';
 }
 // meta box exposes setting to display reading progress for an individual post
 // https://developer.wordpress.org/reference/functions/add_meta_box/
 function ruigehond006_meta_box_add($post_type = null)
 {
-    if (!$post_id = get_the_ID()) {
+    if (!get_the_ID()) {
         return;
     }
     $option = get_option('ruigehond006');
@@ -193,8 +193,8 @@ function ruigehond006_settings()
             if (isset($args['option']['stick_relative']) && $args['option']['stick_relative']) {
                 echo ' checked="checked"';
             }
-            echo '/> ' . __('If the bar is too wide, try relative positioning by checking this box, or attach it to another element.', 'wp-reading-progress');
-            //echo '<br/><em style="background-color:#ffc;">This option may be removed in a future release if nobody uses it, let me know if you want to keep it</em>';
+            echo '/> ';
+            echo __('If the bar is too wide, try relative positioning by checking this box, or attach it to another element.', 'wp-reading-progress');
             echo '</label>';
         },
         'ruigehond006',
@@ -260,7 +260,6 @@ function ruigehond006_settings()
             }
             echo '/> ';
             echo __('use whole page to calculate reading progress', 'wp-reading-progress');
-            //echo '<br/><em style="background-color:#ffc;">This option may be removed in a future release if nobody uses it, let me know if you want to keep it</em>';
             echo '</label>';
         },
         'ruigehond006',

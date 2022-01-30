@@ -3,9 +3,9 @@ Contributors: ruigehond
 Tags: reading, progress, progressbar
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hallo@ruigehond.nl&lc=US&item_name=WP+reading+progress+plugin&no_note=0&cn=&currency_code=EUR&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted
 Requires at least: 4.9
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 5.4
-Stable tag: trunk
+Stable tag: 1.3.8
 License: GPLv3
 
 Light weight fully customizable reading progress bar. Sticks to top, bottom or sticky menu, with fallback for small screens
@@ -57,6 +57,8 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 3. Activate the bar for an individual post (if that post type is not enabled)
 
 == Changelog ==
+
+1.3.8: refactor javascript slightly smaller, make scroll eventlistener passive
 
 1.3.7: added aria-role and aria-value updating for screenreaders
 
