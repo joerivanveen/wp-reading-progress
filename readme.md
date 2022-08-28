@@ -1,6 +1,6 @@
 # WP reading progress
 
-Light weight fully customizable reading progress bar. Sticks to top, bottom or sticky menu, with fallback for small screens.
+Light weight fully customizable reading progress bar for WordPress websites. Sticks to top, bottom or sticky menu, with fallback for small screens.
 
 Get it on WordPress: <https://wordpress.org/plugins/wp-reading-progress/>
 
