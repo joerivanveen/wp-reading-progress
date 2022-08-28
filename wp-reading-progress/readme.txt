@@ -15,23 +15,23 @@ The reading progress bar is a great user experience on longreads. Especially if 
 
 Customization:
 
-- Location top of screen, bottom of screen or below a sticky menu
+- Location top of screen, bottom of screen or below a sticky menu.
 
-- Choose color of the reading progress bar
+- Choose color of the reading progress bar.
 
-- Have the bar start at 0% even when part of the article is visible
+- Have the bar start at 0% even when part of the article is visible.
 
-- Select post types you wish the bar to appear, or individual posts
+- Select post types you wish the bar to appear, or individual posts.
 
 Behaviour:
 
-- The reading progress bar has smooth initializing since part of the text may already be visible, after that a lightweight update-function ensures quick response while scrolling
+- The reading progress bar has smooth initializing since part of the text may already be visible, after that a lightweight update-function ensures quick response while scrolling.
 
-- When the sticky menu disappears during resizing or scrolling the progress bar automatically defaults to displaying at the top of the screen
+- The bar can attach itself to any (sticky) element that you can define as an admin, the first selected visible element will be used.
 
-- If there is no single article identified (by class names or id) it uses the whole page to calculate progress
+- When there is no (longer a) visible element to attach to, the bar displays at the top.
 
-- Attachment to a sticky element can be either absolute (default) or relative (use the checkbox in settings)
+- If there is no single article identified (by class names or id) it uses the whole page to calculate progress.
 
 This is my 6th Wordpress plugin but my first one freely available to everybody. I hope you enjoy using it as much as I enjoy building it!
 
