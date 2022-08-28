@@ -72,7 +72,7 @@ function ruigehond006() {
         requestAnimationFrame(function () {
             var el = document.getElementById('ruigehond006_bar');
             el.style.width = reading_done + '%';
-            el.setAttribute('aria-valuenow', parseInt(reading_done, 10));
+            el.setAttribute('aria-valuenow', Math.trunc(reading_done));
             if (ruigehond006_c.bar_attach !== 'bottom') barInDom();
         });
     }
@@ -103,7 +103,7 @@ function ruigehond006() {
         if ((ruigehond006_a = getAttacher())) { // it can disappear so you need to check every time
             requestAnimationFrame(function () {
                 var top, new_margin, old_margin;
-                if (true !== isSticky) {
+                if (! ruigehond006_a.querySelector('#ruigehond006_wrap')) {
                     isSticky = true;
                     if (typeof ruigehond006_c.stick_relative !== 'undefined') {
                         wrap.style.position = 'relative';
