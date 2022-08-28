@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined('ABSPATH') or die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-Define('RUIGEHOND006_VERSION', '1.3.8');
+Define('RUIGEHOND006_VERSION', '1.4.0');
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -43,7 +43,7 @@ function ruigehond006_run()
         load_plugin_textdomain('wp-reading-progress', null, dirname(plugin_basename(__FILE__)) . '/languages/');
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('wp-color-picker');
-        wp_enqueue_script('ruigehond006_admin_javascript', plugin_dir_url(__FILE__) . 'admin.js', 'wp-color-picker', RUIGEHOND006_VERSION, true);
+        wp_enqueue_script('ruigehond006_admin_javascript', plugin_dir_url(__FILE__) . 'admin.min.js', 'wp-color-picker', RUIGEHOND006_VERSION, true);
         add_action('admin_init', 'ruigehond006_settings');
         add_action('admin_menu', 'ruigehond006_menuitem');
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'ruigehond006_settingslink'); // settings link on plugins page

@@ -26,7 +26,7 @@ function ruigehond006() {
     });
     window.addEventListener('scroll', function () {
         progress(p);
-    }, {passive:true});
+    }, {passive: true});
     window.addEventListener('resize', function () {
         clearTimeout(tt);
         tt = setTimeout(function () {
@@ -41,10 +41,10 @@ function ruigehond006() {
             heightCorrection = Math.max(windowHeight - (boundingClientTop(p) + window.pageYOffset), 0); // math.max for when article is off screen
         }
         fromTop = (adminbar !== null && window.getComputedStyle(adminbar).getPropertyValue('position') === 'fixed')
-            ? adminbar.getBoundingClientRect().height : 0;
+            ? adminbar.offsetHeight : 0;
         if (!document.getElementById('ruigehond006_bar')) {
             document.body.insertAdjacentHTML('beforeend',
-                '<div id="ruigehond006_wrap"><div id="ruigehond006_inner"><div id="ruigehond006_bar" class="ruigehond006 progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="-1"></div></div></div>');
+                '<div id="ruigehond006_wrap"><div id="ruigehond006_inner"><div id="ruigehond006_bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="-1"></div></div></div>');
             el = document.getElementById('ruigehond006_bar');
             el.style.backgroundColor = ruigehond006_c.bar_color;
             if (ruigehond006_c.hasOwnProperty('aria_label')) el.setAttribute('aria-label', ruigehond006_c.aria_label);
@@ -72,44 +72,56 @@ function ruigehond006() {
         requestAnimationFrame(function () {
             var el = document.getElementById('ruigehond006_bar');
             el.style.width = reading_done + '%';
-            el.setAttribute('aria-valuenow', parseInt(reading_done));
+            el.setAttribute('aria-valuenow', parseInt(reading_done, 10));
             if (ruigehond006_c.bar_attach !== 'bottom') barInDom();
         });
     }
 
+    function getAttacher() {
+        var candidates, selector = ruigehond006_c.bar_attach,
+            element, i, len, h;
+        if (0 === selector.indexOf('#')) return document.getElementById(selector.substr(1));
+        candidates = document.querySelectorAll(selector);
+        for (i = 0, len = candidates.length; i < len; ++i) {
+            element = candidates[i]; // return this element if it is visible and the bottom of it is still in the viewport
+            h = element.offsetHeight;
+            //console.warn(element, h, boundingClientTop(element), windowHeight, window.pageYOffset);
+            if (
+                !!(h || element.offsetWidth || element.getClientRects().length)
+                && (h = h + boundingClientTop(element)) > 0 && h < windowHeight - fromTop
+            ) {
+                return element;
+            }
+        }
+        return null;
+    }
+
     function barInDom() {
-        var top, new_margin, old_margin,
-            wrap = document.getElementById('ruigehond006_wrap'),
+        var wrap = document.getElementById('ruigehond006_wrap'),
             inner = document.getElementById('ruigehond006_inner');
         //if (ruigehond006_c.bar_attach === 'bottom') return; // this function should not be called in that case at all to avoid overhead
-        if ((ruigehond006_a = document.querySelector(ruigehond006_c.bar_attach))) { // it can disappear so you need to check every time
-            top = ruigehond006_a.offsetHeight + boundingClientTop(ruigehond006_a);
-            if (top <= fromTop) { // stick to top
-                if (false !== isSticky) barToTop(wrap, inner);
-            } else { // attach to the element
-                requestAnimationFrame(function () {
-                    if (true !== isSticky) {
-                        isSticky = true;
-                        if (typeof ruigehond006_c.stick_relative !== 'undefined') {
-                            wrap.style.position = 'relative';
-                        } else {
-                            wrap.style.position = 'absolute';
-                            wrap.style.top = 'inherit';
-                        }
-                        ruigehond006_a.insertAdjacentElement('beforeend', wrap); // always attach as a child to ensure smooth operation
-                        //console.log('attach bar to the element');
+        if ((ruigehond006_a = getAttacher())) { // it can disappear so you need to check every time
+            requestAnimationFrame(function () {
+                var top, new_margin, old_margin;
+                if (true !== isSticky) {
+                    isSticky = true;
+                    if (typeof ruigehond006_c.stick_relative !== 'undefined') {
+                        wrap.style.position = 'relative';
+                    } else {
+                        wrap.style.position = 'absolute';
+                        wrap.style.top = 'inherit';
                     }
-                    // make sure it’s always snug against the element using top margin
-                    // inside requestAnimationFrame properties of the element might be different than before
-                    top = ruigehond006_a.offsetHeight + boundingClientTop(ruigehond006_a);
-                    new_margin = (old_margin = (parseFloat(inner.style.marginTop) || 0)) + top - boundingClientTop(inner);
-                    if (new_margin !== old_margin) {
-                        inner.style.marginTop = new_margin.toString() + 'px';
-                        //console.warn('set margin from ' + old_margin + ' to ' + new_margin);
-                    }
-                    //console.warn(top + ' vs ' + boundingClientTop(inner) + ' vs ' + inner.getBoundingClientRect().top);
-                });
-            }
+                    ruigehond006_a.insertAdjacentElement('beforeend', wrap); // always attach as a child to ensure smooth operation
+                }
+                // make sure it’s always snug against the element using top margin
+                top = ruigehond006_a.offsetHeight + fromTop + boundingClientTop(ruigehond006_a);
+                new_margin = (old_margin = (parseFloat(inner.style.marginTop) || 0)) + top - fromTop - boundingClientTop(inner);
+                if (new_margin !== old_margin) {
+                    inner.style.marginTop = new_margin.toString() + 'px';
+                    //console.warn('set margin from ' + old_margin + ' to ' + new_margin);
+                }
+                //console.warn(top + ' vs ' + boundingClientTop(inner) + ' vs ' + inner.getBoundingClientRect().top);
+            });
         } else { // bar_attach must be top
             if (false !== isSticky) barToTop(wrap, inner);
         }

@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hallo
 Requires at least: 4.9
 Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 1.3.8
+Stable tag: 1.4.0
 License: GPLv3
 
 Light weight fully customizable reading progress bar. Sticks to top, bottom or sticky menu, with fallback for small screens
@@ -35,10 +35,6 @@ Behaviour:
 
 This is my 6th Wordpress plugin but my first one freely available to everybody. I hope you enjoy using it as much as I enjoy building it!
 
-=== IMPORTANT NOTES: ===
-
-- css classes 'ruigehond006' and 'progress' are scheduled for removal in a next version, if you target the bar in css use '#ruigehond006_inner'.
-
 Regards,
 Joeri (ruige hond)
 
@@ -57,6 +53,8 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 3. Activate the bar for an individual post (if that post type is not enabled)
 
 == Changelog ==
+
+1.4.0: compatible with fixed menus that consist of different elements depending on screen size, as long as they have a common selector
 
 1.3.8: refactor javascript slightly smaller, make scroll eventlistener passive
 
@@ -100,6 +98,6 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Upgrade Notice ==
 
-= 1.3.2 =
+= 1.4.0 =
 
-The way the bar sticks to another element is greatly improved, if you use it with a sticky element please check whether it still behaves as you expect, or stick it to a better element from now on.
+The bar will select between multiple elements when available and pick the first one in the viewport. If you use it with a sticky element please check whether it still behaves as you expect, or stick it to a better element from now on.
