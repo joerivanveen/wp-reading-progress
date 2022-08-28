@@ -80,8 +80,11 @@ function ruigehond006() {
     function getAttacher() {
         var candidates, selector = ruigehond006_c.bar_attach,
             element, i, len, h;
-        if (0 === selector.indexOf('#')) return document.getElementById(selector.substr(1));
-        candidates = document.querySelectorAll(selector);
+        if (0 === selector.indexOf('#')) {
+            candidates = [document.getElementById(selector.substr(1))];
+        } else {
+            candidates = document.querySelectorAll(selector);
+        }
         for (i = 0, len = candidates.length; i < len; ++i) {
             element = candidates[i]; // return this element if it is visible and the bottom of it is still in the viewport
             h = element.offsetHeight;
