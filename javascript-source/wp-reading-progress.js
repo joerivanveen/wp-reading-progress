@@ -3,7 +3,6 @@ function ruigehond006() {
         heightCorrection = 0, /* the correction of height when mark_it_zero (or 0 otherwise) */
         ruigehond006_a = null, /* the element the reading bar is positioned under (with fallback to top) */
         fromTop = 0, /* the top value (set to below the admin bar when necessary) */
-        isSticky = null, /* keeps track of whether the bar is sticky (true) or not (false) */
         p_candidates, p, tt;
     /* custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar */
     if (typeof ruigehond006_c === 'undefined') return;
@@ -77,6 +76,36 @@ function ruigehond006() {
         });
     }
 
+    function barInDom() {
+        var wrap = document.getElementById('ruigehond006_wrap'),
+            inner = document.getElementById('ruigehond006_inner');
+        //if (ruigehond006_c.bar_attach === 'bottom') return; // this function should not be called in that case at all to avoid overhead
+        if ((ruigehond006_a = getAttacher())) { // it can disappear so you need to check every time
+            requestAnimationFrame(function () {
+                var top, new_margin, old_margin;
+                if (!ruigehond006_a.querySelector('#ruigehond006_wrap')) {
+                    if (typeof ruigehond006_c.stick_relative !== 'undefined') {
+                        wrap.style.position = 'relative';
+                    } else {
+                        wrap.style.position = 'absolute';
+                        wrap.style.top = 'inherit';
+                    }
+                    ruigehond006_a.insertAdjacentElement('beforeend', wrap); // always attach as a child to ensure smooth operation
+                }
+                // make sure it’s always snug against the element using top margin
+                top = ruigehond006_a.offsetHeight + fromTop + boundingClientTop(ruigehond006_a);
+                new_margin = (old_margin = (parseFloat(inner.style.marginTop) || 0)) + top - fromTop - boundingClientTop(inner);
+                if (new_margin !== old_margin) {
+                    inner.style.marginTop = new_margin.toString() + 'px';
+                    //console.warn('set margin from ' + old_margin + ' to ' + new_margin);
+                }
+                //console.warn(top + ' vs ' + boundingClientTop(inner) + ' vs ' + inner.getBoundingClientRect().top);
+            });
+        } else { // bar_attach must be top
+            barToTop(wrap, inner);
+        }
+    }
+
     function getAttacher() {
         var candidates, selector = ruigehond006_c.bar_attach,
             element, i, len, h;
@@ -99,37 +128,6 @@ function ruigehond006() {
         return null;
     }
 
-    function barInDom() {
-        var wrap = document.getElementById('ruigehond006_wrap'),
-            inner = document.getElementById('ruigehond006_inner');
-        //if (ruigehond006_c.bar_attach === 'bottom') return; // this function should not be called in that case at all to avoid overhead
-        if ((ruigehond006_a = getAttacher())) { // it can disappear so you need to check every time
-            requestAnimationFrame(function () {
-                var top, new_margin, old_margin;
-                if (! ruigehond006_a.querySelector('#ruigehond006_wrap')) {
-                    isSticky = true;
-                    if (typeof ruigehond006_c.stick_relative !== 'undefined') {
-                        wrap.style.position = 'relative';
-                    } else {
-                        wrap.style.position = 'absolute';
-                        wrap.style.top = 'inherit';
-                    }
-                    ruigehond006_a.insertAdjacentElement('beforeend', wrap); // always attach as a child to ensure smooth operation
-                }
-                // make sure it’s always snug against the element using top margin
-                top = ruigehond006_a.offsetHeight + fromTop + boundingClientTop(ruigehond006_a);
-                new_margin = (old_margin = (parseFloat(inner.style.marginTop) || 0)) + top - fromTop - boundingClientTop(inner);
-                if (new_margin !== old_margin) {
-                    inner.style.marginTop = new_margin.toString() + 'px';
-                    //console.warn('set margin from ' + old_margin + ' to ' + new_margin);
-                }
-                //console.warn(top + ' vs ' + boundingClientTop(inner) + ' vs ' + inner.getBoundingClientRect().top);
-            });
-        } else { // bar_attach must be top
-            if (false !== isSticky) barToTop(wrap, inner);
-        }
-    }
-
     /**
      *  On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
      *  viewport inconsistently while scrolling with touch, so we roll our own function
@@ -150,8 +148,6 @@ function ruigehond006() {
     }
 
     function barToTop(wrap, inner) {
-        //if (false === isSticky) return; // this function should not be called at all then to avoid overhead
-        isSticky = false; // no longer sticky
         requestAnimationFrame(function () {
             wrap.style.position = 'fixed';
             wrap.style.top = fromTop.toString() + 'px';
