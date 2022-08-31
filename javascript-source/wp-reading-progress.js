@@ -1,5 +1,5 @@
 function ruigehond006() {
-    var windowHeight = 0, /* this caches the window height */
+    let windowHeight = 0, /* this caches the window height */
         heightCorrection = 0, /* the correction of height when mark_it_zero (or 0 otherwise) */
         ruigehond006_a = null, /* the element the reading bar is positioned under (with fallback to top) */
         fromTop = 0, /* the top value (set to below the admin bar when necessary) */
@@ -34,7 +34,7 @@ function ruigehond006() {
     });
 
     function initialize(p) {
-        var adminbar = document.getElementById('wpadminbar'), el;
+        let adminbar = document.getElementById('wpadminbar'), el;
         windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
         if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
             heightCorrection = Math.max(windowHeight - (boundingClientTop(p) + window.pageYOffset), 0); // math.max for when article is off screen
@@ -64,12 +64,12 @@ function ruigehond006() {
     }
 
     function progress(p) {
-        var loc = p.getBoundingClientRect(), // loc.height in pixels = total amount that can be read/
+        let loc = p.getBoundingClientRect(), // loc.height in pixels = total amount that can be read/
             loc_height = loc.height - heightCorrection,
             reading_left = Math.max(Math.min(loc.bottom - windowHeight, loc_height), 0), // in pixels
             reading_done = 100 * (loc_height - reading_left) / loc_height; // in percent
         requestAnimationFrame(function () {
-            var el = document.getElementById('ruigehond006_bar');
+            let el = document.getElementById('ruigehond006_bar');
             el.style.width = reading_done + '%';
             el.setAttribute('aria-valuenow', Math.trunc(reading_done));
             if (ruigehond006_c.bar_attach !== 'bottom') barInDom();
@@ -77,12 +77,12 @@ function ruigehond006() {
     }
 
     function barInDom() {
-        var wrap = document.getElementById('ruigehond006_wrap'),
+        let wrap = document.getElementById('ruigehond006_wrap'),
             inner = document.getElementById('ruigehond006_inner');
         //if (ruigehond006_c.bar_attach === 'bottom') return; // this function should not be called in that case at all to avoid overhead
         if ((ruigehond006_a = getAttacher())) { // it can disappear so you need to check every time
             requestAnimationFrame(function () {
-                var top, new_margin, old_margin;
+                let top, new_margin, old_margin;
                 if (!ruigehond006_a.querySelector('#ruigehond006_wrap')) {
                     if (typeof ruigehond006_c.stick_relative !== 'undefined') {
                         wrap.style.position = 'relative';
@@ -107,7 +107,7 @@ function ruigehond006() {
     }
 
     function getAttacher() {
-        var candidates, selector = ruigehond006_c.bar_attach,
+        let candidates, selector = ruigehond006_c.bar_attach,
             element, i, len, h;
         if (0 === selector.indexOf('#')) {
             candidates = [document.getElementById(selector.substr(1))];
@@ -117,7 +117,6 @@ function ruigehond006() {
         for (i = 0, len = candidates.length; i < len; ++i) {
             element = candidates[i]; // return this element if it is visible and the bottom of it is still in the viewport
             h = element.offsetHeight;
-            //console.warn(element, h, boundingClientTop(element), windowHeight, window.pageYOffset);
             if (
                 !!(h || element.offsetWidth || element.getClientRects().length)
                 && (h = h + boundingClientTop(element)) > 0 && h < windowHeight - fromTop
@@ -133,7 +132,7 @@ function ruigehond006() {
      *  viewport inconsistently while scrolling with touch, so we roll our own function
      */
     function boundingClientTop(el) {
-        var elementTop = 0, scrollTop = window.pageYOffset;
+        let elementTop = 0, scrollTop = window.pageYOffset;
         // offsetParent: null for body, and in some browsers null for a fixed element, but than we have returned already
         while (el) {
             elementTop += el.offsetTop;
@@ -148,9 +147,10 @@ function ruigehond006() {
     }
 
     function barToTop(wrap, inner) {
+        if (document.body === wrap.parentElement && 'fixed' === wrap.style.position) return; // already on top
         requestAnimationFrame(function () {
             wrap.style.position = 'fixed';
-            wrap.style.top = fromTop.toString() + 'px';
+            wrap.style.top = fromTop + 'px';
             inner.style.marginTop = '0';
             document.body.insertAdjacentElement('beforeend', wrap);
         });
