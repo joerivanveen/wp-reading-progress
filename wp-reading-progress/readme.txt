@@ -101,3 +101,5 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 = 1.4.0 =
 
 The bar will select between multiple elements when available and pick the first one in the viewport. If you use it with a sticky element please check whether it still behaves as you expect, or stick it to a better element from now on.
+
+If you upgrade from a version before 1.3.0, you have to check the 'post' post type in the WP Reading Bar settings manually to keep the same behaviour.
