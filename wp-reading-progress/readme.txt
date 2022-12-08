@@ -3,7 +3,7 @@ Contributors: ruigehond
 Tags: reading, progress, progressbar
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hallo@ruigehond.nl&lc=US&item_name=WP+reading+progress+plugin&no_note=0&cn=&currency_code=EUR&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted
 Requires at least: 4.9
-Tested up to: 6.0
+Tested up to: 6.1
 Requires PHP: 5.6
 Stable tag: 1.4.0
 License: GPLv3
@@ -53,6 +53,8 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 3. Activate the bar for an individual post (if that post type is not enabled)
 
 == Changelog ==
+
+1.5.0: allow multiple menu selectors and pick the first visible one to attach to
 
 1.4.0: compatible with fixed menus that consist of different elements depending on screen size, as long as they have a common selector
 

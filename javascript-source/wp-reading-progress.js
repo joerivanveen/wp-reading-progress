@@ -34,7 +34,8 @@ function ruigehond006() {
     });
 
     function initialize(p) {
-        let adminbar = document.getElementById('wpadminbar'), el;
+        const adminbar = document.getElementById('wpadminbar');
+        let el;
         windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
         if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
             heightCorrection = Math.max(windowHeight - (boundingClientTop(p) + window.pageYOffset), 0); // math.max for when article is off screen
@@ -64,12 +65,12 @@ function ruigehond006() {
     }
 
     function progress(p) {
-        let loc = p.getBoundingClientRect(), // loc.height in pixels = total amount that can be read/
+        const loc = p.getBoundingClientRect(), // loc.height in pixels = total amount that can be read/
             loc_height = loc.height - heightCorrection,
             reading_left = Math.max(Math.min(loc.bottom - windowHeight, loc_height), 0), // in pixels
             reading_done = 100 * (loc_height - reading_left) / loc_height; // in percent
         requestAnimationFrame(function () {
-            let el = document.getElementById('ruigehond006_bar');
+            const el = document.getElementById('ruigehond006_bar');
             el.style.width = reading_done + '%';
             el.setAttribute('aria-valuenow', Math.trunc(reading_done));
             if (ruigehond006_c.bar_attach !== 'bottom') barInDom();
@@ -77,7 +78,7 @@ function ruigehond006() {
     }
 
     function barInDom() {
-        let wrap = document.getElementById('ruigehond006_wrap'),
+        const wrap = document.getElementById('ruigehond006_wrap'),
             inner = document.getElementById('ruigehond006_inner');
         //if (ruigehond006_c.bar_attach === 'bottom') return; // this function should not be called in that case at all to avoid overhead
         if ((ruigehond006_a = getAttacher())) { // it can disappear so you need to check every time
@@ -107,16 +108,22 @@ function ruigehond006() {
     }
 
     function getAttacher() {
-        let candidates, selector = ruigehond006_c.bar_attach,
-            element, i, len, h;
-        if (0 === selector.indexOf('#')) {
-            candidates = [document.getElementById(selector.substr(1))];
-        } else {
-            candidates = document.querySelectorAll(selector);
+        const selectors = ruigehond006_c.bar_attach.split(',');
+        let candidates = [], nodes, nodes_len, nodes_i, selector, element, i, len, h;
+        for (i = 0, len = selectors.length; i < len; ++i) {
+            selector = selectors[i].trim();
+            if (0 === selector.indexOf('#') && -1 === selector.indexOf(' ')) {
+                candidates.push(document.getElementById(selector.substr(1)));
+            } else if ((nodes = document.querySelectorAll(selector))) {
+                for (nodes_i = 0, nodes_len = nodes.length; nodes_i < nodes_len; ++nodes_i) {
+                    candidates.push(nodes[nodes_i]);
+                }
+            }
         }
         for (i = 0, len = candidates.length; i < len; ++i) {
-            element = candidates[i]; // return this element if it is visible and the bottom of it is still in the viewport
+            if (!(element = candidates[i])) continue;
             h = element.offsetHeight;
+            // return this element if it is visible and the bottom of it is still in the viewport
             if (
                 !!(h || element.offsetWidth || element.getClientRects().length)
                 && (h = h + boundingClientTop(element)) > 0 && h < windowHeight - fromTop
@@ -132,8 +139,8 @@ function ruigehond006() {
      *  viewport inconsistently while scrolling with touch, so we roll our own function
      */
     function boundingClientTop(el) {
-        let elementTop = 0, scrollTop = window.pageYOffset;
-        // offsetParent: null for body, and in some browsers null for a fixed element, but than we have returned already
+        let elementTop = 0;
+        const scrollTop = window.pageYOffset;
         while (el) {
             elementTop += el.offsetTop;
             if (scrollTop > 0

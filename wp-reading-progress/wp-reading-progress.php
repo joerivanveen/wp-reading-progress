@@ -70,10 +70,12 @@ function ruigehond006_localize()
         if (!isset($option['no_css'])) add_action('wp_head', 'ruigehond006_stylesheet');
     }
 }
+
 function ruigehond006_stylesheet()
 {
     echo '<style>#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;width:100%;margin:0;overflow:visible}#ruigehond006_inner{position:absolute;height:0;width:inherit;background-color:rgba(255,255,255,.2);-webkit-transition:height .4s;transition:height .4s}html[dir=rtl] #ruigehond006_wrap{text-align:right}#ruigehond006_bar{width:0;height:100%;background-color:transparent}</style>';
 }
+
 // meta box exposes setting to display reading progress for an individual post
 // https://developer.wordpress.org/reference/functions/add_meta_box/
 function ruigehond006_meta_box_add($post_type = null)
@@ -161,7 +163,7 @@ function ruigehond006_settings()
         $option,
         // #translators: two links are inserted that set the value accordingly, 'top' and 'bottom'
         sprintf(__('Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress'),
-            '<a>top</a>', '<a>bottom</a>')
+            '<a>top</a>', '<a>bottom</a>') . ' ' . __('Multiple selectors can be separated by commas, the bar will be attached to the first one visible.', 'wp-reading-progress')
     );
     ruigehond006_add_settings_field(
         'stick_relative',
