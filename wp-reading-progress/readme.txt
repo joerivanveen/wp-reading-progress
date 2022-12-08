@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hallo
 Requires at least: 4.9
 Tested up to: 6.1
 Requires PHP: 5.6
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv3
 
 Light weight fully customizable reading progress bar. Sticks to top, bottom or sticky menu, with fallback for small screens
@@ -27,7 +27,7 @@ Behaviour:
 
 - The reading progress bar has smooth initializing since part of the text may already be visible, after that a lightweight update-function ensures quick response while scrolling.
 
-- The bar can attach itself to any (sticky) element that you can define as an admin, the first selected visible element will be used.
+- The bar can attach itself to any (sticky) element that you define as an admin, when there are multiple, the first visible element will be used.
 
 - When there is no (longer a) visible element to attach to, the bar displays at the top.
 

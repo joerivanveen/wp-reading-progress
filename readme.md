@@ -17,7 +17,7 @@ Customization:
 Behaviour:
 
 - The reading progress bar has smooth initializing since part of the text may already be visible, after that a lightweight update-function ensures quick response while scrolling.
-- The bar can attach itself to any (sticky) element that you can define as an admin, the first selected visible element will be used.
+- The bar can attach itself to any (sticky) element that you define as an admin, when there are multiple, the first visible element will be used.
 - When there is no (longer a) visible element to attach to, the bar displays at the top.
 - If there is no single article identified (by class names or id) it uses the whole page to calculate progress.
 
