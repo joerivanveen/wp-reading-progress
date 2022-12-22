@@ -3,7 +3,8 @@ function ruigehond006() {
         heightCorrection = 0, /* the correction of height when mark_it_zero (or 0 otherwise) */
         ruigehond006_a = null, /* the element the reading bar is positioned under (with fallback to top) */
         fromTop = 0, /* the top value (set to below the admin bar when necessary) */
-        p_candidates, p, tt;
+        p_candidates, p, tt,
+        a_candidates = [];
     /* custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar */
     if (typeof ruigehond006_c === 'undefined') return;
     p_candidates = document.querySelectorAll(ruigehond006_c.post_identifier);
@@ -108,20 +109,22 @@ function ruigehond006() {
     }
 
     function getAttacher() {
-        const selectors = ruigehond006_c.bar_attach.split(',');
-        let candidates = [], nodes, nodes_len, nodes_i, selector, element, i, len, h;
-        for (i = 0, len = selectors.length; i < len; ++i) {
-            selector = selectors[i].trim();
-            if (0 === selector.indexOf('#') && -1 === selector.indexOf(' ')) {
-                candidates.push(document.getElementById(selector.substr(1)));
-            } else if ((nodes = document.querySelectorAll(selector))) {
-                for (nodes_i = 0, nodes_len = nodes.length; nodes_i < nodes_len; ++nodes_i) {
-                    candidates.push(nodes[nodes_i]);
+        let nodes, nodes_len, nodes_i, selector, element, i, len, h;
+        if (0 === a_candidates.length) {
+            const selectors = ruigehond006_c.bar_attach.split(',');
+            for (i = 0, len = selectors.length; i < len; ++i) {
+                selector = selectors[i].trim();
+                if (0 === selector.indexOf('#') && -1 === selector.indexOf(' ')) {
+                    a_candidates.push(document.getElementById(selector.substr(1)));
+                } else if ((nodes = document.querySelectorAll(selector))) {
+                    for (nodes_i = 0, nodes_len = nodes.length; nodes_i < nodes_len; ++nodes_i) {
+                        a_candidates.push(nodes[nodes_i]);
+                    }
                 }
             }
         }
-        for (i = 0, len = candidates.length; i < len; ++i) {
-            if (!(element = candidates[i])) continue;
+        for (i = 0, len = a_candidates.length; i < len; ++i) {
+            if (!(element = a_candidates[i])) continue;
             h = element.offsetHeight;
             // return this element if it is visible and the bottom of it is still in the viewport
             if (

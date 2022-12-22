@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hallo
 Requires at least: 4.9
 Tested up to: 6.1
 Requires PHP: 5.6
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv3
 
 Light weight fully customizable reading progress bar. Sticks to top, bottom or sticky menu, with fallback for small screens
@@ -54,6 +54,8 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
+1.5.1: remember (cache) the elements to attach to, for speed
+
 1.5.0: allow multiple menu selectors and pick the first visible one to attach to
 
 1.4.0: compatible with fixed menus that consist of different elements depending on screen size, as long as they have a common selector
@@ -99,6 +101,10 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 1.0.0: release
 
 == Upgrade Notice ==
+
+= 1.5.1 =
+
+For speed the plugin looks for elements to stick to only once per request, this should work. If not, please let me know and downgrade to 1.5.0 in the mean time.
 
 = 1.4.0 =
 
