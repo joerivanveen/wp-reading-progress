@@ -66,10 +66,8 @@ function ruigehond006() {
     }
 
     function progress(p) {
-        const loc = p.getBoundingClientRect(), // loc.height in pixels = total amount that can be read/
-            loc_height = loc.height - heightCorrection,
-            reading_left = Math.max(Math.min(loc.bottom - windowHeight, loc_height), 0), // in pixels
-            reading_done = 100 * (loc_height - reading_left) / loc_height; // in percent
+        const loc_height = p.scrollHeight, // height in pixels = total amount that can be read
+            reading_done = Math.min(100*(windowHeight - heightCorrection + window.pageYOffset)/(loc_height - heightCorrection), 100);
         requestAnimationFrame(function () {
             const el = document.getElementById('ruigehond006_bar');
             el.style.width = reading_done + '%';
