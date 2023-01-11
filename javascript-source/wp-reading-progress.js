@@ -66,12 +66,13 @@ function ruigehond006() {
     }
 
     function progress(p) {
-        const loc_height = p.scrollHeight, // height in pixels = total amount that can be read
-            reading_done = Math.min(100*(windowHeight - heightCorrection + window.pageYOffset)/(loc_height - heightCorrection), 100);
+        const loc_height = p.scrollHeight - heightCorrection, // height in pixels = total amount that can be read
+            reading_done = Math.max(Math.min(100 * (windowHeight - boundingClientTop(p) - heightCorrection) / loc_height, 100), 0);
+        console.warn(reading_done, heightCorrection);
         requestAnimationFrame(function () {
             const el = document.getElementById('ruigehond006_bar');
             el.style.width = reading_done + '%';
-            el.setAttribute('aria-valuenow', Math.trunc(reading_done));
+            el.setAttribute('aria-valuenow', Math.trunc(reading_done).toString());
             if (ruigehond006_c.bar_attach !== 'bottom') barInDom();
         });
     }
