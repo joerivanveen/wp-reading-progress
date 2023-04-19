@@ -22,4 +22,4 @@ Behaviour:
 - If there is no single article identified (by class names or id) it uses the whole page to calculate progress.
 
 Regards,
-Joeri (ruige hond)
+Joeri (wp-developer.eu)
