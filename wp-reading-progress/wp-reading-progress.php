@@ -15,7 +15,6 @@ defined( 'ABSPATH' ) || die();
 const RUIGEHOND006_VERSION = '1.5.4';
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook( __FILE__, 'ruigehond006_install' );
-register_deactivation_hook( __FILE__, 'ruigehond006_deactivate' );
 register_uninstall_hook( __FILE__, 'ruigehond006_uninstall' );
 // Startup the plugin
 add_action( 'init', 'ruigehond006_run' );
@@ -40,35 +39,36 @@ function ruigehond006_run() {
 }
 
 function ruigehond006_localize() {
-	if ( ! is_admin() ) {
-		$post_identifier = null;
-		// check if we're using the progress bar here
-		$option  = get_option( 'ruigehond006' );
-		$post_id = get_the_ID();
-		if ( is_singular() ) {
-			if ( ( isset( $option['post_types'] ) && in_array( get_post_type( $post_id ), $option['post_types'] ) )
-			     || 'yes' === get_post_meta( $post_id, '_ruigehond006_show', true )
-			) {
-				if ( isset( $option['include_comments'] ) ) {
-					$post_identifier = 'body';
-				} else {
-					$post_identifier = '.' . implode( '.', get_post_class( '', $post_id ) );
-				}
+	if ( is_admin() ) {
+		return;
+	}
+	$post_identifier = null;
+	// check if we're using the progress bar here
+	$option  = get_option( 'ruigehond006' );
+	$post_id = get_the_ID();
+	if ( is_singular() ) {
+		if ( ( isset( $option['post_types'] ) && in_array( get_post_type( $post_id ), $option['post_types'] ) )
+		     || 'yes' === get_post_meta( $post_id, '_ruigehond006_show', true )
+		) {
+			if ( isset( $option['include_comments'] ) ) {
+				$post_identifier = 'body';
+			} else {
+				$post_identifier = '.' . implode( '.', get_post_class( '', $post_id ) );
 			}
-		} elseif ( isset( $option['archives'] ) && isset( $option['post_types'] ) && in_array( get_post_type(), $option['post_types'] ) ) {
-			$post_identifier = 'body';
 		}
-		if ( null !== $post_identifier ) {
-			wp_localize_script( 'ruigehond006_javascript', 'ruigehond006_c', array_merge(
-				$option, array(
-					'post_identifier' => $post_identifier,
-					'post_id'         => $post_id,
-				)
-			) );
-		}
-		if ( ! isset( $option['no_css'] ) ) {
-			add_action( 'wp_head', 'ruigehond006_stylesheet' );
-		}
+	} elseif ( isset( $option['archives'] ) && isset( $option['post_types'] ) && in_array( get_post_type(), $option['post_types'] ) ) {
+		$post_identifier = 'body';
+	}
+	if ( null !== $post_identifier ) {
+		wp_localize_script( 'ruigehond006_javascript', 'ruigehond006_c', array_merge(
+			$option, array(
+				'post_identifier' => $post_identifier,
+				'post_id'         => $post_id,
+			)
+		) );
+	}
+	if ( ! isset( $option['no_css'] ) ) {
+		add_action( 'wp_head', 'ruigehond006_stylesheet' );
 	}
 }
 
@@ -366,10 +366,6 @@ function ruigehond006_install() {
 	if ( ! get_option( 'ruigehond006' ) ) { // insert default settings:
 		ruigehond006_add_defaults();
 	}
-}
-
-function ruigehond006_deactivate() {
-	// nothing to do really
 }
 
 function ruigehond006_uninstall() {
