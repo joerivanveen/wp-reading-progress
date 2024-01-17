@@ -138,7 +138,7 @@ function ruigehond006_settings() {
 	// register a new section in the page
 	add_settings_section(
 		'progress_bar_settings', // section id
-		__( 'Set your options', 'wp-reading-progress' ), // title
+		esc_html__( 'Set your options', 'wp-reading-progress' ), // title
 		function () {
 			echo '<p>';
 			echo esc_html__( 'This plugin displays a reading progress bar on your selected post types.', 'wp-reading-progress' );
@@ -157,82 +157,82 @@ function ruigehond006_settings() {
 		$option = get_option( 'ruigehond006' );
 	}
 	// @since 1.5.4: check if the required placeholders are in the translated string
-	$string = __( 'Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress' );
+	$string = esc_html__( 'Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress' );
 	if (3 !== count(explode('%s', $string))) {
 		$string = 'Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.';
 	}
 	ruigehond006_add_settings_field(
 		'bar_attach',
 		'text',
-		__( 'Stick the bar to this element', 'wp-reading-progress' ), // title
+		esc_html__( 'Stick the bar to this element', 'wp-reading-progress' ), // title
 		$option,
 		// #translators: two links are inserted that set the value accordingly, 'top' and 'bottom'
-		sprintf( $string, '<a>top</a>', '<a>bottom</a>' ) . ' ' . __( 'Multiple selectors can be separated by commas, the bar will be attached to the first one visible.', 'wp-reading-progress' )
+		sprintf( $string, '<a>top</a>', '<a>bottom</a>' ) . ' ' . esc_html__( 'Multiple selectors can be separated by commas, the bar will be attached to the first one visible.', 'wp-reading-progress' )
 	);
 	ruigehond006_add_settings_field(
 		'stick_relative',
 		'checkbox',
-		__( 'How to stick', 'wp-reading-progress' ),
+		esc_html__( 'How to stick', 'wp-reading-progress' ),
 		$option,
-		__( 'If the bar is too wide, try relative positioning by checking this box, or attach it to another element.', 'wp-reading-progress' )
+		esc_html__( 'If the bar is too wide, try relative positioning by checking this box, or attach it to another element.', 'wp-reading-progress' )
 	);
 	ruigehond006_add_settings_field(
 		'bar_color',
 		'color',
-		__( 'Color of the progress bar', 'wp-reading-progress' ), // title
+		esc_html__( 'Color of the progress bar', 'wp-reading-progress' ), // title
 		$option
 	);
 //    ruigehond006_add_settings_field(
 //        'bar_color_dark_mode',
 //        'color',
-//        __('Color when in dark mode', 'wp-reading-progress'), // title
+//        esc_html__('Color when in dark mode', 'wp-reading-progress'), // title
 //        $option,
 //        sprintf(__('Depends on a certain class added to the body or html container, including one of the following strings: %s', 'wp-reading-progress'), '*dark-mode*, *night-mode*')
 //    );
 	// @since 1.5.4: check if the required placeholders are in the translated string
-	$string = __( 'Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress' );
+	$string = esc_html__( 'Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress' );
 	if (3 !== count(explode('%s', $string))) {
 		$string = 'Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.';
 	}
 	ruigehond006_add_settings_field(
 		'bar_height',
 		'text-short',
-		__( 'Progress bar thickness', 'wp-reading-progress' ), // title
+		esc_html__( 'Progress bar thickness', 'wp-reading-progress' ), // title
 		$option,
 		sprintf( $string, '<a>.5vh</a>', '<a>6px</a>' )
 	);
 	ruigehond006_add_settings_field(
 		'aria_label',
 		'text',
-		__( 'Aria label', 'wp-reading-progress' ), // title
+		esc_html__( 'Aria label', 'wp-reading-progress' ), // title
 		$option,
-		__( 'Explain the purpose of this reading bar to screenreaders', 'wp-reading-progress' )
+		esc_html__( 'Explain the purpose of this reading bar to screenreaders', 'wp-reading-progress' )
 	);
 //    ruigehond006_add_settings_field(
 //        'ert_speed',
 //        'text-short',
-//        __('Reading speed', 'wp-reading-progress'), // title
+//        esc_html__('Reading speed', 'wp-reading-progress'), // title
 //        $option,
-//        __('Average reading speed in words per minute, integers only. Used to estimate reading time. Leave empty for no ERT. Usual is something between 200 and 300.', 'wp-reading-progress')
+//        esc_html__('Average reading speed in words per minute, integers only. Used to estimate reading time. Leave empty for no ERT. Usual is something between 200 and 300.', 'wp-reading-progress')
 //    );
 	ruigehond006_add_settings_field(
 		'mark_it_zero',
 		'checkbox',
-		__( 'Make bar start at 0%', 'wp-reading-progress' ),
+		esc_html__( 'Make bar start at 0%', 'wp-reading-progress' ),
 		$option,
-		__( 'Yes please', 'wp-reading-progress' )
+		esc_html__( 'Yes please', 'wp-reading-progress' )
 	);
 	ruigehond006_add_settings_field(
 		'include_comments',
 		'checkbox',
-		__( 'On single post page', 'wp-reading-progress' ),
+		esc_html__( 'On single post page', 'wp-reading-progress' ),
 		$option,
-		__( 'use whole page to calculate reading progress', 'wp-reading-progress' )
+		esc_html__( 'use whole page to calculate reading progress', 'wp-reading-progress' )
 	);
 	add_settings_field(
 		'ruigehond006_post_types',
 		// #TRANSLATORS: this is followed by a list of the available post_types
-		__( 'Show reading progress on', 'wp-reading-progress' ),
+		esc_html__( 'Show reading progress on', 'wp-reading-progress' ),
 		function ( $args ) {
 			$post_types = [];
 			if ( isset( $args['option']['post_types'] ) ) {
@@ -257,7 +257,7 @@ function ruigehond006_settings() {
 	ruigehond006_add_settings_field(
 		'archives',
 		'checkbox',
-		__( 'And on their archives', 'wp-reading-progress' ),
+		esc_html__( 'And on their archives', 'wp-reading-progress' ),
 		$option
 	);
 	ruigehond006_add_settings_field(
@@ -265,7 +265,7 @@ function ruigehond006_settings() {
 		'checkbox',
 		'No css',
 		$option,
-		__( 'necessary css for the reading bar is included elsewhere', 'wp-reading-progress' )
+		esc_html__( 'necessary css for the reading bar is included elsewhere', 'wp-reading-progress' )
 	);
 }
 
@@ -336,13 +336,13 @@ function ruigehond006_settingspage() {
 	// output setting sections and their fields
 	do_settings_sections( 'ruigehond006' );
 	// output save settings button
-	submit_button( __( 'Save Settings', 'wp-reading-progress' ) );
+	submit_button( esc_html__( 'Save Settings', 'wp-reading-progress' ) );
 	echo '</form></div>';
 }
 
 function ruigehond006_settingslink( $links ) {
 	$url           = get_admin_url();
-	$txt           = __( 'Settings', 'wp-reading-progress' );
+	$txt           = esc_html__( 'Settings', 'wp-reading-progress' );
 	$settings_link = "<a href=\"{$url}options-general.php?page=wp-reading-progress\">$txt</a>";
 	array_unshift( $links, $settings_link );
 
