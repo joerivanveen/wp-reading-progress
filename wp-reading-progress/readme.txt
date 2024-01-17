@@ -54,6 +54,8 @@ Upon uninstall WP Reading Progress removes its own options and post_meta data (i
 
 == Changelog ==
 
+1.5.4: escape translate strings
+
 1.5.3: update screenshots
 
 1.5.2: simplify progress calculation accounting for incorrect bounding client rect reporting of body

@@ -2,17 +2,17 @@
 /*
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
-Description: Light weight customizable reading progress bar. Great UX on longreads! Customize under Settings -> WP Reading Progress
-Version: 1.5.3
+Description: Light weight customizable reading progress bar. Great UX on longreads.
+Version: 1.5.4
 Author: Joeri van Veen
 Author URI: https://wp-developer.eu
 License: GPLv3
 Text Domain: wp-reading-progress
 Domain Path: /languages/
 */
-defined('ABSPATH') or die();
+defined('ABSPATH') || die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-const RUIGEHOND006_VERSION = '1.5.3';
+const RUIGEHOND006_VERSION = '1.5.4';
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook(__FILE__, 'ruigehond006_install');
 register_deactivation_hook(__FILE__, 'ruigehond006_deactivate');
@@ -49,7 +49,8 @@ function ruigehond006_localize()
         $post_id = get_the_ID();
         if (is_singular()) {
             if ((isset($option['post_types']) && in_array(get_post_type($post_id), $option['post_types']))
-                or 'yes' === get_post_meta($post_id, '_ruigehond006_show', true)) {
+                || 'yes' === get_post_meta($post_id, '_ruigehond006_show', true)
+            ) {
                 if (isset($option['include_comments'])) {
                     $post_identifier = 'body';
                 } else {
@@ -84,7 +85,7 @@ function ruigehond006_meta_box_add($post_type = null)
         return;
     }
     $option = get_option('ruigehond006');
-    if (isset($option['post_types']) and in_array($post_type, $option['post_types'])) {
+    if (isset($option['post_types']) && in_array($post_type, $option['post_types'])) {
         return; // you can't set this if the bar is displayed by default on this post type
     }
     add_meta_box( // WP function.
@@ -105,7 +106,7 @@ function ruigehond006_meta_box($post, $obj)
     echo '<input type="checkbox" id="ruigehond006_checkbox" name="ruigehond006_show"';
     if ('yes' === get_post_meta($post->ID, '_ruigehond006_show', true)) echo ' checked="checked"';
     echo '/> <label for="ruigehond006_checkbox">';
-    echo __('display reading progress bar', 'wp-reading-progress');
+    echo esc_html__('display reading progress bar', 'wp-reading-progress');
     echo '</label>';
 }
 
@@ -141,13 +142,13 @@ function ruigehond006_settings()
         __('Set your options', 'wp-reading-progress'), // title
         function () {
             echo '<p>';
-            echo __('This plugin displays a reading progress bar on your selected post types.', 'wp-reading-progress');
+            echo esc_html__('This plugin displays a reading progress bar on your selected post types.', 'wp-reading-progress');
             echo ' ';
-            echo __('When it does not find a single article, it uses the whole page to calculate reading progress.', 'wp-reading-progress');
+            echo esc_html__('When it does not find a single article, it uses the whole page to calculate reading progress.', 'wp-reading-progress');
             echo '<br/>';
-            echo __('For post types which are switched off in the settings, you can activate the bar per post in the post-edit screen.', 'wp-reading-progress');
+            echo esc_html__('For post types which are switched off in the settings, you can activate the bar per post in the post-edit screen.', 'wp-reading-progress');
             echo '<br/>';
-            echo __('Please use valid input or the bar might not display.', 'wp-reading-progress');
+            echo esc_html__('Please use valid input or the bar might not display.', 'wp-reading-progress');
             echo '</p>';
         }, //callback
         'ruigehond006' // page
@@ -230,6 +231,7 @@ function ruigehond006_settings()
                 $post_types = $args['option']['post_types'];
             }
             foreach (get_post_types(array('public' => true)) as $post_type) {
+				$post_type = htmlentities($post_type, ENT_QUOTES);
                 echo "<label><input type=\"checkbox\" name=\"ruigehond006[post_types][]\" value=\"$post_type\"";
                 if (in_array($post_type, $post_types)) {
                     echo ' checked="checked"';
@@ -237,7 +239,7 @@ function ruigehond006_settings()
                 echo "/>$post_type</label><br/>";
             }
             echo '<div class="ruigehond006 explanation"><em>';
-            echo __('For unchecked post types you can enable the reading progress bar per post on the post edit page.', 'wp-reading-progress');
+            echo esc_html__('For unchecked post types you can enable the reading progress bar per post on the post edit page.', 'wp-reading-progress');
             echo '</em></div>';
         },
         'ruigehond006',
@@ -262,41 +264,43 @@ function ruigehond006_settings()
 function ruigehond006_add_settings_field($name, $type, $title, $option, $explanation = null)
 {
     add_settings_field(
-        'ruigehond006_' . $name,
+        "ruigehond006_$name",
         $title,
         function ($args) {
             switch ($args['type']) {
                 case 'checkbox':
                     echo '<label><input type="checkbox" name="ruigehond006[';
-                    echo $args['name'];
+                    echo htmlentities($args['name'], ENT_QUOTES);
                     echo ']"';
-                    if (isset($args['value']) and $args['value']) {
+                    if (isset($args['value']) && $args['value']) {
                         echo ' checked="checked"';
                     }
                     echo '/> ';
-                    echo $args['explanation'];
+					if (isset($args['explanation'])) {
+						echo wp_kses_post( $args['explanation'] );
+					}
                     echo '</label>';
 
                     return;
                 case 'color':
                     echo '<input type="text" class="ruigehond006_colorpicker" name="ruigehond006[';
-                    echo $args['name'];
+                    echo htmlentities($args['name'], ENT_QUOTES);
                     echo ']" value="';
-                    echo $args['value'];
+                    echo htmlentities($args['value'], ENT_QUOTES);
                     echo '"/>';
                     break;
                 default: // regular input
                     $value = isset($args['value']) ? $args['value'] : '';
                     echo '<input type="text" name="ruigehond006[';
-                    echo $args['name'];
+                    echo htmlentities($args['name'], ENT_QUOTES);
                     echo ']" value="';
-                    echo htmlentities($value);
+                    echo htmlentities($value, ENT_QUOTES);
                     if ('text-short' !== $args['type']) echo '" class="regular-text';
                     echo '"/>';
             }
             if (isset($args['explanation'])) {
                 echo '<div class="ruigehond006 explanation"><em>';
-                echo $args['explanation'];
+                echo wp_kses_post($args['explanation']);
                 echo '</em></div>';
             }
         },
