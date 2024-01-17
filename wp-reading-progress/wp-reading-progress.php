@@ -156,14 +156,18 @@ function ruigehond006_settings() {
 		ruigehond006_add_defaults();
 		$option = get_option( 'ruigehond006' );
 	}
+	// @since 1.5.4: check if the required placeholders are in the translated string
+	$string = __( 'Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress' );
+	if (3 !== count(explode('%s', $string))) {
+		$string = 'Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.';
+	}
 	ruigehond006_add_settings_field(
 		'bar_attach',
 		'text',
 		__( 'Stick the bar to this element', 'wp-reading-progress' ), // title
 		$option,
 		// #translators: two links are inserted that set the value accordingly, 'top' and 'bottom'
-		sprintf( __( 'Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress' ),
-			'<a>top</a>', '<a>bottom</a>' ) . ' ' . __( 'Multiple selectors can be separated by commas, the bar will be attached to the first one visible.', 'wp-reading-progress' )
+		sprintf( $string, '<a>top</a>', '<a>bottom</a>' ) . ' ' . __( 'Multiple selectors can be separated by commas, the bar will be attached to the first one visible.', 'wp-reading-progress' )
 	);
 	ruigehond006_add_settings_field(
 		'stick_relative',
@@ -185,12 +189,17 @@ function ruigehond006_settings() {
 //        $option,
 //        sprintf(__('Depends on a certain class added to the body or html container, including one of the following strings: %s', 'wp-reading-progress'), '*dark-mode*, *night-mode*')
 //    );
+	// @since 1.5.4: check if the required placeholders are in the translated string
+	$string = __( 'Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress' );
+	if (3 !== count(explode('%s', $string))) {
+		$string = 'Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.';
+	}
 	ruigehond006_add_settings_field(
 		'bar_height',
 		'text-short',
 		__( 'Progress bar thickness', 'wp-reading-progress' ), // title
 		$option,
-		sprintf( __( 'Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress' ), '<a>.5vh</a>', '<a>6px</a>' )
+		sprintf( $string, '<a>.5vh</a>', '<a>6px</a>' )
 	);
 	ruigehond006_add_settings_field(
 		'aria_label',
