@@ -158,7 +158,7 @@ function ruigehond006_settings() {
 	}
 	// @since 1.5.4: check if the required placeholders are in the translated string
 	$string = esc_html__( 'Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress' );
-	if (3 !== count(explode('%s', $string))) {
+	if ( 3 !== count( explode( '%s', $string ) ) ) {
 		$string = 'Use %s or %s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.';
 	}
 	ruigehond006_add_settings_field(
@@ -191,7 +191,7 @@ function ruigehond006_settings() {
 //    );
 	// @since 1.5.4: check if the required placeholders are in the translated string
 	$string = esc_html__( 'Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.', 'wp-reading-progress' );
-	if (3 !== count(explode('%s', $string))) {
+	if ( 3 !== count( explode( '%s', $string ) ) ) {
 		$string = 'Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.';
 	}
 	ruigehond006_add_settings_field(
@@ -357,6 +357,39 @@ function ruigehond006_menuitem() {
 		'wp-reading-progress',
 		'ruigehond006_settingspage'
 	);
+}
+
+function ruigehond006_settings_validate( $input ) {
+	$options = (array) get_option( 'ruigehond007' );
+	if ( false === is_array( $input ) ) {
+		return $options;
+	}
+
+	foreach ( $input as $key => $value ) {
+		switch ( $key ) {
+			// on / off flags (1 vs 0 on form submit, true / false otherwise
+			case 'stick_relative':
+			case 'mark_it_zero':
+			case 'include_comments':
+			case 'archives':
+			case 'no_css':
+				$options[ $key ] = ( $value === 'on' );
+				break;
+			case 'bar_color':
+			case 'bar_height':
+			case 'bar_attach':
+			case 'aria_label':
+				$options[ $key ]  = strip_tags($value);
+				break;
+			case 'post_types': // array of strings
+				$options[ $key ] = array_map(static function($value) {
+					return sanitize_key($value);
+				}, $value);
+				break;
+		}
+	}
+
+	return $options;
 }
 
 /**
