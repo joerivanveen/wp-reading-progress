@@ -3,7 +3,7 @@ function ruigehond006() {
         heightCorrection = 0, /* the correction of height when mark_it_zero (or 0 otherwise) */
         ruigehond006_a = null, /* the element the reading bar is positioned under (with fallback to top) */
         fromTop = 0, /* the top value (set to below the admin bar when necessary) */
-        p_candidates, p, tt,
+        p_candidates, p, tt, x_correction = 0,
         a_candidates = [];
     /* custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar */
     if (typeof ruigehond006_c === 'undefined') return;
@@ -39,9 +39,9 @@ function ruigehond006() {
         let el;
         windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
         if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
-            heightCorrection = Math.max(windowHeight - (boundingClientTop(p) + window.pageYOffset), 0); // math.max for when article is off screen
+            heightCorrection = Math.max(windowHeight - (boundingClientTop(p) + window.scrollY), 0); // math.max for when article is off screen
         }
-        fromTop = (adminbar !== null && window.getComputedStyle(adminbar).getPropertyValue('position') === 'fixed')
+        fromTop = (adminbar !== null && window.getComputedStyle(adminbar).position === 'fixed')
             ? adminbar.offsetHeight : 0;
         if (!document.getElementById('ruigehond006_bar')) {
             document.body.insertAdjacentHTML('beforeend',
@@ -82,7 +82,6 @@ function ruigehond006() {
         //if (ruigehond006_c.bar_attach === 'bottom') return; // this function should not be called in that case at all to avoid overhead
         if ((ruigehond006_a = getAttacher())) { // it can disappear so you need to check every time
             requestAnimationFrame(function () {
-                let top, new_margin, old_margin;
                 if (!ruigehond006_a.querySelector('#ruigehond006_wrap')) {
                     if (typeof ruigehond006_c.stick_relative !== 'undefined') {
                         wrap.style.position = 'relative';
@@ -93,13 +92,17 @@ function ruigehond006() {
                     ruigehond006_a.insertAdjacentElement('beforeend', wrap); // always attach as a child to ensure smooth operation
                 }
                 // make sure it’s always snug against the element using top margin
-                top = ruigehond006_a.offsetHeight + fromTop + boundingClientTop(ruigehond006_a);
-                new_margin = (old_margin = (parseFloat(inner.style.marginTop) || 0)) + top - fromTop - boundingClientTop(inner);
-                if (new_margin !== old_margin) {
-                    inner.style.marginTop = new_margin.toString() + 'px';
-                    //console.warn('set margin from ' + old_margin + ' to ' + new_margin);
+                const aCssStyle = window.getComputedStyle(ruigehond006_a);
+                const borderTop = parseFloat(aCssStyle.borderTopWidth);
+                const top = ruigehond006_a.getBoundingClientRect().height + boundingClientTop(ruigehond006_a, aCssStyle) - borderTop;
+                const cor = top - boundingClientTop(inner);
+                if (cor !== x_correction) {
+                    inner.style.transform = 'translateY(' + cor.toString() + 'px)';
+                    x_correction = cor;
+                    // console.log(x_correction);
+                    // console.warn('set margin from ' + x_correction + ' to ' + cor + ' ('+top+')');
                 }
-                //console.warn(top + ' vs ' + boundingClientTop(inner) + ' vs ' + inner.getBoundingClientRect().top);
+                //console.warn(top + ' vs ' + boundingClient    Top(inner) + ' vs ' + inner.getBoundingClientRect().top);
             });
         } else { // bar_attach must be top
             barToTop(wrap, inner);
@@ -113,7 +116,7 @@ function ruigehond006() {
             for (i = 0, len = selectors.length; i < len; ++i) {
                 selector = selectors[i].trim();
                 if (0 === selector.indexOf('#') && -1 === selector.indexOf(' ')) {
-                    a_candidates.push(document.getElementById(selector.substr(1)));
+                    a_candidates.push(document.getElementById(selector.slice(1)));
                 } else if ((nodes = document.querySelectorAll(selector))) {
                     for (nodes_i = 0, nodes_len = nodes.length; nodes_i < nodes_len; ++nodes_i) {
                         a_candidates.push(nodes[nodes_i]);
@@ -127,7 +130,7 @@ function ruigehond006() {
             // return this element if it is visible and the bottom of it is still in the viewport
             if (
                 !!(h || element.offsetWidth || element.getClientRects().length)
-                && (h = h + boundingClientTop(element)) > 0 && h < windowHeight - fromTop
+                && (h = h + boundingClientTop(element)) > 0 && h < windowHeight
             ) {
                 return element;
             }
@@ -139,14 +142,14 @@ function ruigehond006() {
      *  On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
      *  viewport inconsistently while scrolling with touch, so we roll our own function
      */
-    function boundingClientTop(el) {
+    function boundingClientTop(el, computed_style) {
         let elementTop = 0;
-        const scrollTop = window.pageYOffset;
+        const scrollTop = window.scrollY;
         while (el) {
             elementTop += el.offsetTop;
             if (scrollTop > 0
-                && ('fixed' === (el.style.position.toLowerCase()
-                    || window.getComputedStyle(el).getPropertyValue('position').toLowerCase()))) {
+                && ('fixed' === (computed_style ? computed_style.position : el.style.position
+                    || window.getComputedStyle(el).position).toLowerCase())) {
                 return elementTop;
             }
             el = el.offsetParent; // this is either null for body, or maybe a fixed element, but we returned early then
@@ -159,7 +162,7 @@ function ruigehond006() {
         requestAnimationFrame(function () {
             wrap.style.position = 'fixed';
             wrap.style.top = fromTop + 'px';
-            inner.style.marginTop = '0';
+            inner.style.transform = 'translateY(0px)';
             document.body.insertAdjacentElement('beforeend', wrap);
         });
     }
