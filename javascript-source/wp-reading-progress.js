@@ -11,6 +11,7 @@ function ruigehond006() {
     /* when not found conclusively, try to get the current post by id, or default to the whole body */
     p = (p_candidates.length === 1) ? p_candidates[0] : document.getElementById('post-' + ruigehond006_c.post_id) || document.body;
     if (!ruigehond006_c.include_comments) { /* now check if it has the internal content in a standard class */
+        // todo, limit this to max 1, that can be entered in settings, and overridden in meta box
         if ((p_candidates = p.querySelectorAll('.entry-content')).length === 1) {
             p = p_candidates[0];
         } else if ((p_candidates = p.querySelectorAll('.post-content')).length === 1) {
@@ -39,7 +40,7 @@ function ruigehond006() {
         let el;
         windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
         if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
-            heightCorrection = Math.max(windowHeight - (boundingClientTop(p) + window.scrollY), 0); // math.max for when article is off screen
+            heightCorrection = Math.max(windowHeight - (boundingClientTop(p) + window.scrollY), 0); // math.max for when article is off-screen
         }
         fromTop = (adminbar !== null && window.getComputedStyle(adminbar).position === 'fixed')
             ? adminbar.offsetHeight : 0;
@@ -95,8 +96,8 @@ function ruigehond006() {
                 const aCssStyle = window.getComputedStyle(ruigehond006_a);
                 const borderTop = parseFloat(aCssStyle.borderTopWidth);
                 const attachTop = ('fixed' === aCssStyle.position) ?
-                    ruigehond006_a.offsetTop : boundingClientTop(ruigehond006_a) + fromTop;
-                const top = ruigehond006_a.getBoundingClientRect().height + attachTop - borderTop;
+                    ruigehond006_a.offsetTop - borderTop : boundingClientTop(ruigehond006_a) + fromTop;
+                const top = ruigehond006_a.offsetHeight + attachTop;
                 const cor = top - boundingClientTop(inner);
                 if (cor !== x_correction) {
                     //console.warn('set cor from ' + x_correction.toString() + ' to ' + cor.toString() + ' (' + top + '/' + boundingClientTop(inner) + ')');
