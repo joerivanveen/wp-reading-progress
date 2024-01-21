@@ -94,11 +94,12 @@ function ruigehond006() {
                 // make sure it’s always snug against the element using top margin
                 const aCssStyle = window.getComputedStyle(ruigehond006_a);
                 const borderTop = parseFloat(aCssStyle.borderTopWidth);
-                const top = ruigehond006_a.getBoundingClientRect().height + boundingClientTop(ruigehond006_a, aCssStyle) - borderTop;
-//console.error(ruigehond006_a.getBoundingClientRect().height,boundingClientTop(ruigehond006_a, aCssStyle));
+                const attachTop = ('fixed' === aCssStyle.position) ?
+                    ruigehond006_a.offsetTop : boundingClientTop(ruigehond006_a) + fromTop;
+                const top = ruigehond006_a.getBoundingClientRect().height + attachTop - borderTop;
                 const cor = top - boundingClientTop(inner);
                 if (cor !== x_correction) {
-                    console.warn('set cor from ' + x_correction.toString() + ' to ' + cor.toString() + ' (' + top + '/' + boundingClientTop(inner) + ')');
+                    //console.warn('set cor from ' + x_correction.toString() + ' to ' + cor.toString() + ' (' + top + '/' + boundingClientTop(inner) + ')');
                     inner.style.transform = 'translateY(' + cor.toString() + 'px)';
                     x_correction = cor;
                 }
@@ -142,20 +143,13 @@ function ruigehond006() {
      *  On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
      *  viewport inconsistently while scrolling with touch, so we roll our own function
      */
-    function boundingClientTop(el, el_computed_style) {
-        let elementTop = 0;
-        if (el_computed_style) {
-            if ('fixed' === el_computed_style.position) {
-                return el.offsetTop;
-            } else {
-                elementTop += fromTop;
-            }
-        }
+    function boundingClientTop(el) {
         const scrollTop = window.scrollY;
+        let elementTop = 0;
         while (el) {
             elementTop += el.offsetTop;
             if (scrollTop > 0 && ('fixed' === (el.style.position
-                    || window.getComputedStyle(el).position).toLowerCase())) {
+                || window.getComputedStyle(el).position).toLowerCase())) {
                 return elementTop;
             }
             el = el.offsetParent; // this is either null for body, or maybe a fixed element, but we returned early then
@@ -168,7 +162,6 @@ function ruigehond006() {
         requestAnimationFrame(function () {
             wrap.style.position = 'fixed';
             wrap.style.top = fromTop + 'px';
-            console.warn('set cor to 0');
             inner.style.transform = 'translateY(0px)';
             x_correction = parseFloat(fromTop);
             document.body.insertAdjacentElement('beforeend', wrap);
