@@ -95,12 +95,12 @@ function ruigehond006() {
                 const aCssStyle = window.getComputedStyle(ruigehond006_a);
                 const borderTop = parseFloat(aCssStyle.borderTopWidth);
                 const top = ruigehond006_a.getBoundingClientRect().height + boundingClientTop(ruigehond006_a, aCssStyle) - borderTop;
+//console.error(ruigehond006_a.getBoundingClientRect().height,boundingClientTop(ruigehond006_a, aCssStyle));
                 const cor = top - boundingClientTop(inner);
                 if (cor !== x_correction) {
+                    console.warn('set cor from ' + x_correction.toString() + ' to ' + cor.toString() + ' (' + top + '/' + boundingClientTop(inner) + ')');
                     inner.style.transform = 'translateY(' + cor.toString() + 'px)';
                     x_correction = cor;
-                    // console.log(x_correction);
-                    // console.warn('set margin from ' + x_correction + ' to ' + cor + ' ('+top+')');
                 }
                 //console.warn(top + ' vs ' + boundingClient    Top(inner) + ' vs ' + inner.getBoundingClientRect().top);
             });
@@ -142,13 +142,19 @@ function ruigehond006() {
      *  On older iPads (at least iOS 8 + 9) the getBoundingClientRect() gets migrated all the way outside the
      *  viewport inconsistently while scrolling with touch, so we roll our own function
      */
-    function boundingClientTop(el, computed_style) {
+    function boundingClientTop(el, el_computed_style) {
         let elementTop = 0;
+        if (el_computed_style) {
+            if ('fixed' === el_computed_style.position) {
+                return el.offsetTop;
+            } else {
+                elementTop += fromTop;
+            }
+        }
         const scrollTop = window.scrollY;
         while (el) {
             elementTop += el.offsetTop;
-            if (scrollTop > 0
-                && ('fixed' === (computed_style ? computed_style.position : el.style.position
+            if (scrollTop > 0 && ('fixed' === (el.style.position
                     || window.getComputedStyle(el).position).toLowerCase())) {
                 return elementTop;
             }
@@ -162,7 +168,9 @@ function ruigehond006() {
         requestAnimationFrame(function () {
             wrap.style.position = 'fixed';
             wrap.style.top = fromTop + 'px';
+            console.warn('set cor to 0');
             inner.style.transform = 'translateY(0px)';
+            x_correction = parseFloat(fromTop);
             document.body.insertAdjacentElement('beforeend', wrap);
         });
     }
