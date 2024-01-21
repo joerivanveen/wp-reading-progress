@@ -3,7 +3,7 @@
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads.
-Version: 1.5.4
+Version: 1.5.5
 Author: Joeri van Veen
 Author URI: https://wp-developer.eu
 License: GPLv3
@@ -12,7 +12,7 @@ Domain Path: /languages/
 */
 defined( 'ABSPATH' ) || die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-const RUIGEHOND006_VERSION = '1.5.4';
+const RUIGEHOND006_VERSION = '1.5.5';
 // Register hooks for plugin management, functions are at the bottom of this file.
 register_activation_hook( __FILE__, 'ruigehond006_install' );
 register_uninstall_hook( __FILE__, 'ruigehond006_uninstall' );
