@@ -360,14 +360,14 @@ function ruigehond006_menuitem() {
 }
 
 function ruigehond006_settings_validate( $input ) {
-	$options = (array) get_option( 'ruigehond007' );
+	$options = (array) get_option( 'ruigehond006' );
 	if ( false === is_array( $input ) ) {
 		return $options;
 	}
 
 	foreach ( $input as $key => $value ) {
 		switch ( $key ) {
-			// on / off flags (1 vs 0 on form submit, true / false otherwise
+			// on / off flags
 			case 'stick_relative':
 			case 'mark_it_zero':
 			case 'include_comments':
