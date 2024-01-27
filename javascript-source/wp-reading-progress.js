@@ -37,8 +37,7 @@ function ruigehond006() {
 
     function initialize(p) {
         const adminbar = document.getElementById('wpadminbar');
-        let el;
-        windowHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+        windowHeight = window.innerHeight;
         if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
             heightCorrection = Math.max(windowHeight - (boundingClientTop(p) + window.scrollY), 0); // math.max for when article is off-screen
         }
@@ -47,7 +46,7 @@ function ruigehond006() {
         if (!document.getElementById('ruigehond006_bar')) {
             document.body.insertAdjacentHTML('beforeend',
                 '<div id="ruigehond006_wrap"><div id="ruigehond006_inner"><div id="ruigehond006_bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="-1"></div></div></div>');
-            el = document.getElementById('ruigehond006_bar');
+            const el = document.getElementById('ruigehond006_bar');
             el.style.backgroundColor = ruigehond006_c.bar_color;
             if (ruigehond006_c.hasOwnProperty('aria_label')) el.setAttribute('aria-label', ruigehond006_c.aria_label);
             if (ruigehond006_c.bar_attach === 'bottom') {
