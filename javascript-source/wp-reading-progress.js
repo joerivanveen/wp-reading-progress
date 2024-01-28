@@ -158,12 +158,11 @@ function ruigehond006() {
 
     function barToTop(wrap, inner) {
         if (document.body === wrap.parentElement && 'fixed' === wrap.style.position) return; // already on top
-        const fixTop = (adminbar && 'fixed' === window.getComputedStyle(adminbar).position) ? parseFloat(fromTop) : 0;
+        y_correction = (adminbar && 'fixed' === window.getComputedStyle(adminbar).position) ? parseFloat(fromTop) : 0;
         requestAnimationFrame(function () {
             wrap.style.position = 'fixed';
-            wrap.style.top = fixTop + 'px';
+            wrap.style.top = y_correction + 'px';
             inner.style.transform = 'translateY(0px)';
-            y_correction = fixTop;
             document.body.insertAdjacentElement('beforeend', wrap);
         });
     }
