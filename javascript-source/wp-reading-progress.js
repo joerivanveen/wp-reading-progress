@@ -3,8 +3,9 @@ function ruigehond006() {
         heightCorrection = 0, /* the correction of height when mark_it_zero (or 0 otherwise) */
         ruigehond006_a = null, /* the element the reading bar is positioned under (with fallback to top) */
         fromTop = 0, /* the top value (set to below the admin bar when necessary) */
-        p_candidates, p, tt, x_correction = 0,
+        p_candidates, p, tt, y_correction = 0,
         a_candidates = [];
+    const adminbar = document.getElementById('wpadminbar');
     /* custom object ruigehond006_c is placed by wp_localize_scripts in wp-reading-progress.php and should be present for the progress bar */
     if (typeof ruigehond006_c === 'undefined') return;
     p_candidates = document.querySelectorAll(ruigehond006_c.post_identifier);
@@ -36,13 +37,11 @@ function ruigehond006() {
     });
 
     function initialize(p) {
-        const adminbar = document.getElementById('wpadminbar');
         windowHeight = window.innerHeight;
         if (typeof ruigehond006_c.mark_it_zero !== 'undefined') {
             heightCorrection = Math.max(windowHeight - (boundingClientTop(p) + window.scrollY), 0); // math.max for when article is off-screen
         }
-        fromTop = (adminbar !== null && window.getComputedStyle(adminbar).position === 'fixed')
-            ? adminbar.offsetHeight : 0;
+        fromTop = (adminbar) ? adminbar.offsetHeight : 0;
         if (!document.getElementById('ruigehond006_bar')) {
             document.body.insertAdjacentHTML('beforeend',
                 '<div id="ruigehond006_wrap"><div id="ruigehond006_inner"><div id="ruigehond006_bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="-1"></div></div></div>');
@@ -98,10 +97,10 @@ function ruigehond006() {
                     ruigehond006_a.offsetTop - borderTop : boundingClientTop(ruigehond006_a) + fromTop;
                 const top = ruigehond006_a.offsetHeight + attachTop;
                 const cor = top - boundingClientTop(inner);
-                if (cor !== x_correction) {
-                    //console.warn('set cor from ' + x_correction.toString() + ' to ' + cor.toString() + ' (' + top + '/' + boundingClientTop(inner) + ')');
+                if (cor !== y_correction) {
+                    //console.warn('set cor from ' + y_correction.toString() + ' to ' + cor.toString() + ' (' + top + '/' + boundingClientTop(inner) + ')');
                     inner.style.transform = 'translateY(' + cor.toString() + 'px)';
-                    x_correction = cor;
+                    y_correction = cor;
                 }
                 //console.warn(top + ' vs ' + boundingClient    Top(inner) + ' vs ' + inner.getBoundingClientRect().top);
             });
@@ -159,11 +158,12 @@ function ruigehond006() {
 
     function barToTop(wrap, inner) {
         if (document.body === wrap.parentElement && 'fixed' === wrap.style.position) return; // already on top
+        const fixTop = (adminbar && 'fixed' === window.getComputedStyle(adminbar).position) ? parseFloat(fromTop) : 0;
         requestAnimationFrame(function () {
             wrap.style.position = 'fixed';
-            wrap.style.top = fromTop + 'px';
+            wrap.style.top = fixTop + 'px';
             inner.style.transform = 'translateY(0px)';
-            x_correction = parseFloat(fromTop);
+            y_correction = fixTop;
             document.body.insertAdjacentElement('beforeend', wrap);
         });
     }
