@@ -172,7 +172,7 @@ function ruigehond006() {
         }
         requestAnimationFrame(function () {
             wrap.style.position = 'fixed';
-            wrap.style.top = y_correction + 'px';
+            wrap.style.top = y_correction + 'px'; // 0 can be adjusted because of adminbar above
             inner.style.transform = 'translateY(0px)';
             document.body.insertAdjacentElement('beforeend', wrap);
         });
