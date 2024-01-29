@@ -44,30 +44,30 @@ function ruigehond006_localize() {
 	}
 	$post_identifier = null;
 	// check if we're using the progress bar here
-	$option  = get_option( 'ruigehond006' );
+	$options = get_option( 'ruigehond006' );
 	$post_id = get_the_ID();
 	if ( is_singular() ) {
-		if ( ( isset( $option['post_types'] ) && in_array( get_post_type( $post_id ), $option['post_types'] ) )
+		if ( ( isset( $options['post_types'] ) && in_array( get_post_type( $post_id ), $options['post_types'] ) )
 		     || 'yes' === get_post_meta( $post_id, '_ruigehond006_show', true )
 		) {
-			if ( isset( $option['include_comments'] ) ) {
+			if ( isset( $options['include_comments'] ) ) {
 				$post_identifier = 'body';
 			} else {
 				$post_identifier = '.' . implode( '.', get_post_class( '', $post_id ) );
 			}
 		}
-	} elseif ( isset( $option['archives'] ) && isset( $option['post_types'] ) && in_array( get_post_type(), $option['post_types'] ) ) {
+	} elseif ( isset( $options['archives'] ) && isset( $options['post_types'] ) && in_array( get_post_type(), $options['post_types'] ) ) {
 		$post_identifier = 'body';
 	}
 	if ( null !== $post_identifier ) {
 		wp_localize_script( 'ruigehond006_javascript', 'ruigehond006_c', array_merge(
-			$option, array(
+			$options, array(
 				'post_identifier' => $post_identifier,
 				'post_id'         => $post_id,
 			)
 		) );
 	}
-	if ( ! isset( $option['no_css'] ) ) {
+	if ( ! isset( $options['no_css'] ) ) {
 		add_action( 'wp_head', 'ruigehond006_stylesheet' );
 	}
 }
@@ -365,6 +365,7 @@ function ruigehond006_settings_validate( $input ) {
 		return $options;
 	}
 
+	// these are all the settings we have
 	$settings = array(
 		'stick_relative',
 		'mark_it_zero',
@@ -391,7 +392,12 @@ function ruigehond006_settings_validate( $input ) {
 			case 'include_comments':
 			case 'archives':
 			case 'no_css':
-				$options[ $key ] = ( $value === 'on' );
+				// IMPORTANT: this is backwards compatible, 'false' options must not be present
+				if ( 'on' === $value ) {
+					$options[ $key ] = 'on';
+				} else {
+					unset( $options[ $key ] );
+				}
 				break;
 			case 'bar_color':
 			case 'bar_height':
