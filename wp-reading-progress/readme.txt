@@ -5,7 +5,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hallo
 Requires at least: 4.9
 Tested up to: 6.4
 Requires PHP: 5.6
-Stable tag: 1.5.6
+Stable tag: 1.5.7
 License: GPLv3
 
 Light weight fully customizable reading progress bar. Sticks to top, bottom or sticky menu, with fallback for small screens
@@ -53,6 +53,8 @@ Upon uninstall WP Reading Progress removes its own options and `post_meta` data 
 3. Activate the bar for an individual post (if that post type is not enabled)
 
 == Changelog ==
+
+1.5.7: fix save settings and calculation correction (again)
 
 1.5.6: adapt calculation to safari and chrome alike
 
