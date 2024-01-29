@@ -90,13 +90,19 @@ function ruigehond006() {
                     }
                     ruigehond006_a.insertAdjacentElement('beforeend', wrap); // always attach as a child to ensure smooth operation
                 }
-                // make sure it’s always snug against the element
+                // make sure it’s always snug against the element using top margin
                 const aCssStyle = window.getComputedStyle(ruigehond006_a);
-                const cor = parseFloat(aCssStyle.borderBottomWidth) + parseFloat(aCssStyle.paddingBottom);
+                const borderTop = parseFloat(aCssStyle.borderTopWidth);
+                const attachTop = ('fixed' === aCssStyle.position) ?
+                    ruigehond006_a.offsetTop - borderTop : boundingClientTop(ruigehond006_a) + fromTop;
+                const top = ruigehond006_a.offsetHeight + attachTop;
+                const cor = top - boundingClientTop(inner);
                 if (cor !== y_correction) {
+                    //console.warn('set cor from ' + y_correction.toString() + ' to ' + cor.toString() + ' (' + top + '/' + boundingClientTop(inner) + ')');
                     inner.style.transform = 'translateY(' + cor.toString() + 'px)';
                     y_correction = cor;
                 }
+                //console.warn(top + ' vs ' + boundingClient    Top(inner) + ' vs ' + inner.getBoundingClientRect().top);
             });
         } else { // bar_attach must be top
             barToTop(wrap, inner);
