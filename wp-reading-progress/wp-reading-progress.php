@@ -365,7 +365,25 @@ function ruigehond006_settings_validate( $input ) {
 		return $options;
 	}
 
-	foreach ( $input as $key => $value ) {
+	$settings = array(
+		'stick_relative',
+		'mark_it_zero',
+		'include_comments',
+		'archives',
+		'no_css',
+		'bar_color',
+		'bar_height',
+		'bar_attach',
+		'aria_label',
+		'post_types'
+	);
+
+	foreach ( $settings as $index => $key ) {
+		$value = null;
+		// note: this only works because we have 1 settings page.
+		if ( isset( $input[ $key ] ) ) {
+			$value = $input[ $key ];
+		}
 		switch ( $key ) {
 			// on / off flags
 			case 'stick_relative':
@@ -379,12 +397,12 @@ function ruigehond006_settings_validate( $input ) {
 			case 'bar_height':
 			case 'bar_attach':
 			case 'aria_label':
-				$options[ $key ]  = strip_tags($value);
+				$options[ $key ] = strip_tags( $value );
 				break;
 			case 'post_types': // array of strings
-				$options[ $key ] = array_map(static function($value) {
-					return sanitize_key($value);
-				}, $value);
+				$options[ $key ] = array_map( static function ( $value ) {
+					return sanitize_key( $value );
+				}, $value );
 				break;
 		}
 	}
