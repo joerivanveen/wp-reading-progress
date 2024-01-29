@@ -157,8 +157,19 @@ function ruigehond006() {
     }
 
     function barToTop(wrap, inner) {
-        if (document.body === wrap.parentElement && 'fixed' === wrap.style.position) return; // already on top
-        y_correction = (adminbar && 'fixed' === window.getComputedStyle(adminbar).position) ? parseFloat(fromTop) : 0;
+        // if (!adminbar && 'fixed' === wrap.style.position) return; // already on top
+        // if (adminbar && 'fixed' === (adminbar.style.position
+        //     || window.getComputedStyle(adminbar).position).toLowerCase()) {
+        //     y_correction = parseFloat(fromTop);
+        //     if (y_correction + 'px' === wrap.style.top) return;
+        // }
+        if (!adminbar && 'fixed' === wrap.style.position) return; // already on top
+        y_correction = 0;
+        if (adminbar && 'fixed' === (adminbar.style.position
+            || window.getComputedStyle(adminbar).position).toLowerCase()) {
+            y_correction = parseFloat(fromTop);
+            if (y_correction + 'px' === wrap.style.top) return;
+        }
         requestAnimationFrame(function () {
             wrap.style.position = 'fixed';
             wrap.style.top = y_correction + 'px';
