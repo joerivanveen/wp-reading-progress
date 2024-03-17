@@ -18,13 +18,13 @@ register_activation_hook( __FILE__, 'ruigehond006_install' );
 register_uninstall_hook( __FILE__, 'ruigehond006_uninstall' );
 // Startup the plugin
 add_action( 'init', 'ruigehond006_run' );
-add_action( 'wp', 'ruigehond006_localize' );
+add_action( 'wp', 'ruigehond006_start' );
 /**
  * the actual plugin on the frontend
  */
 function ruigehond006_run() {
 	if ( is_admin() ) {
-		load_plugin_textdomain( 'wp-reading-progress', null, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'wp-reading-progress', '', dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_script( 'wp-color-picker' );
 		wp_enqueue_script( 'ruigehond006_admin_javascript', plugin_dir_url( __FILE__ ) . 'admin.min.js', 'wp-color-picker', RUIGEHOND006_VERSION, true );
@@ -38,7 +38,7 @@ function ruigehond006_run() {
 	}
 }
 
-function ruigehond006_localize() {
+function ruigehond006_start() {
 	if ( is_admin() ) {
 		return;
 	}
@@ -70,10 +70,48 @@ function ruigehond006_localize() {
 	if ( ! isset( $options['no_css'] ) ) {
 		add_action( 'wp_head', 'ruigehond006_stylesheet' );
 	}
+	if (isset($options['ert_speed']) && (int) $options['ert_speed'] > 0) {
+		add_shortcode( 'wp-reading-progress', 'ruigehond006_shortcode' );
+		add_filter( 'get_the_excerpt', 'ruigehond006_ert', 99 );
+		add_filter( 'get_the_content', 'ruigehond006_ert', 99 );
+		add_filter( 'the_content', 'ruigehond006_ert', 99 );
+	}
 }
 
 function ruigehond006_stylesheet() {
 	echo '<style>#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;width:100%;margin:0;overflow:visible}#ruigehond006_inner{position:absolute;height:0;width:inherit;background-color:rgba(255,255,255,.2);-webkit-transition:height .4s;transition:height .4s}html[dir=rtl] #ruigehond006_wrap{text-align:right}#ruigehond006_bar{width:0;height:100%;background-color:transparent}</style>';
+}
+
+function ruigehond006_shortcode( $attributes = [], $content = null, $short_code = 'wp-reading-progress' ) {
+	return ruigehond006_ert();
+}
+
+function ruigehond006_ert( $content = null, $args = null ) {
+	global $post;
+	if ( ! $post ) {
+		return '';
+	}
+	$speed   = 250;
+	$options = get_option( 'ruigehond006' );
+	if ( isset( $options['ert_speed'] ) && (int) $options['ert_speed'] > 0 ) {
+		$speed = (int) $options['ert_speed'];
+	}
+	$minutes = max( 1, round( $time =  (str_word_count( strip_tags( $post->post_content ) ) / $speed), 0 ) );
+	if (
+		isset( $options['ert_text'] )
+		&& 1 === substr_count( ( $str = $options['ert_text'] ), '%d' )
+	) {
+		$str = sprintf( $str, $minutes );
+	} else {
+		$str = sprintf( '%d” read', $minutes );
+	}
+	$snippet = sprintf("<span class='wp-reading-progress-ert post$post->ID' data-ert='$time' data-minutes='$minutes'>%s</span>", $str);
+
+	if ( $content ) {
+		return "$snippet $content";
+	}
+
+	return $snippet;
 }
 
 // meta box exposes setting to display reading progress for an individual post
@@ -208,13 +246,13 @@ function ruigehond006_settings() {
 		$option,
 		esc_html__( 'Explain the purpose of this reading bar to screenreaders', 'wp-reading-progress' )
 	);
-//    ruigehond006_add_settings_field(
-//        'ert_speed',
-//        'text-short',
-//        esc_html__('Reading speed', 'wp-reading-progress'), // title
-//        $option,
-//        esc_html__('Average reading speed in words per minute, integers only. Used to estimate reading time. Leave empty for no ERT. Usual is something between 200 and 300.', 'wp-reading-progress')
-//    );
+	ruigehond006_add_settings_field(
+		'ert_speed',
+		'text-short',
+		esc_html__( 'Reading speed', 'wp-reading-progress' ), // title
+		$option,
+		esc_html__( 'Average reading speed in words per minute, integers only. Used to estimate reading time. Usual is something between 200 and 300.', 'wp-reading-progress' )
+	);
 	ruigehond006_add_settings_field(
 		'mark_it_zero',
 		'checkbox',
@@ -279,7 +317,7 @@ function ruigehond006_add_settings_field( $name, $type, $title, $option, $explan
 					echo '<label><input type="checkbox" name="ruigehond006[';
 					echo htmlentities( $args['name'], ENT_QUOTES );
 					echo ']"';
-					if ( isset( $args['value'] ) && $args['value'] ) {
+					if ( $args['value'] ) {
 						echo ' checked="checked"';
 					}
 					echo '/> ';
@@ -297,11 +335,10 @@ function ruigehond006_add_settings_field( $name, $type, $title, $option, $explan
 					echo '"/>';
 					break;
 				default: // regular input
-					$value = isset( $args['value'] ) ? $args['value'] : '';
 					echo '<input type="text" name="ruigehond006[';
 					echo htmlentities( $args['name'], ENT_QUOTES );
 					echo ']" value="';
-					echo htmlentities( $value, ENT_QUOTES );
+					echo htmlentities( $args['value'], ENT_QUOTES );
 					if ( 'text-short' !== $args['type'] ) {
 						echo '" class="regular-text';
 					}
@@ -318,7 +355,7 @@ function ruigehond006_add_settings_field( $name, $type, $title, $option, $explan
 		array(
 			'name'        => $name,
 			'type'        => $type,
-			'value'       => isset( $option[ $name ] ) ? $option[ $name ] : null,
+			'value'       => isset( $option[ $name ] ) ? $option[ $name ] : '',
 			'explanation' => $explanation,
 		) // args
 	);
@@ -376,6 +413,7 @@ function ruigehond006_settings_validate( $input ) {
 		'bar_height',
 		'bar_attach',
 		'aria_label',
+		'ert_speed',
 		'post_types'
 	);
 
@@ -404,6 +442,9 @@ function ruigehond006_settings_validate( $input ) {
 			case 'bar_attach':
 			case 'aria_label':
 				$options[ $key ] = strip_tags( $value );
+				break;
+			case 'ert_speed':
+				$options[ $key ] = (int) $value;
 				break;
 			case 'post_types': // array of strings
 				$options[ $key ] = array_map( static function ( $value ) {
