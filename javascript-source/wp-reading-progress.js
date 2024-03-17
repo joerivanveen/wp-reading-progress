@@ -91,15 +91,12 @@ function ruigehond006() {
                     ruigehond006_a.insertAdjacentElement('beforeend', wrap); // always attach as a child to ensure smooth operation
                 }
                 // make sure it’s always snug against the element
-                const attachTop = ('fixed' === (ruigehond006_a.style.position
-                    || window.getComputedStyle(ruigehond006_a).position).toLowerCase()) ?
-                    ruigehond006_a.offsetTop : boundingClientTop(ruigehond006_a) + fromTop;
-                const barTop = ruigehond006_a.offsetHeight + attachTop;
-                //console.log(wrap.getBoundingClientRect().top, boundingClientTop(wrap)); <- sometimes these are different... :-(
-                const topCor = barTop - wrap.getBoundingClientRect().top;
+                const barTop = ruigehond006_a.getBoundingClientRect().bottom;
+                const topCor = (barTop - wrap.getBoundingClientRect().top).toFixed(2);
                 if (topCor !== y_correction) {
-                    //console.warn('set cor from ' + y_correction.toString() + ' to ' + topCor.toString());
-                    inner.style.transform = 'translateY(' + topCor.toString() + 'px)';
+                    //console.log(barTop, ruigehond006_a.getBoundingClientRect().bottom);
+                    console.warn(`set cor from ${y_correction} to ${topCor}`);
+                    inner.style.transform = `translateY(${topCor}px)`;
                     y_correction = topCor;
                 }
                 //console.warn(top + ' vs ' + boundingClientTop(inner) + ' vs ' + inner.getBoundingClientRect().top);
@@ -157,23 +154,17 @@ function ruigehond006() {
     }
 
     function barToTop(wrap, inner) {
-        // if (!adminbar && 'fixed' === wrap.style.position) return; // already on top
-        // if (adminbar && 'fixed' === (adminbar.style.position
-        //     || window.getComputedStyle(adminbar).position).toLowerCase()) {
-        //     y_correction = parseFloat(fromTop);
-        //     if (y_correction + 'px' === wrap.style.top) return;
-        // }
         if (!adminbar && 'fixed' === wrap.style.position) return; // already on top
-        y_correction = 0;
-        if (adminbar && 'fixed' === (adminbar.style.position
-            || window.getComputedStyle(adminbar).position).toLowerCase()) {
-            y_correction = parseFloat(fromTop);
-            if (y_correction + 'px' === wrap.style.top) return;
+        y_correction = '0';
+        if (adminbar && ('fixed' === (adminbar.style.position
+            || window.getComputedStyle(adminbar).position).toLowerCase())) {
+            y_correction = parseFloat(fromTop).toFixed(2) + 'px';
+            if (y_correction === wrap.style.top) return;
         }
         requestAnimationFrame(function () {
             wrap.style.position = 'fixed';
-            wrap.style.top = y_correction + 'px'; // 0 can be adjusted because of adminbar above
-            inner.style.transform = 'translateY(0px)';
+            wrap.style.top = y_correction; // 0 can be adjusted because of adminbar above
+            inner.style.transform = 'translateY(0)';
             document.body.insertAdjacentElement('beforeend', wrap);
         });
     }
