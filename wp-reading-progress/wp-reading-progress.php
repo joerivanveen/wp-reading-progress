@@ -70,11 +70,20 @@ function ruigehond006_start() {
 	if ( ! isset( $options['no_css'] ) ) {
 		add_action( 'wp_head', 'ruigehond006_stylesheet' );
 	}
-	if (isset($options['ert_speed']) && (int) $options['ert_speed'] > 0) {
-		add_shortcode( 'wp-reading-progress', 'ruigehond006_shortcode' );
-		add_filter( 'get_the_excerpt', 'ruigehond006_ert', 99 );
-		add_filter( 'get_the_content', 'ruigehond006_ert', 99 );
-		add_filter( 'the_content', 'ruigehond006_ert', 99 );
+	/**
+	 * separate ert section...
+	 */
+	if (isset($options['use_ert'])) {
+		if (isset($options['ert_speed']) && (int) $options['ert_speed'] > 0) {
+			if ( isset( $options['use_ert_shortcode'] ) ) {
+				add_shortcode( 'wp-reading-progress-ert', 'ruigehond006_shortcode' );
+			}
+			if ( isset( $options['use_ert_excerpt'] ) ) {
+				add_filter( 'get_the_excerpt', 'ruigehond006_ert', 99 );
+			}
+			//add_filter( 'get_the_content', 'ruigehond006_ert', 99 );
+			//add_filter( 'the_content', 'ruigehond006_ert', 99 );
+		}
 	}
 }
 
@@ -82,7 +91,7 @@ function ruigehond006_stylesheet() {
 	echo '<style>#ruigehond006_wrap{z-index:10001;position:fixed;display:block;left:0;width:100%;margin:0;overflow:visible}#ruigehond006_inner{position:absolute;height:0;width:inherit;background-color:rgba(255,255,255,.2);-webkit-transition:height .4s;transition:height .4s}html[dir=rtl] #ruigehond006_wrap{text-align:right}#ruigehond006_bar{width:0;height:100%;background-color:transparent}</style>';
 }
 
-function ruigehond006_shortcode( $attributes = [], $content = null, $short_code = 'wp-reading-progress' ) {
+function ruigehond006_shortcode( $attributes = [], $content = null, $short_code = 'wp-reading-progress-ert' ) {
 	return ruigehond006_ert();
 }
 
@@ -98,14 +107,14 @@ function ruigehond006_ert( $content = null, $args = null ) {
 	}
 	$minutes = max( 1, round( $time =  (str_word_count( strip_tags( $post->post_content ) ) / $speed), 0 ) );
 	if (
-		isset( $options['ert_text'] )
-		&& 1 === substr_count( ( $str = $options['ert_text'] ), '%d' )
+		isset( $options['ert_snippet'] )
+		&& 1 === substr_count( ( $str = $options['ert_snippet'] ), '%d' )
 	) {
 		$str = sprintf( $str, $minutes );
 	} else {
 		$str = sprintf( '%d” read', $minutes );
 	}
-	$snippet = sprintf("<span class='wp-reading-progress-ert post$post->ID' data-ert='$time' data-minutes='$minutes'>%s</span>", $str);
+	$snippet = sprintf("<span class='wp-reading-progress-ert post-$post->ID' data-ert='$time' data-minutes='$minutes'>%s</span>", $str);
 
 	if ( $content ) {
 		return "$snippet $content";
@@ -247,13 +256,6 @@ function ruigehond006_settings() {
 		esc_html__( 'Explain the purpose of this reading bar to screenreaders', 'wp-reading-progress' )
 	);
 	ruigehond006_add_settings_field(
-		'ert_speed',
-		'text-short',
-		esc_html__( 'Reading speed', 'wp-reading-progress' ), // title
-		$option,
-		esc_html__( 'Average reading speed in words per minute, integers only. Used to estimate reading time. Usual is something between 200 and 300.', 'wp-reading-progress' )
-	);
-	ruigehond006_add_settings_field(
 		'mark_it_zero',
 		'checkbox',
 		esc_html__( 'Make bar start at 0%', 'wp-reading-progress' ),
@@ -305,9 +307,65 @@ function ruigehond006_settings() {
 		$option,
 		esc_html__( 'necessary css for the reading bar is included elsewhere', 'wp-reading-progress' )
 	);
+	add_settings_section(
+		'ert_settings', // section id
+		esc_html__( 'Estimated reading time', 'wp-reading-progress' ), // title
+		function () {
+			echo '<p>';
+			echo esc_html__( 'If you want to display estimated reading time (ert) and your theme does not support it, you can activate it here.', 'wp-reading-progress' );
+			echo '<br/>';
+			echo esc_html__( 'When activated, you need to set some extra options. Upon deactivation, those options will be removed as well.', 'wp-reading-progress' );
+			echo '<br/>';
+			echo esc_html__( 'The ert (snippet) will be output in a span with css class `wp-reading-progress-ert` for you to style.', 'wp-reading-progress' );
+			echo '</p>';
+		}, //callback
+		'ruigehond006' // page
+	);
+	ruigehond006_add_settings_field(
+		'use_ert',
+		'checkbox',
+		esc_html__( 'Activate ert', 'wp-reading-progress' ),
+		$option,
+		esc_html__( 'Check to activate ert, leave unchecked if you have ert in your theme.', 'wp-reading-progress' ),
+		'ert_settings'
+	);
+	if (isset($option['use_ert'])) {
+		ruigehond006_add_settings_field(
+			'use_ert_shortcode',
+			'checkbox',
+			esc_html__( 'Use shortcode', 'wp-reading-progress' ),
+			$option,
+			esc_html__( 'Switch this on to display ert using the shortcode: [wp-reading-progress-ert].', 'wp-reading-progress' ),
+			'ert_settings'
+		);
+		ruigehond006_add_settings_field(
+			'use_ert_excerpt',
+			'checkbox',
+			esc_html__( 'Add before excerpt', 'wp-reading-progress' ),
+			$option,
+			esc_html__( 'This will add the snippet before any excerpt. Note that some themes strip the html.', 'wp-reading-progress' ),
+			'ert_settings'
+		);
+		ruigehond006_add_settings_field(
+			'ert_speed',
+			'text-short',
+			esc_html__( 'Reading speed', 'wp-reading-progress' ), // title
+			$option,
+			esc_html__( 'Average reading speed in words per minute, integers only. Used to estimate reading time. Usual is something between 200 and 300.', 'wp-reading-progress' ),
+			'ert_settings'
+		);
+		ruigehond006_add_settings_field(
+			'ert_snippet',
+			'text-short',
+			esc_html__( 'Snippet text', 'wp-reading-progress' ), // title
+			$option,
+			esc_html__( 'Define your own text here. Mandatory placeholder `%d` will display the minutes.', 'wp-reading-progress' ),
+			'ert_settings'
+		);
+	}
 }
 
-function ruigehond006_add_settings_field( $name, $type, $title, $option, $explanation = null ) {
+function ruigehond006_add_settings_field( $name, $type, $title, $option, $explanation = null, $section = 'progress_bar_settings' ) {
 	add_settings_field(
 		"ruigehond006_$name",
 		$title,
@@ -351,7 +409,7 @@ function ruigehond006_add_settings_field( $name, $type, $title, $option, $explan
 			}
 		},
 		'ruigehond006',
-		'progress_bar_settings',
+		$section,
 		array(
 			'name'        => $name,
 			'type'        => $type,
@@ -413,8 +471,12 @@ function ruigehond006_settings_validate( $input ) {
 		'bar_height',
 		'bar_attach',
 		'aria_label',
+		'post_types',
+		'use_ert',
 		'ert_speed',
-		'post_types'
+		'ert_snippet',
+		'use_ert_shortcode',
+		'use_ert_excerpt',
 	);
 
 	foreach ( $settings as $index => $key ) {
@@ -430,6 +492,9 @@ function ruigehond006_settings_validate( $input ) {
 			case 'include_comments':
 			case 'archives':
 			case 'no_css':
+			case 'use_ert':
+			case 'use_ert_shortcode':
+			case 'use_ert_excerpt':
 				// IMPORTANT: this is backwards compatible, 'false' options must not be present
 				if ( 'on' === $value ) {
 					$options[ $key ] = 'on';
@@ -440,6 +505,7 @@ function ruigehond006_settings_validate( $input ) {
 			case 'bar_color':
 			case 'bar_height':
 			case 'bar_attach':
+			case 'ert_snippet':
 			case 'aria_label':
 				$options[ $key ] = strip_tags( $value );
 				break;
