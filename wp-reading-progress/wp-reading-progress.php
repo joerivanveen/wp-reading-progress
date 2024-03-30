@@ -13,9 +13,8 @@ Domain Path: /languages/
 defined( 'ABSPATH' ) || die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
 const RUIGEHOND006_VERSION = '1.5.7';
-// Register hooks for plugin management, functions are at the bottom of this file.
+// Register install hook
 register_activation_hook( __FILE__, 'ruigehond006_install' );
-register_uninstall_hook( __FILE__, 'ruigehond006_uninstall' );
 // Startup the plugin
 add_action( 'init', 'ruigehond006_run' );
 add_action( 'wp', 'ruigehond006_start' );
@@ -539,12 +538,4 @@ function ruigehond006_install() {
 	if ( ! get_option( 'ruigehond006' ) ) { // insert default settings:
 		ruigehond006_add_defaults();
 	}
-}
-
-function ruigehond006_uninstall() {
-	// remove settings
-	delete_option( 'ruigehond006' );
-	delete_option( 'ruigehond006_upgraded_1.2.4' );
-	// remove the post_meta entries
-	delete_post_meta_by_key( '_ruigehond006_show' );
 }
