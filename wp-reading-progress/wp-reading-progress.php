@@ -2,8 +2,11 @@
 /*
 Plugin Name: WP Reading Progress
 Plugin URI: https://github.com/joerivanveen/wp-reading-progress
-Description: Light weight customizable reading progress bar. Great UX on longreads.
-Version: 1.5.7
+Description: Light weight customizable reading progress bar. Great UX on longreads. Includes estimated reading time (beta).
+Version: 1.6.0
+Requires at least: 4.9
+Tested up to: 6.5
+Requires PHP: 5.6
 Author: Joeri van Veen
 Author URI: https://wp-developer.eu
 License: GPLv3
@@ -12,7 +15,7 @@ Domain Path: /languages/
 */
 defined( 'ABSPATH' ) || die();
 // This is plugin nr. 6 by Ruige hond. It identifies as: ruigehond006.
-const RUIGEHOND006_VERSION = '1.5.7';
+const RUIGEHOND006_VERSION = '1.6.0';
 // Register install hook
 register_activation_hook( __FILE__, 'ruigehond006_install' );
 // Startup the plugin
@@ -308,7 +311,7 @@ function ruigehond006_settings() {
 	);
 	add_settings_section(
 		'ert_settings', // section id
-		esc_html__( 'Estimated reading time', 'wp-reading-progress' ), // title
+		esc_html__( 'Estimated reading time', 'wp-reading-progress' ) . ' (BETA)', // title
 		function () {
 			echo '<p>';
 			echo esc_html__( 'If you want to display estimated reading time (ert) and your theme does not support it, you can activate it here.', 'wp-reading-progress' );
