@@ -8,7 +8,7 @@ Requires PHP: 5.6
 Stable tag: 1.6.0
 License: GPLv3
 
-Light weight fully customizable reading progress bar. Sticks to top, bottom or sticky menu, with fallback for small screens. Includes estimated reading time functionality (beta).
+Light weight fully customizable reading progress bar. Sticks to top, bottom or sticky menu, with fallback for small screens. Includes ert (beta).
 
 == Description ==
 The reading progress bar is a great user experience on longreads. Especially if it accurately depicts the reading progress in the article text, and nothing else. This is standard on single blog posts and enabled by default.
