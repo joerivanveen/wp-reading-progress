@@ -36,7 +36,7 @@ Behaviour:
 Estimated reading time (beta)
 
 Since 1.6.0 this plugin has rudimentary estimated reading time functionality, for when your theme does not support it out of the box.
-There are some potential issues, some of which cannot be fixed from a plugin. If it does not work for you, switch it off. It will have no effect on the plugin then.
+There are some potential issues, some of which cannot be fixed in a plugin. If it does not work for you, switch it off. It will have no effect on the plugin then.
 
 This is my 6th WordPress plugin but my first one freely available to everybody. I hope you enjoy using it as much as I enjoy building it!
 
