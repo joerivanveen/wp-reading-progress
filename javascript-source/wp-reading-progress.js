@@ -94,12 +94,9 @@ function ruigehond006() {
                 const barTop = ruigehond006_a.getBoundingClientRect().bottom;
                 const topCor = (barTop - wrap.getBoundingClientRect().top).toFixed(2);
                 if (topCor !== y_correction) {
-                    //console.log(barTop, ruigehond006_a.getBoundingClientRect().bottom);
-                    console.warn(`set cor from ${y_correction} to ${topCor}`);
                     inner.style.transform = `translateY(${topCor}px)`;
                     y_correction = topCor;
                 }
-                //console.warn(top + ' vs ' + boundingClientTop(inner) + ' vs ' + inner.getBoundingClientRect().top);
             });
         } else { // bar_attach must be top
             barToTop(wrap, inner);
