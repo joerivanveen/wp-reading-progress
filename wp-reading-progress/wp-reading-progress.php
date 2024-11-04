@@ -5,7 +5,7 @@ Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads. Includes estimated reading time (beta).
 Version: 1.6.0
 Requires at least: 4.9
-Tested up to: 6.5
+Tested up to: 6.7
 Requires PHP: 5.6
 Author: Joeri van Veen
 Author URI: https://wp-developer.eu
