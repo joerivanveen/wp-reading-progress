@@ -5,7 +5,7 @@ Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads. Includes estimated reading time (beta).
 Version: 1.6.0
 Requires at least: 4.9
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 5.6
 Author: Joeri van Veen
 Author URI: https://wp-developer.eu
@@ -26,7 +26,6 @@ add_action( 'wp', 'ruigehond006_start' );
  */
 function ruigehond006_run() {
 	if ( is_admin() ) {
-		load_plugin_textdomain( 'wp-reading-progress', '', dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_script( 'wp-color-picker' );
 		wp_enqueue_script( 'ruigehond006_admin_javascript', plugin_dir_url( __FILE__ ) . 'admin.min.js', 'wp-color-picker', RUIGEHOND006_VERSION, true );
