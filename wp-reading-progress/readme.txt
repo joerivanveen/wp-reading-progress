@@ -3,9 +3,9 @@ Contributors: ruigehond
 Tags: reading, progress, progressbar, estimated reading time
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hallo@ruigehond.nl&lc=US&item_name=WP+reading+progress+plugin&no_note=0&cn=&currency_code=EUR&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted
 Requires at least: 4.9
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 License: GPLv3
 
 Light weight fully customizable reading progress bar. Sticks to top, bottom or sticky menu, with fallback for small screens. Includes ert (beta).
@@ -58,6 +58,8 @@ Upon uninstall WP Reading Progress removes its own options and `post_meta` data 
 3. Activate the bar for an individual post (if that post type is not enabled)
 
 == Changelog ==
+
+1.6.1: adhere to wordpress coding standards, fixing deprecated strip_tags notice
 
 1.6.0: add estimated reading time as beta functionality, improve sticking and detecting article
 
