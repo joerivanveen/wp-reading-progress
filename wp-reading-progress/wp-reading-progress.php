@@ -5,7 +5,7 @@ Plugin URI: https://github.com/joerivanveen/wp-reading-progress
 Description: Light weight customizable reading progress bar. Great UX on longreads. Includes estimated reading time (beta).
 Version: 1.6.1
 Requires at least: 4.9
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 5.6
 Author: Joeri van Veen
 Author URI: https://wp-developer.eu
@@ -210,7 +210,7 @@ function ruigehond006_settings() {
 	/* @since 1.5.4: check if the required placeholders are in the translated string */
 	/* translators: %1$s: link for top, %1$s: link for bottom */
 	$string = esc_html__( 'Use %1$s or %2$s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.', 'wp-reading-progress' );
-	if ( false === strpos($string, '%1$s') || false === strpos($string, '%2$s') ) {
+	if ( false === strpos( $string, '%1$s' ) || false === strpos( $string, '%2$s' ) ) {
 		$string = 'Use %1$s or %2$s, or any VALID selector of a fixed element where the bar can be appended to, e.g. a sticky menu.';
 	}
 	ruigehond006_add_settings_field(
@@ -229,7 +229,7 @@ function ruigehond006_settings() {
 	);
 	ruigehond006_add_settings_field(
 		'bar_color',
-		'color',
+		'wp-color',
 		esc_html__( 'Color of the progress bar', 'wp-reading-progress' ), // title
 		$option
 	);
@@ -243,7 +243,7 @@ function ruigehond006_settings() {
 	/* @since 1.5.4: check if the required placeholders are in the translated string */
 	/* translators: %1$s: link to insert .5vh, %2$s: link to insert 6px */
 	$string = esc_html__( 'Thickness based on screen height is recommended, e.g. %1$s. But you can also use pixels, e.g. %2$s.', 'wp-reading-progress' );
-	if ( false === strpos($string, '%1$s') || false === strpos($string, '%2$s') ) {
+	if ( false === strpos( $string, '%1$s' ) || false === strpos( $string, '%2$s' ) ) {
 		$string = 'Thickness based on screen height is recommended, e.g. %s. But you can also use pixels, e.g. %s.';
 	}
 	ruigehond006_add_settings_field(
@@ -390,8 +390,15 @@ function ruigehond006_add_settings_field( $name, $type, $title, $option, $explan
 					echo '</label>';
 
 					return;
+//				case 'wp-color':
+//					echo '<input type="text" class="ruigehond006_colorpicker" name="ruigehond006[';
+//					echo esc_attr( $args['name'] );
+//					echo ']" value="';
+//					echo esc_attr( $args['value'] );
+//					echo '"/>';
+//					break;
 				case 'color':
-					echo '<input type="text" class="ruigehond006_colorpicker" name="ruigehond006[';
+					echo '<input type="color" name="ruigehond006[';
 					echo esc_attr( $args['name'] );
 					echo ']" value="';
 					echo esc_attr( $args['value'] );
