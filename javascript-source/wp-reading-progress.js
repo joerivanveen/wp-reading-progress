@@ -13,11 +13,11 @@ function ruigehond006() {
     p = (p_candidates.length === 1) ? p_candidates[0] : document.getElementById('post-' + ruigehond006_c.post_id) || document.body;
     if (!ruigehond006_c.include_comments) { /* now check if it has the internal content in a standard class */
         // todo, limit this to max 1, that can be entered in settings, and overridden in meta box
-        if ((p_candidates = p.querySelectorAll('.entry-content:not(.comment-content)')).length === 1) {
+        if (1 === (p_candidates = p.querySelectorAll('.entry-content:not(.comment-content)')).length) {
             p = p_candidates[0];
-        } else if ((p_candidates = p.querySelectorAll('.post-content:not(.comment-content)')).length === 1) {
+        } else if (1 === (p_candidates = p.querySelectorAll('.post-content:not(.comment-content)')).length) {
             p = p_candidates[0];
-        } else if ((p_candidates = p.querySelectorAll('.main-content:not(.comment-content)')).length === 1) {
+        } else if (1 === (p_candidates = p.querySelectorAll('.main-content:not(.comment-content)')).length) {
             p = p_candidates[0];
         }
     }

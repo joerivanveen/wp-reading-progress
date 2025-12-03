@@ -195,9 +195,9 @@ function ruigehond006_settings() {
 			echo esc_html__( 'This plugin displays a reading progress bar on your selected post types.', 'wp-reading-progress' );
 			echo ' ';
 			echo esc_html__( 'When it does not find a single article, it uses the whole page to calculate reading progress.', 'wp-reading-progress' );
-			echo '<br/>';
+			echo '<br>';
 			echo esc_html__( 'For post types which are switched off in the settings, you can activate the bar per post in the post-edit screen.', 'wp-reading-progress' );
-			echo '<br/>';
+			echo '<br>';
 			echo esc_html__( 'Please use valid input or the bar might not display.', 'wp-reading-progress' );
 			echo '</p>';
 		}, //callback
@@ -288,7 +288,7 @@ function ruigehond006_settings() {
 				if ( in_array( $post_type, $post_types ) ) {
 					echo ' checked="checked"';
 				}
-				echo '/>', esc_html( $post_type ), '</label><br/>';
+				echo '/>', esc_html( $post_type ), '</label><br>';
 			}
 			echo '<div class="ruigehond006 explanation"><em>';
 			echo esc_html__( 'For unchecked post types you can enable the reading progress bar per post on the post edit page.', 'wp-reading-progress' );
@@ -317,9 +317,9 @@ function ruigehond006_settings() {
 		function () {
 			echo '<p>';
 			echo esc_html__( 'If you want to display estimated reading time (ert) and your theme does not support it, you can activate it here.', 'wp-reading-progress' );
-			echo '<br/>';
+			echo '<br>';
 			echo esc_html__( 'When activated, you need to set some extra options. Upon deactivation, those options will be removed as well.', 'wp-reading-progress' );
-			echo '<br/>';
+			echo '<br>';
 			echo esc_html__( 'The ert (snippet) will be output in a span with css class `wp-reading-progress-ert` for you to style.', 'wp-reading-progress' );
 			echo '</p>';
 		}, //callback
